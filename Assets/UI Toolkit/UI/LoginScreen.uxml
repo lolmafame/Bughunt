@@ -1,0 +1,69 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/UI/LoginScreen.uss?fileID=7433441132597879392&amp;guid=375c1c5f0743ca44eb3f57f807600f4c&amp;type=3#LoginScreen" />
+    <Style src="project://database/Assets/UI%20Toolkit/UI/CustomIcons.uss?fileID=7433441132597879392&amp;guid=d46bbebe6c9da3f4fa55e41c4eb3cadd&amp;type=3#CustomIcons" />
+    <ui:VisualElement name="login-screen" class="login-screen" style="background-image: resource(&apos;Images/Dirt_Effect&apos;);">
+        <ui:VisualElement name="login-panel" class="login-panel" style="padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; -unity-text-outline-color: rgb(187, 177, 112); -unity-text-outline-width: 0;">
+            <ui:Label text="LOGIN" name="title" class="title" />
+            <ui:VisualElement class="input-wrapper email-input-wrapper" style="margin-right: 60px; margin-left: 60px; justify-content: flex-start; height: 70px;">
+                <ui:VisualElement name="username-icon" id="username-icon" class="input-icon" />
+                <ui:TextField name="email-field" placeholder-text="Username/Email" class="input-field" />
+            </ui:VisualElement>
+            <ui:VisualElement class="password-container">
+                <ui:VisualElement class="input-wrapper password-input-wrapper">
+                    <ui:VisualElement name="password-icon" id="password-icon" class="input-icon" />
+                    <ui:TextField name="password-field" password="true" placeholder-text="Password" class="input-field" />
+                </ui:VisualElement>
+                <ui:Label name="eye-icon" text="\uf06e" enable-rich-text="true" parse-escape-sequences="true" selectable="true" focusable="true" class="eye-icon" />
+            </ui:VisualElement>
+            <ui:Label text="OR" name="separator" class="separator" />
+            <ui:Button name="google-button" class="google-button">
+                <ui:VisualElement name="google-logo" class="google-logo" style="height: 42px; width: 42px;" />
+                <ui:Label text="Sign-in with Gmail" triple-click-selects-line="false" />
+            </ui:Button>
+            <ui:VisualElement name="bottom-row" class="bottom-row">
+                <ui:Toggle label="Remember me" name="remember-me-toggle" class="remember-me-toggle" />
+                <ui:Button text="LOGIN" name="login-button" class="login-button" />
+            </ui:VisualElement>
+            <ui:VisualElement name="signup-container" class="signup-container" style="flex-direction: column; align-items: center;">
+                <ui:Button text="Continue As Guest" name="signup-link" class="signup-link" style="margin-left: 0;" />
+                <ui:Button text="Forgot Password?" name="forgot-password-link" class="signup-link" style="margin-left: 0; margin-top: 80px; font-size: 35px;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:Image name="logo" class="logo" style="width: 630px; left: auto; top: auto; position: absolute; height: 332px; bottom: 756px; right: 1269px;" />
+        <ui:VisualElement name="profile-setup-modal" class="modal-backdrop" style="display: none;">
+            <ui:VisualElement name="modal-panel-content" class="login-panel modal-panel">
+                <ui:Label text="CREATE YOUR GAME PROFILE" name="modal-title" class="title" style="font-size: 50px; margin-bottom: 10px;" />
+                <ui:Label text="Set a unique username and password for future logins." name="modal-message" class="separator" style="font-size: 24px; margin-bottom: 30px;" />
+                <ui:VisualElement class="input-wrapper" style="margin-bottom: 20px; height: 60px;">
+                    <ui:TextField name="username-field-modal" placeholder-text="Enter Username" class="input-field" />
+                </ui:VisualElement>
+                <ui:VisualElement name="password-container-new" class="password-container" style="margin-top: 0; margin-bottom: 20px; margin-left: 0; margin-right: 0;">
+                    <ui:VisualElement class="input-wrapper password-input-wrapper" style="height: 60px;">
+                        <ui:TextField name="new-password-field-modal" password="true" placeholder-text="New Password (min 8 chars)" class="input-field" />
+                    </ui:VisualElement>
+                    <ui:Label name="eye-icon-new" text="\uf06e" enable-rich-text="true" parse-escape-sequences="true" selectable="true" focusable="true" class="eye-icon" />
+                </ui:VisualElement>
+                <ui:VisualElement name="password-container-confirm" class="password-container" style="margin-top: 0; margin-bottom: 20px; margin-left: 0; margin-right: 0;">
+                    <ui:VisualElement class="input-wrapper password-input-wrapper" style="height: 60px;">
+                        <ui:TextField name="confirm-password-field-modal" password="true" placeholder-text="Confirm Password" class="input-field" />
+                    </ui:VisualElement>
+                    <ui:Label name="eye-icon-confirm" text="\uf06e" enable-rich-text="true" parse-escape-sequences="true" selectable="true" focusable="true" class="eye-icon" />
+                </ui:VisualElement>
+                <ui:Label name="status-message-modal" class="status-message" />
+                <ui:Button text="SUBMIT" name="submit-profile-button" class="login-button modal-submit-button" style="margin-right: 80px; margin-left: 80px;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="forgot-password-modal" class="modal-backdrop" style="display: none;">
+            <ui:VisualElement name="modal-panel-forgot" class="login-panel modal-panel">
+                <ui:Button name="close-forgot-modal" text="\uf00d" enable-rich-text="true" parse-escape-sequences="true" class="close-button" />
+                <ui:Label text="RESET PASSWORD" name="modal-title-forgot" class="title" style="font-size: 50px; margin-bottom: 10px;" />
+                <ui:Label text="Enter your account&apos;s email address to receive a password reset link." name="modal-message-forgot" class="separator" style="font-size: 24px; margin-bottom: 30px;" />
+                <ui:VisualElement class="input-wrapper" style="margin-bottom: 20px; height: 60px; margin-right: 60px; margin-left: 60px;">
+                    <ui:TextField name="email-field-forgot" placeholder-text="Enter Email" class="input-field" />
+                </ui:VisualElement>
+                <ui:Label name="status-message-forgot" class="status-message" />
+                <ui:Button text="SEND RESET EMAIL" name="send-reset-button" class="login-button modal-submit-button" style="margin-right: 80px; margin-left: 80px;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

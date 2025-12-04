@@ -1,0 +1,4 @@
+repository "BugHunt/BugHunt@18968344312039@cloud"
+  path "/"
+    br "/main"
+    co "/main"

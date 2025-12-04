@@ -1,0 +1,114 @@
+.main-menu-container {
+    flex-grow: 1;
+    background-color: rgb(30, 25, 25);
+    padding: 20px;
+    justify-content: space-between;
+}
+
+.top-bar {
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    height: 50px;
+    margin-bottom: 5px;
+}
+
+.main-content-container {
+    flex-grow: 1;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    margin-top: -50px;
+}
+
+.title-container {
+    align-items: flex-start;
+    justify-content: center;
+    margin-right: 0;
+    padding-bottom: 0;
+    margin-bottom: 30px;
+    margin-right: 9px;
+    align-content: flex-start;
+}
+
+.title-label {
+    -unity-font-definition: resource('Fonts/Horror Origins Demo');
+    font-size: 150px;
+    text-shadow: 0.5px 0.5px 4px rgba(192, 183, 153, 0.5);
+    -unity-text-outline-width: 0.5px;
+    -unity-text-outline-color: rgb(192, 183, 153);
+}
+
+.subtitle-label {
+    -unity-font-definition: resource('Fonts/Horror_Boat');
+    font-size: 60px;
+    color: rgb(42, 34, 29);
+    -unity-font-style: normal;
+    margin-left: 10px;
+    margin-top: -5px;
+    -unity-text-align: upper-left;
+    justify-content: flex-start;
+    align-self: center;
+}
+
+.menu-options-container {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin-right: 30px;
+}
+
+.menu-button {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: transparent;
+    border-width: 0;
+    margin: 5px 0;
+    padding: 0;
+    margin-top: 30px;
+}
+
+.menu-button-label {
+    -unity-font-definition: resource('Fonts/Super_Rugged');
+    font-size: 40px;
+    color: rgb(255, 255, 255);
+    -unity-font-style: normal;
+    transition-duration: 0.1s;
+}
+
+.menu-button:hover .menu-button-label {
+    color: rgb(185, 147, 86);
+}
+
+.shop-icon {
+    margin: 0 10px;
+    transition-duration: 0.1s;
+    color: rgb(255, 255, 255);
+}
+
+.user-icon {
+    margin: 0 10px;
+    transition-duration: 0.1s;
+    color: rgb(255, 255, 255);
+}
+
+.shop-icon:hover {
+    color: rgb(242, 230, 143);
+}
+
+.user-icon:hover {
+    color: rgb(242, 230, 143);
+}
+
+.menu-arrow-icon {
+    opacity: 0;
+    margin-right: 15px;
+    transition-duration: 0.1s;
+}
+
+.menu-button:hover .menu-arrow-icon {
+    opacity: 1;
+    color: rgb(242, 230, 143);
+}

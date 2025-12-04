@@ -1,0 +1,371 @@
+.fa {
+    -unity-font: resource('Fonts/Font-Awesome-Solid.otf');
+    -unity-font-style: normal;
+}
+
+#profile-popup-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    align-items: center;
+    justify-content: center;
+}
+
+#profile-popup-panel {
+    width: 900px;
+    flex-direction: column;
+    border-radius: 5px;
+    overflow: hidden;
+    -unity-background-image-tint-color: rgb(0, 0, 0);
+    -unity-slice-left: 5;
+    -unity-slice-top: 5;
+    -unity-slice-right: 5;
+    -unity-slice-bottom: 5;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    height: 600px;
+}
+
+#profile-title-bar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgb(21, 17, 17);
+    padding: 10px 15px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgb(51, 51, 51);
+    margin-bottom: 0;
+}
+
+.profile-title-left {
+    flex-direction: row;
+    align-items: center;
+}
+
+.profile-title-icon {
+    font-size: 27px;
+    color: rgb(241, 254, 145);
+    margin-right: 10px;
+    -unity-font-definition: resource('Fonts/Font Awesome 7 Free-Solid-900');
+}
+
+.profile-title-label {
+    font-size: 25px;
+    color: rgb(241, 254, 145);
+    -unity-font-style: bold;
+    -unity-font-definition: resource('Fonts/Horror_Boat');
+}
+
+#CloseButton {
+    background-color: rgb(142, 19, 19);
+    color: white;
+    border-width: 0;
+    border-radius: 3px;
+    padding: 5px 9px;
+    font-size: 16px;
+    transition-duration: 0.1s;
+    margin-top: -27px;
+    margin-right: -15px;
+    width: 70px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    margin-left: 0;
+    margin-bottom: 0;
+}
+
+#CloseButton:hover {
+    background-color: rgb(176, 26, 26);
+}
+
+#profile-main-content {
+    flex-direction: column;
+    align-items: center;
+    background-color: rgb(28, 17, 24);
+    padding: 25px;
+    height: 600px;
+}
+
+#profile-picture-container {
+    width: 220px;
+    height: 120px;
+    border-radius: 60px;
+    background-color: rgb(21, 17, 17);
+    margin-bottom: 35px;
+    border-width: 2px;
+    border-color: rgb(51, 51, 51);
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    border-left-color: rgb(244, 232, 190);
+    border-right-color: rgb(244, 232, 190);
+    border-top-color: rgb(244, 232, 190);
+    border-bottom-color: rgb(244, 232, 190);
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+}
+
+#profile-main-content .input-field {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgb(51, 51, 51);
+    width: 80%;
+    padding: 12px 15px;
+    margin-bottom: 12px;
+    border-radius: 3px;
+    align-self: auto;
+    margin-right: -30px;
+    margin-left: -30px;
+    -unity-font-definition: resource('Fonts/Super_Rugged');
+    -unity-text-outline-color: rgb(255, 255, 255);
+    color: rgb(255, 255, 255);
+    height: 70px;
+    font-size: 35px;
+}
+
+.tier-field {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgb(51, 51, 51);
+    width: 80%;
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    border-radius: 3px;
+    align-self: auto;
+    margin-right: -30px;
+    margin-left: -30px;
+    -unity-font-definition: resource('Fonts/Super_Rugged');
+    -unity-text-outline-color: rgb(255, 255, 255);
+    color: rgb(255, 255, 255);
+    height: 70px;
+}
+
+.input-label {
+    color: white;
+    font-size: 25px;
+}
+
+.input-icon {
+    color: rgb(241, 254, 145);
+    font-size: 23px;
+}
+
+.logout-button {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(142, 19, 19);
+    width: 30%;
+    padding: 10px;
+    margin-top: 20px;
+    border-radius: 3px;
+    border-width: 0;
+    transition-duration: 0.1s;
+}
+
+.logout-button:hover {
+    background-color: rgb(176, 26, 26);
+}
+
+.logout-button .fa {
+    color: white;
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+.logout-label {
+    color: white;
+    font-size: 16px;
+    -unity-font-style: bold;
+}
+
+.google-icon {
+    background-image: resource('Images/Google_Logo');
+    background-position-x: right 0;
+    width: 60px;
+    height: 60px;
+}
+
+.input-label.unity-text-field {
+    padding: 0;
+    margin: 0;
+}
+
+.input-label.unity-text-field .unity-base-field__input {
+    background-color: transparent;
+    border-width: 0;
+    color: white;
+    font-size: 25px;
+    -unity-font-definition: resource('Fonts/Super_Rugged');
+}
+
+.input-label.unity-text-field:readonly .unity-base-field__input {
+    color: white;
+    opacity: 0.7;
+}
+
+.google-button {
+    -unity-font-family: "Super Rugged";
+    background-color: rgb(217, 217, 217);
+    color: rgb(21, 17, 17);
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 25px;
+    height: 55px;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+    border-bottom-left-radius: 30px;
+    -unity-font-definition: url("project://database/Library/unity%20default%20resources?fileID=10102&guid=0000000000000000e000000000000000&type=0#LegacyRuntime");
+    -unity-font-style: normal;
+    width: 60%;
+    margin-top: 80px;
+    margin-bottom: 20px;
+    display: none;
+}
+
+.google-logo {
+    width: 40px;
+    height: 40px;
+    -unity-background-image: url('Images/Google_Logo.png');
+    -unity-background-scale-mode: scale-to-fit;
+    margin-right: 20px;
+    background-image: resource('Images/Google_Logo');
+}
+
+.modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+    justify-content: center;
+    align-items: center;
+    display: none;
+}
+
+.modal-panel {
+    width: 60%;
+    max-width: 800px;
+    height: auto;
+    padding: 40px;
+    align-items: stretch;
+    background-color: rgb(21, 17, 17);
+    border-radius: 10px;
+}
+
+.modal-panel .title {
+    font-size: 90px;
+    -unity-font-family: "Horror Boat";
+    color: rgb(242, 230, 143);
+    -unity-text-align: upper-center;
+    margin-bottom: 0;
+    -unity-font-definition: resource('Fonts/Horror_Boat');
+}
+
+.modal-panel .separator {
+    -unity-font-family: "Super Rugged";
+    color: rgb(242, 230, 143);
+    -unity-text-align: upper-center;
+    margin: 20px 0;
+    font-size: 30px;
+    -unity-font-definition: resource('Fonts/Super_Rugged');
+}
+
+.status-message {
+    color: rgb(255, 100, 100);
+    -unity-font-family: "Super Rugged";
+    -unity-font-definition: resource('Fonts/Super_Rugged');
+    font-size: 24px;
+    -unity-text-align: upper-center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    min-height: 30px;
+}
+
+.modal-panel .login-button {
+    -unity-font-family: "Super Rugged";
+    background-color: rgb(242, 230, 143);
+    color: rgb(21, 17, 17);
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 40px;
+    -unity-text-align: upper-center;
+    -unity-font-definition: resource('Fonts/Super_Rugged');
+    width: 228px;
+    height: 60px;
+}
+
+.modal-panel .login-button:hover {
+    background-color: rgb(217, 202, 128);
+}
+
+.modal-submit-button {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 400px;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-panel .input-wrapper {
+    flex-direction: row;
+    align-items: center;
+    background-color: rgb(181, 175, 175);
+    border-radius: 5px;
+    height: 45px;
+    padding: 0 10px;
+}
+
+.modal-panel .password-container {
+    flex-direction: row;
+    align-items: center;
+}
+
+.modal-panel .password-input-wrapper {
+    flex-grow: 1;
+}
+
+.modal-panel .input-field {
+    flex-grow: 1;
+    height: 40px;
+    -unity-font-definition: resource('Fonts/Super_Rugged');
+    font-size: 35px;
+}
+
+.modal-panel .input-field .unity-base-field__input {
+    background-color: transparent;
+    border-width: 0;
+    color: rgb(21, 17, 17);
+    font-size: 28px;
+}
+
+.modal-panel .input-field .unity-placeholder {
+    color: rgb(51, 51, 51);
+    font-size: 35px;
+}
+
+.modal-panel .eye-icon {
+    -unity-font: resource('Fonts/Font-Awesome-Solid.otf');
+    font-size: 24px;
+    color: rgb(242, 230, 143);
+    padding: 10px;
+    background-color: rgb(181, 175, 175);
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    height: 60px;
+    -unity-font-definition: resource('Fonts/Font Awesome 7 Free-Solid-900');
+}

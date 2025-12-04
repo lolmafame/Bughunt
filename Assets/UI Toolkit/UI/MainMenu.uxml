@@ -1,0 +1,49 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:Template name="ProfilePopup" src="project://database/Assets/Resources/Popup/ProfilePopup.uxml?fileID=9197481963319205126&amp;guid=1b0f777f79485e6469e7157d0086ca5f&amp;type=3#ProfilePopup" />
+    <Style src="project://database/Assets/UI%20Toolkit/UI/MainMenuStyle.uss?fileID=7433441132597879392&amp;guid=6580665eb2bfce54087f06c1c9c4b489&amp;type=3#MainMenuStyle" />
+    <Style src="project://database/Assets/UI%20Toolkit/UI/CustomIcons.uss?fileID=7433441132597879392&amp;guid=d46bbebe6c9da3f4fa55e41c4eb3cadd&amp;type=3#CustomIcons" />
+    <ui:VisualElement name="MainMenuContainer" class="main-menu-container" style="background-image: resource(&apos;Images/MainMenu_bg&apos;);">
+        <ui:VisualElement class="top-bar">
+            <ui:Button name="ShopButton" class="shop-icon">
+                <ui:Label text="" parse-escape-sequences="true" />
+            </ui:Button>
+            <ui:Button name="UserButton" class="user-icon">
+                <ui:Label text="" parse-escape-sequences="true" />
+            </ui:Button>
+        </ui:VisualElement>
+        <ui:VisualElement picking-mode="Ignore" class="main-content-container">
+            <ui:VisualElement class="title-container">
+                <ui:Label text="&lt;color=white&gt;&lt;gradient=&quot;Title_Gradient&quot;&gt;Bug HUNT&lt;/gradient&gt;&lt;/color&gt;" parse-escape-sequences="true" enable-rich-text="true" class="title-label" style="-unity-font-style: normal; text-shadow: 2px 2px 4px rgba(192, 183, 153, 0.5);" />
+                <ui:Label text="&lt;color=white&gt;&lt;gradient=&quot;Title2_Gradient&quot;&gt;DEBUG OR DIE TRYING&lt;/gradient&gt;&lt;/color&gt;" class="subtitle-label" />
+            </ui:VisualElement>
+            <ui:VisualElement class="menu-options-container">
+                <ui:Button name="   CampaignButton" class="menu-button">
+                    <ui:Label text="" parse-escape-sequences="true" class="menu-arrow-icon" />
+                    <ui:Label text="    Campaign Mode" class="menu-button-label" style="-unity-font-style: normal;" />
+                </ui:Button>
+                <ui:Button name="ArcadeButton" class="menu-button">
+                    <ui:Label text="" parse-escape-sequences="true" class="menu-arrow-icon" />
+                    <ui:Label text="    Arcade Mode" class="menu-button-label" style="-unity-font-style: normal;" />
+                </ui:Button>
+                <ui:Button name="SettingsButton" class="menu-button">
+                    <ui:Label text="" parse-escape-sequences="true" class="menu-arrow-icon" />
+                    <ui:Label text="    Settings" class="menu-button-label" />
+                </ui:Button>
+                <ui:Button name="LeaderboardButton" class="menu-button">
+                    <ui:Label text="" parse-escape-sequences="true" class="menu-arrow-icon" />
+                    <ui:Label text="    Leaderboard and Achievement" class="menu-button-label" />
+                </ui:Button>
+                <ui:Button name="CreditsButton" class="menu-button">
+                    <ui:Label text="" parse-escape-sequences="true" class="menu-arrow-icon" />
+                    <ui:Label text="    Credits" class="menu-button-label" />
+                </ui:Button>
+                <ui:Button name="QuitButton" class="menu-button">
+                    <ui:Label text="" parse-escape-sequences="true" class="menu-arrow-icon" />
+                    <ui:Label text="    Quit Game" class="menu-button-label" />
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement class="spider-image-placeholder" />
+        <ui:Instance template="ProfilePopup" name="ProfilePopup" style="position: absolute; left: 0; right: 0; top: 0; bottom: 0; display: none;" />
+    </ui:VisualElement>
+</ui:UXML>

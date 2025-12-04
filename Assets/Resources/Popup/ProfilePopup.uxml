@@ -1,0 +1,61 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <Style src="project://database/Assets/Resources/Popup/ProfilePopup.uss?fileID=7433441132597879392&amp;guid=fe8d15c44452bc94892ff1215d6ee390&amp;type=3#ProfilePopup" />
+    <ui:VisualElement name="profile-popup-overlay" picking-mode="Ignore" style="top: -1px; bottom: 2px; right: 3px; left: -2px; visibility: visible;">
+        <ui:VisualElement name="profile-popup-panel" style="height: 800px;">
+            <ui:VisualElement name="profile-title-bar" style="border-left-color: rgb(244, 232, 190); border-right-color: rgb(244, 232, 190); border-top-color: rgb(244, 232, 190); border-bottom-color: rgb(244, 232, 190);">
+                <ui:VisualElement class="profile-title-left">
+                    <ui:Label text="\uf2c0" parse-escape-sequences="true" name="Label" enable-rich-text="true" class="fa profile-title-icon" />
+                    <ui:Label text="PROFILE" class="profile-title-label" />
+                </ui:VisualElement>
+                <ui:Button name="CloseButton">
+                    <ui:Label text="\uf00d" parse-escape-sequences="true" class="fa" style="-unity-font-definition: resource(&apos;Fonts/Font Awesome 7 Free-Solid-900&apos;); padding-left: 2px;" />
+                </ui:Button>
+            </ui:VisualElement>
+            <ui:VisualElement name="profile-main-content" style="height: 700px;">
+                <ui:VisualElement name="profile-picture-container" style="background-image: resource(&apos;Images/dprofilepic&apos;); height: 185px; width: 200px;" />
+                <ui:VisualElement name="username-field-container" class="input-field">
+                    <ui:TextField name="username-text-field" class="input-label" style="flex-grow: 1;" />
+                    <ui:Label text="\uf304" parse-escape-sequences="true" class="fa input-icon" style="-unity-font-definition: resource(&apos;Fonts/Font Awesome 7 Free-Solid-900&apos;);" />
+                </ui:VisualElement>
+                <ui:VisualElement name="email-field-container" class="input-field">
+                    <ui:Label text="Email" class="input-label" />
+                    <ui:VisualElement name="email-provider-icon" class="input-icon" style="width: 35px; height: 35px; background-image: resource(&apos;Images/Google_Logo&apos;);" />
+                </ui:VisualElement>
+                <ui:VisualElement class="tier-field" style="-unity-text-align: upper-left;">
+                    <ui:Label text="Free Tier" class="input-label" />
+                </ui:VisualElement>
+                <ui:Button name="GuestSignInButton" class="google-button">
+                    <ui:VisualElement name="google-logo" class="google-logo" />
+                    <ui:Label text="Sign-in with Google" />
+                </ui:Button>
+                <ui:Button name="LogOutButton" class="logout-button">
+                    <ui:Label text="\uf2f5" parse-escape-sequences="true" class="fa" style="-unity-font-definition: resource(&apos;Fonts/Font Awesome 7 Free-Solid-900&apos;);" />
+                    <ui:Label text="LOG OUT" class="logout-label" />
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="profile-setup-modal" class="modal-backdrop" style="display: flex;">
+            <ui:VisualElement name="modal-panel-content" class="login-panel modal-panel" style="height: 640px; width: 726px;">
+                <ui:Label text="CREATE YOUR GAME PROFILE" name="modal-title" class="title" style="font-size: 50px; margin-bottom: 10px;" />
+                <ui:Label text="Set a unique username and password for future logins." name="modal-message" class="separator" style="font-size: 24px; margin-bottom: 30px;" />
+                <ui:VisualElement class="input-wrapper" style="margin-bottom: 20px; height: 60px;">
+                    <ui:TextField name="username-field-modal" placeholder-text="Enter Username" class="input-field" />
+                </ui:VisualElement>
+                <ui:VisualElement class="password-container" style="margin-top: 0; margin-bottom: 20px; margin-left: 0; margin-right: 0;">
+                    <ui:VisualElement class="input-wrapper password-input-wrapper" style="height: 60px;">
+                        <ui:TextField name="new-password-field-modal" password="true" placeholder-text="New Password (min 8 chars)" class="input-field" />
+                    </ui:VisualElement>
+                    <ui:Label name="eye-icon-new" text="\uf06e" enable-rich-text="true" parse-escape-sequences="true" selectable="true" focusable="true" class="eye-icon" style="background-color: rgba(181, 175, 175, 0);" />
+                </ui:VisualElement>
+                <ui:VisualElement class="password-container" style="margin-top: 0; margin-bottom: 20px; margin-left: 0; margin-right: 0;">
+                    <ui:VisualElement class="input-wrapper password-input-wrapper" style="height: 60px;">
+                        <ui:TextField name="confirm-password-field-modal" password="true" placeholder-text="Confirm Password" class="input-field" />
+                    </ui:VisualElement>
+                    <ui:Label name="eye-icon-confirm" text="\uf06e" enable-rich-text="true" parse-escape-sequences="true" selectable="true" focusable="true" class="eye-icon" style="background-color: rgba(181, 175, 175, 0);" />
+                </ui:VisualElement>
+                <ui:Label name="status-message-modal" class="status-message" />
+                <ui:Button text="SUBMIT" name="submit-profile-button" class="login-button modal-submit-button" style="margin-right: 80px; margin-left: 80px;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

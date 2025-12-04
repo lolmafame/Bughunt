@@ -1,0 +1,332 @@
+.login-screen {
+    flex-grow: 1;
+    background-color: rgb(28, 17, 24);
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.logo {
+    -unity-background-image: url('Images/Logo.png');
+    -unity-background-scale-mode: scale-to-fit;
+    background-image: resource('Images/Logo');
+    position: absolute;
+    width: 385px;
+    height: 414px;
+    top: 0;
+    left: 0;
+    margin-left: 0;
+    align-items: flex-start;
+    justify-content: center;
+    align-self: flex-start;
+    margin-top: 0;
+    margin-right: 0;
+    background-size: contain;
+    background-position-x: center;
+    -unity-slice-type: sliced;
+    right: 0;
+    bottom: 0;
+}
+
+.login-panel {
+    background-color: rgb(21, 17, 17);
+    width: 100%;
+    max-width: 1000px;
+    padding: 30px;
+    padding-top: 60px;
+    border-radius: 10px;
+    justify-content: flex-start;
+    align-items: stretch;
+    position: relative;
+    height: 90%;
+    border-left-color: rgb(187, 177, 112);
+    border-right-color: rgb(187, 177, 112);
+    border-top-color: rgb(187, 177, 112);
+    border-bottom-color: rgb(187, 177, 112);
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+}
+
+.title {
+    font-size: 90px;
+    -unity-font-family: "Horror Boat";
+    color: rgb(242, 230, 143);
+    -unity-text-align: upper-center;
+    margin-bottom: 0;
+    -unity-font-definition: resource('Fonts/Horror_Boat');
+}
+
+.input-wrapper {
+    flex-direction: row;
+    align-items: center;
+    background-color: rgb(181, 175, 175);
+    border-radius: 5px;
+    height: 45px;
+    padding: 0 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.email-input-wrapper {
+    margin-bottom: 20px;
+    margin-right: 20px;
+    margin-left: 10px;
+    padding-right: 10px;
+    padding-left: 10px;
+    align-items: center;
+    margin-top: 50px;
+    height: 60px;
+}
+
+.password-input-wrapper {
+    flex-grow: 1;
+    margin-left: 0;
+    margin-top: 0;
+    height: 70px;
+}
+
+.password-container {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-right: 60px;
+    margin-left: 60px;
+    margin-top: 40px;
+}
+
+.separator {
+    -unity-font-family: "Super Rugged";
+    color: rgb(242, 230, 143);
+    -unity-text-align: upper-center;
+    margin: 20px 0;
+    font-size: 30px;
+    -unity-font-definition: resource('Fonts/Super_Rugged');
+}
+
+.input-icon {
+    width: 35px;
+    height: 35px;
+    -unity-background-scale-mode: scale-to-fit;
+    margin-right: 10px;
+    -unity-background-tint-color: rgb(21, 17, 17);
+}
+
+#username-icon {
+    -unity-background-image: url('Images/person_icon.png');
+    background-image: resource('Images/person_icon');
+}
+
+#password-icon {
+    -unity-background-image: url('Images/lock_icon.png');
+    background-image: resource('Images/lock_icon');
+}
+
+.input-field {
+    flex-grow: 1;
+    height: 40px;
+    -unity-font-definition: resource('Fonts/Super_Rugged');
+    -unity-text-align: upper-left;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    font-size: 35px;
+}
+
+.input-field .unity-base-field__input {
+    background-color: transparent;
+    border-width: 0;
+    color: rgb(21, 17, 17);
+    padding: 8px 0;
+    -unity-font-family: "Super Rugged";
+    font-size: 28px;
+    -unity-text-align: upper-center;
+    position: relative;
+    -unity-slice-type: tiled;
+}
+
+.input-field .unity-placeholder {
+    color: rgb(51, 51, 51);
+    font-size: 35px;
+}
+
+.google-button {
+    -unity-font-family: "Super Rugged";
+    background-color: rgb(217, 217, 217);
+    color: rgb(21, 17, 17);
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 30px;
+    height: 55px;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+    border-bottom-left-radius: 30px;
+    -unity-font-definition: url("project://database/Library/unity%20default%20resources?fileID=10102&guid=0000000000000000e000000000000000&type=0#LegacyRuntime");
+    -unity-font-style: normal;
+    margin-right: 50px;
+    margin-left: 50px;
+}
+
+.google-logo {
+    width: 50px;
+    height: 50px;
+    -unity-background-image: url('Images/Google_Logo.png');
+    -unity-background-scale-mode: scale-to-fit;
+    margin-right: 20px;
+    background-image: resource('Images/Google_Logo');
+}
+
+.bottom-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 25px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    row-gap: 15px;
+}
+
+.remember-me-toggle {
+    -unity-font-family: "Super Rugged";
+    color: rgb(242, 230, 143);
+    font-size: 35px;
+    -unity-font-definition: resource('Fonts/Super_Rugged');
+    margin-left: 80px;
+    -unity-text-auto-size: none;
+}
+
+.remember-me-toggle .unity-toggle__checkmark {
+    background-color: rgb(28, 17, 24);
+    border-color: rgb(242, 230, 143);
+    border-radius: 3px;
+    width: 30px;
+    height: 30px;
+    margin-right: 8px;
+    margin-left: 50px;
+}
+
+.remember-me-toggle:checked .unity-toggle__checkmark {
+    background-color: rgb(242, 230, 143);
+}
+
+.login-button {
+    -unity-font-family: "Super Rugged";
+    background-color: rgb(242, 230, 143);
+    color: rgb(21, 17, 17);
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 40px;
+    -unity-text-align: upper-center;
+    -unity-font-definition: resource('Fonts/Super_Rugged');
+    width: 228px;
+    height: 60px;
+    margin-top: 50px;
+    margin-right: 80px;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.login-button:hover {
+    background-color: rgb(217, 202, 128);
+}
+
+.signup-container {
+    -unity-font-family: "Super Rugged";
+    color: rgb(242, 230, 143);
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 20px;
+    font-size: 35px;
+    -unity-font-definition: resource('Fonts/Super_Rugged');
+    flex-wrap: wrap;
+}
+
+.signup-link {
+    -unity-font-family: "Super Rugged";
+    background-color: transparent;
+    border-width: 0;
+    color: rgb(242, 230, 143);
+    padding: 0;
+    margin-left: 15px;
+    font-size: 35px;
+    -unity-text-decoration: underline;
+}
+
+.signup-link:hover {
+    color: white;
+}
+
+.modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+    justify-content: center;
+    align-items: center;
+    display: none;
+}
+
+.modal-panel {
+    width: 60%;
+    max-width: 800px;
+    height: auto;
+    padding: 40px;
+    align-items: stretch;
+    position: relative;
+}
+
+.status-message {
+    color: rgb(255, 100, 100);
+    -unity-font-family: "Super Rugged";
+    -unity-font-definition: resource('Fonts/Super_Rugged');
+    font-size: 24px;
+    -unity-text-align: upper-center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    min-height: 30px;
+}
+
+.modal-submit-button {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 400px;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 45px;
+    height: 45px;
+    background-color: transparent;
+    border-width: 0;
+    color: rgb(255, 255, 255);
+    font-size: 30px;
+    -unity-font-family: "Super Rugged";
+    -unity-text-align: center;
+    padding: 0;
+    margin: 0;
+    -unity-font-definition: resource('Fonts/Font Awesome 7 Free-Solid-900');
+    margin-bottom: 0;
+    margin-top: 10px;
+}
+
+.close-button:hover {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.1);
+}
