@@ -1,0 +1,76 @@
+# BUG HUNT: PROJECT CHANGELOG & MANIFEST
+# Project: Bug Hunt - Debug or Die Trying
+# Maintainer: AMARO - FULL STACK DEVELOPER
+
+===================================================================
+[2026-01-14] - ARCHITECTURE & FOUNDATION UPDATE
+===================================================================
+
+### 1. NEW FILES ADDED
+-------------------------------------------------------------------
+(+) /Scripts/Architecture/DataBlueprint.cs
+    - PURPOSE: The "Contract" between Frontend and Backend.
+    - DETAILS: Contains the C# classes for PlayerStats, VirusConfig, and Economy.
+    - NOTE: Do not attach this to a GameObject yet; it is a reference library. REF ONLY
+
+(+) /Database/FirestoreStructure.json
+    - PURPOSE: Visual guide for the NoSQL database setup.
+    - DETAILS: Defines the 'users', 'game_config', and 'transactions' collections.
+
+(+) /Scripts/Utils/AspectRatioEnforcer.cs
+    - PURPOSE: Forces the game window to 16:9 to prevent UI breaking on ultrawide monitors.
+    - LOGIC: Adds letterboxing (black bars) if the screen doesn't match target aspect.
+
+(+) /Scripts/Managers/GameDataManager.cs
+    - PURPOSE: Singleton to hold user session data across scenes.
+    - UPDATE: Prepared for Google SSO integration and future DataBlueprint merging.
+
+
+### 2. DEVELOPER RESPONSIBILITY MANIFEST
+(Who should look at what?)
+-------------------------------------------------------------------
+
+>>> FRONTEND DEVELOPER (Unity / UI / Gameplay)
+    [LOOK AT THESE FILES]:
+    1. Scripts/Architecture/DataBlueprint.cs
+       - Why: Use the variable names here (e.g., 'coins', 'gems') when binding your UI text. 
+       - > PS YOU CAN ALSO CHANGE THE VARIABLE NAMES IF NEEDED.
+       - Why: Use 'VirusConfig' to set up the Enemy AI variables (Speed, Aggression).
+    
+    2. Scripts/Utils/AspectRatioEnforcer.cs
+       - Why: Ensure this script is in the very first scene (Splash/Login) to fix the camera bounds.
+
+    3. Scripts/Managers/GameDataManager.cs
+       - Why: Use 'GameDataManager.Instance.CurrentUser' to check if the player is logged in.
+
+>>> BACKEND DEVELOPER (Firebase / API / Database)
+    [LOOK AT THESE FILES]:
+    1. Database/FirestoreStructure.json
+       - Why: Create your Firestore Collections exactly as shown here.
+       - Why: Set up the 'game_config' collection immediately so we can tweak game difficulty remotely.
+
+    2. Scripts/Architecture/DataBlueprint.cs
+       - Why: Your Cloud Functions must return JSON that matches these C# classes. 
+       - Why: The 'TransactionRequest' class shows what data Unity will send you for Maya/PayPal.
+
+    3. Documents/ERD_Diagram.mermaid
+       - Why: Understand the relational logic between Users, Inventory, and Transactions.
+
+
+### 3. CHANGELOG HISTORY
+-------------------------------------------------------------------
+[v0.3] - Data Schema Definition
+- Defined 'PlayerProfile' to track bugs fixed and levels completed.
+- Defined 'VirusConfig' to handle adaptive aggression (speed increases over time).
+- Defined 'TransactionRequest' to support future Maya/PayPal integration.
+- Established Firestore "Collection-Document" structure.
+
+[v0.2] - Core Systems
+- Implemented Singleton Pattern in GameDataManager.
+- Added Google SSO Token handling (GoogleTokenResponse).
+- Added 'ClearData' method for secure logout handling.
+
+[v0.1] - Project Initialization
+- Initial Unity Project Setup.
+- Imported Firebase Auth SDK.
+- Created standard folder structure (Scripts, Scenes, Prefabs).

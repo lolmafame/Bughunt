@@ -1,0 +1,74 @@
+/* FIRESTORE DATABASE STRUCTURE GUIDE
+   ----------------------------------
+   This is how the NoSQL database should be organized in the Firebase Console.
+   
+   ROOT COLLECTIONS:
+   1. users
+   2. game_config
+   3. products
+   4. transactions
+*/
+
+{
+  "collection: users": {
+    "document: {uid}": {
+      "username": "CodeMaster99",
+      "email": "dev@bughunt.com",
+      "created_at": "2025-10-30T10:00:00Z",
+      
+      "stats": {
+        "max_level": 5,
+        "total_bugs_fixed": 142,
+        "play_time_hours": 12.5
+      },
+      
+      "wallet": {
+        "coins": 1500,
+        "gems": 50
+      },
+      
+      "inventory": [
+         "skin_default",
+         "skin_neon_hoodie"
+      ],
+      
+      "equipped_items": {
+        "body": "skin_neon_hoodie"
+      }
+    }
+  },
+
+  "collection: game_config": {
+    /* REMOTE CONFIG
+       We store virus stats here. If the game is too hard, 
+       we lower 'base_speed' here, and ALL players get the update instantly.
+    */
+    "document: global_settings": {
+      "virus_base_speed": 3.5,
+      "virus_growth_rate": 0.05,
+      "gold_per_bug_fixed": 10
+    }
+  },
+
+  "collection: products": {
+    "document: skin_neon_hoodie": {
+      "display_name": "Neon Hoodie",
+      "price_php": 50.00,
+      "currency": "PHP",
+      "texture_id": "tex_neon_01"
+    }
+  },
+
+  "collection: transactions": {
+    /* AUDIT LOG
+       Every time someone buys something, we log it here.
+    */
+    "document: {auto_generated_id}": {
+      "user_id": "{uid}",
+      "item_id": "skin_neon_hoodie",
+      "provider": "MAYA",
+      "status": "SUCCESS",
+      "timestamp": "2025-11-01T12:00:00Z"
+    }
+  }
+}

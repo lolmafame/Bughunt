@@ -1,0 +1,41 @@
+erDiagram
+    USERS ||--|| PLAYER_STATS : "has"
+    USERS ||--|{ INVENTORY : "owns"
+    USERS ||--|{ TRANSACTIONS : "makes"
+    USERS ||--|{ LEVEL_PROGRESS : "completes"
+    
+    USERS {
+        string firebase_uid PK "From GameDataManager"
+        string email
+        string username
+        datetime created_at
+    }
+
+    PLAYER_STATS {
+        string uid FK
+        int total_bugs_fixed "For scoring"
+        float speed_multiplier "Upgradable stat?"
+        int currency_balance "For skins"
+    }
+
+    INVENTORY {
+        int item_id PK
+        string uid FK
+        string item_type "Skin, Badge"
+        bool is_equipped
+    }
+
+    NPC_VIRUS_DATA {
+        int level_id PK
+        float base_aggression "Starting speed"
+        float growth_rate "How fast it adapts"
+        float max_speed
+    }
+    
+    TRANSACTIONS {
+        string txn_id PK
+        string uid FK
+        string provider "Maya/Paypal"
+        float amount
+        string status "Pending, Success"
+    }
