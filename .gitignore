@@ -97,3 +97,9 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+# Firebase & Large Packages
+**/Assets/Firebase/**
+**/Assets/Editor Default Resources/Firebase/**
+# I5 & MapMagic Assets
+**/Assets/i5 Toolkit for Unity/**
