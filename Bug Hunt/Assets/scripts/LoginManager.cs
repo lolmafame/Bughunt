@@ -16,6 +16,11 @@ public class LoginManager : MonoBehaviour
     [SerializeField] private TMP_InputField passwordInput;
     [SerializeField] private panelExit exitAnimationScript;
 
+    [Header("Registration Dependencies")]
+    [SerializeField] private RegManager regManager;
+    [SerializeField] private GameObject regAnimObject; // The object with regAnim.cs
+    [SerializeField] private GameObject registrationRoot; // Parent container for registration UI
+
     private FirebaseAuth auth;
     private FirebaseFirestore db;
 
@@ -116,12 +121,7 @@ public class LoginManager : MonoBehaviour
 
         try
         {
-            // This is the danger zone. 
-            // If the Secret is wrong, or Unity pauses, it crashes HERE.
             await oidc.OpenLoginPageAsync();
-
-            Debug.Log(">>> GOOGLE: Browser Task Finished!");
-
             Task completedTask = await Task.WhenAny(loginTcs.Task, Task.Delay(TimeSpan.FromSeconds(120)));
             if (completedTask != loginTcs.Task)
             {
@@ -131,7 +131,6 @@ public class LoginManager : MonoBehaviour
         }
         catch (System.Exception e)
         {
-            // THIS IS WHAT WE NEED TO SEE
             Debug.LogError(">>> CRITICAL CRASH CAUGHT: " + e.Message);
             return;
         }
@@ -140,15 +139,41 @@ public class LoginManager : MonoBehaviour
             oidc.LoginCompleted -= loginHandler;
         }
 
-        // If we survived the crash, continue...
         if (oidc.IsLoggedIn)
         {
             Debug.Log(">>> SUCCESS: Token received. Google SSO is working.");
-            CheckGoogleUserDatabase(null);
-        }
-        else
-        {
-            Debug.LogError(">>> FAILURE: Not Logged In. (Secret Mismatch or User Cancelled?)");
+
+            var googleProvider = oidc.OidcProvider as GoogleOidcProvider;
+            string idToken = googleProvider != null ? googleProvider.IdToken : null;
+            Debug.Log(">>> GOOGLE: AccessToken length=" + (string.IsNullOrEmpty(oidc.AccessToken) ? 0 : oidc.AccessToken.Length)
+                + ", IdToken length=" + (string.IsNullOrEmpty(idToken) ? 0 : idToken.Length));
+
+            if (string.IsNullOrEmpty(oidc.AccessToken) && string.IsNullOrEmpty(idToken))
+            {
+                Debug.LogError(">>> FIREBASE ERROR: No token available for Firebase credential.");
+                return;
+            }
+
+            Debug.Log(">>> GOOGLE: Exchanging token with Firebase...");
+
+            Credential credential = GoogleAuthProvider.GetCredential(idToken, oidc.AccessToken);
+            Task<FirebaseUser> signInTask = auth.SignInWithCredentialAsync(credential);
+            Task completedSignIn = await Task.WhenAny(signInTask, Task.Delay(TimeSpan.FromSeconds(30)));
+            if (completedSignIn != signInTask)
+            {
+                Debug.LogError(">>> FIREBASE ERROR: Sign-in timed out.");
+                return;
+            }
+
+            if (signInTask.IsFaulted || signInTask.IsCanceled)
+            {
+                Debug.LogError(">>> FIREBASE ERROR: " + signInTask.Exception);
+                return;
+            }
+
+            FirebaseUser firebaseUser = signInTask.Result;
+            Debug.Log(">>> FIREBASE: Sign-in complete. UID=" + firebaseUser.UserId + ", Email=" + firebaseUser.Email);
+            CheckGoogleUserDatabase(firebaseUser);
         }
     }
 
@@ -156,21 +181,27 @@ public class LoginManager : MonoBehaviour
     {
         if (user == null)
         {
-            Debug.LogWarning(">>> NOTE: Firebase user lookup is skipped for now. Coming soon.");
-            TriggerSuccessAnimation();
+            Debug.LogError(">>> No Firebase User found. Ensure Google Credential was exchanged successfully.");
             return;
         }
 
+        Debug.Log(">>> GOOGLE: Checking user in Firestore. UID=" + user.UserId + ", Email=" + user.Email);
+
         DocumentReference userDoc = db.Collection("users").Document(user.UserId);
 
-        // FIX 1: Change parameter to base 'Task'
-        userDoc.GetSnapshotAsync().ContinueWithOnMainThread((Task task) =>
+        userDoc.GetSnapshotAsync().ContinueWithOnMainThread((Task<DocumentSnapshot> task) =>
         {
-            // FIX 2: Cast to 'Task<DocumentSnapshot>'
-            DocumentSnapshot snapshot = ((Task<DocumentSnapshot>)task).Result;
+            if (task.IsFaulted)
+            {
+                Debug.LogError("Firestore Error: " + task.Exception);
+                return;
+            }
+
+            DocumentSnapshot snapshot = task.Result;
 
             if (snapshot.Exists)
             {
+                // EXISTING USER: Just update login time and enter
                 Debug.Log("Existing Google User found. Logging in...");
                 userDoc.UpdateAsync(new Dictionary<string, object> {
                     { "lastLogin", FieldValue.ServerTimestamp }
@@ -179,10 +210,47 @@ public class LoginManager : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("Success! New Google User detected.");
-                Debug.LogWarning("DEBUG: Not integrated yet. Soon! but it works.");
+                // NEW USER: Trigger Registration Flow
+                Debug.Log("New Google User detected. Triggering Registration...");
 
-                TriggerSuccessAnimation();
+                if (registrationRoot != null)
+                {
+                    if (!registrationRoot.activeSelf)
+                    {
+                        registrationRoot.SetActive(true);
+                        Debug.Log(">>> REG: registrationRoot activated: " + registrationRoot.name);
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning(">>> REG: registrationRoot is not assigned in LoginManager.");
+                }
+
+                // 1. Activate the Animation Object
+                if (regAnimObject != null)
+                {
+                    if (regAnimObject.activeSelf)
+                    {
+                        regAnimObject.SetActive(false);
+                    }
+                    regAnimObject.SetActive(true);
+                    Debug.Log(">>> REG: regAnimObject activated: " + regAnimObject.name);
+                }
+                else
+                {
+                    Debug.LogError(">>> REG: regAnimObject is not assigned in LoginManager.");
+                }
+
+                // 2. Initialize RegManager with this specific user
+                if (regManager != null)
+                {
+                    regManager.InitializeForGoogleUser(user);
+                    Debug.Log(">>> REG: RegManager initialized for Google user.");
+                }
+                else
+                {
+                    Debug.LogError(">>> REG: RegManager is not assigned in LoginManager.");
+                }
             }
         });
     }
@@ -217,6 +285,11 @@ public class LoginManager : MonoBehaviour
             Debug.Log("Email Login Successful: " + user.UserId);
             TriggerSuccessAnimation();
         });
+    }
+
+    public void FinalizeLogin()
+    {
+        TriggerSuccessAnimation();
     }
 
     private void TriggerSuccessAnimation()

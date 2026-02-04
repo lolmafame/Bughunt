@@ -4037,7 +4037,7 @@ GameObject:
   - component: {fileID: 196409842}
   - component: {fileID: 196409840}
   m_Layer: 5
-  m_Name: passfield
+  m_Name: passfield_reg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9688,6 +9688,9 @@ MonoBehaviour:
   emailInput: {fileID: 1659540797}
   passwordInput: {fileID: 1204123667}
   exitAnimationScript: {fileID: 861002979}
+  regManager: {fileID: 1935174050}
+  regAnimObject: {fileID: 1270835471}
+  registrationRoot: {fileID: 1058828062}
 --- !u!114 &469937966
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12173,7 +12176,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &576149348
 Transform:
   m_ObjectHideFlags: 0
@@ -13374,7 +13377,7 @@ GameObject:
   - component: {fileID: 621616809}
   - component: {fileID: 621616808}
   m_Layer: 5
-  m_Name: confirmpassfield
+  m_Name: confirmpassfield_reg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17119,7 +17122,7 @@ GameObject:
   - component: {fileID: 730792742}
   - component: {fileID: 730792741}
   m_Layer: 5
-  m_Name: loginBttn
+  m_Name: loginBttn_reg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17189,10 +17192,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 11500000, guid: 811d21d4539f45b4fa70e9bda76d99b3, type: 3}
-        m_TargetAssemblyTypeName: UnityEditor.MonoScript, UnityEditor.CoreModule
-        m_MethodName: set_name
-        m_Mode: 5
+      - m_Target: {fileID: 1935174050}
+        m_TargetAssemblyTypeName: RegManager, Assembly-CSharp
+        m_MethodName: OnConfirmClicked
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -18408,7 +18411,7 @@ GameObject:
   - component: {fileID: 795224333}
   - component: {fileID: 795224332}
   m_Layer: 5
-  m_Name: username
+  m_Name: username_reg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -26141,6 +26144,7 @@ RectTransform:
   m_Children:
   - {fileID: 1270835472}
   - {fileID: 1554104805}
+  - {fileID: 1935174049}
   m_Father: {fileID: 460468380}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -36199,7 +36203,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Process didn't suceed.
+  m_text: Process didn't suceed. Please Try Again!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 64bf0bb118494a04f96eeb85198e63ff, type: 2}
   m_sharedMaterial: {fileID: 4903309723666136406, guid: 64bf0bb118494a04f96eeb85198e63ff, type: 2}
@@ -36506,7 +36510,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1270835472
 RectTransform:
   m_ObjectHideFlags: 0
@@ -49461,22 +49465,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1194271856}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2125310699}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 1935174050}
+        m_TargetAssemblyTypeName: RegManager, Assembly-CSharp
+        m_MethodName: OnProcessFailedPopupClosed
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -55672,6 +55664,60 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1934003579}
   m_CullTransparentMesh: 1
+--- !u!1 &1935174048
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1935174049}
+  - component: {fileID: 1935174050}
+  m_Layer: 5
+  m_Name: RegManagerObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1935174049
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1935174048}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1058828063}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1935174050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1935174048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 981e678c539b2b547bb65e2b8e2b3af3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RegManager
+  usernameField: {fileID: 795224332}
+  passwordField: {fileID: 196409840}
+  confirmPasswordField: {fileID: 621616808}
+  regCompletePopup: {fileID: 405531239}
+  processFailedPopup: {fileID: 1194271856}
+  loginManager: {fileID: 469937965}
 --- !u!1 &1940295382
 GameObject:
   m_ObjectHideFlags: 0
@@ -58501,22 +58547,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 405531239}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2125310699}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 1935174050}
+        m_TargetAssemblyTypeName: RegManager, Assembly-CSharp
+        m_MethodName: OnRegCompletePopupConfirmed
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -61205,7 +61239,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2125310700
 RectTransform:
   m_ObjectHideFlags: 0

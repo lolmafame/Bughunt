@@ -12,6 +12,7 @@ public class regAnim : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("regAnim Start. textObject=" + (textObject != null) + ", regObject=" + (regObject != null));
         textObject.SetActive(false);
         StartCoroutine(AnimationSequence());
     }
@@ -32,5 +33,6 @@ public class regAnim : MonoBehaviour
 
         animator.speed = 0f;
         regObject.SetActive(true);
+        Debug.Log("regAnim completed. regObject activated: " + (regObject != null ? regObject.name : "null"));
     }
 }
