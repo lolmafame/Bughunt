@@ -7,7 +7,7 @@ public class ResentButtonTimer : MonoBehaviour
 {
     [Header("UI")]
     public Button resendButton;
-    public TextMeshProUGUI buttonText; // Assign directly in inspector
+    public TextMeshProUGUI buttonText; 
     public string defaultButtonText = "Resend OTP";
 
     [Header("Cooldown Settings")]
@@ -75,7 +75,7 @@ public class ResentButtonTimer : MonoBehaviour
 
         while (timer > 0)
         {
-            buttonText.text = $"Resend in {Mathf.Ceil(timer)}s"; // Keep your existing display function
+            buttonText.text = $"Resend in {Mathf.Ceil(timer)}s"; 
             yield return new WaitForSeconds(1f);
             timer -= 1f;
         }
