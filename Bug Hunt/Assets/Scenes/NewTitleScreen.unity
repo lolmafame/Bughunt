@@ -9517,7 +9517,6 @@ RectTransform:
   - {fileID: 861002978}
   - {fileID: 469937964}
   - {fileID: 1058828063}
-  - {fileID: 576149348}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -12186,12 +12185,12 @@ Transform:
   m_GameObject: {fileID: 576149347}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -443.38, y: -165, z: -811.6795}
+  m_LocalPosition: {x: 516.62, y: 375, z: -811.6795}
   m_LocalScale: {x: 0.58516, y: 0.40099, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2125310700}
-  m_Father: {fileID: 460468380}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &577256963
 GameObject:
@@ -39284,7 +39283,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1369766102
 Transform:
   m_ObjectHideFlags: 0
@@ -55717,7 +55716,10 @@ MonoBehaviour:
   confirmPasswordField: {fileID: 621616808}
   regCompletePopup: {fileID: 405531239}
   processFailedPopup: {fileID: 1194271856}
+  popupContainer: {fileID: 576149347}
   loginManager: {fileID: 469937965}
+  regAnimController: {fileID: 1270835474}
+  registrationPanel: {fileID: 1058828062}
 --- !u!1 &1940295382
 GameObject:
   m_ObjectHideFlags: 0
@@ -61991,4 +61993,5 @@ SceneRoots:
   - {fileID: 1278361138}
   - {fileID: 1206411531}
   - {fileID: 460468380}
+  - {fileID: 576149348}
   - {fileID: 1369766102}

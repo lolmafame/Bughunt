@@ -23,6 +23,8 @@ public class LoginManager : MonoBehaviour
 
     private FirebaseAuth auth;
     private FirebaseFirestore db;
+    private string googleIdToken;
+    private string googleAccessToken;
 
     void Start()
     {
@@ -145,6 +147,8 @@ public class LoginManager : MonoBehaviour
 
             var googleProvider = oidc.OidcProvider as GoogleOidcProvider;
             string idToken = googleProvider != null ? googleProvider.IdToken : null;
+            googleIdToken = idToken;
+            googleAccessToken = oidc.AccessToken;
             Debug.Log(">>> GOOGLE: AccessToken length=" + (string.IsNullOrEmpty(oidc.AccessToken) ? 0 : oidc.AccessToken.Length)
                 + ", IdToken length=" + (string.IsNullOrEmpty(idToken) ? 0 : idToken.Length));
 
@@ -244,7 +248,7 @@ public class LoginManager : MonoBehaviour
                 // 2. Initialize RegManager with this specific user
                 if (regManager != null)
                 {
-                    regManager.InitializeForGoogleUser(user);
+                    regManager.InitializeForGoogleUser(user, googleIdToken, googleAccessToken);
                     Debug.Log(">>> REG: RegManager initialized for Google user.");
                 }
                 else

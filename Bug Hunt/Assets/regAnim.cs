@@ -32,7 +32,12 @@ public class regAnim : MonoBehaviour
         yield return new WaitForSeconds(animationDuration);
 
         animator.speed = 0f;
-        regObject.SetActive(true);
+        if (regObject != null) regObject.SetActive(true);
         Debug.Log("regAnim completed. regObject activated: " + (regObject != null ? regObject.name : "null"));
+    }
+
+    public void ClosePanels()
+    {
+        if (regObject != null) regObject.SetActive(false);
     }
 }

@@ -3,6 +3,8 @@ using TMPro;
 using Firebase.Auth;
 using Firebase.Firestore;
 using Firebase.Extensions;
+using Firebase;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine.UI;
@@ -17,26 +19,35 @@ public class RegManager : MonoBehaviour
     [Header("Popups")]
     [SerializeField] private GameObject regCompletePopup;
     [SerializeField] private GameObject processFailedPopup;
+    [SerializeField] private GameObject popupContainer;
     // Add other popups here if needed (e.g. noRecordWarning)
 
     [Header("Dependencies")]
     [SerializeField] private LoginManager loginManager;
+    [SerializeField] private regAnim regAnimController;
+    [SerializeField] private GameObject registrationPanel;
 
     private FirebaseFirestore db;
+    private FirebaseAuth auth;
     private FirebaseUser googleUser; // Holds the user if coming from Google
+    private string googleIdToken;
+    private string googleAccessToken;
     private bool isGoogleFlow = false;
 
     void Start()
     {
         db = FirebaseFirestore.DefaultInstance;
+        auth = FirebaseAuth.DefaultInstance;
         CloseAllPopups();
     }
 
     // Called by LoginManager when a new Google user is detected
-    public void InitializeForGoogleUser(FirebaseUser user)
+    public void InitializeForGoogleUser(FirebaseUser user, string idToken, string accessToken)
     {
         googleUser = user;
         isGoogleFlow = true;
+        googleIdToken = idToken;
+        googleAccessToken = accessToken;
 
         if (!gameObject.activeSelf)
         {
@@ -44,9 +55,9 @@ public class RegManager : MonoBehaviour
             Debug.Log("RegManager activated its GameObject.");
         }
 
-        // Visual setup: Google users don't need passwords
-        if (passwordField) passwordField.interactable = false;
-        if (confirmPasswordField) confirmPasswordField.interactable = false;
+        // Google users will link an email/password credential here
+        if (passwordField) passwordField.interactable = true;
+        if (confirmPasswordField) confirmPasswordField.interactable = true;
 
         Debug.Log("Registration initialized for Google User: " + user.Email);
     }
@@ -71,6 +82,36 @@ public class RegManager : MonoBehaviour
             if (passwordField.text != confirmPasswordField.text)
             {
                 Debug.LogError("Passwords do not match");
+                ShowProcessFailed();
+                return;
+            }
+
+            if (!IsPasswordStrong(passwordField.text))
+            {
+                Debug.LogError("Password must include at least one uppercase letter and one special character.");
+                ShowProcessFailed();
+                return;
+            }
+        }
+        else
+        {
+            if (string.IsNullOrEmpty(passwordField.text) || string.IsNullOrEmpty(confirmPasswordField.text))
+            {
+                Debug.LogError("Password fields are required for Google linking");
+                ShowProcessFailed();
+                return;
+            }
+
+            if (passwordField.text != confirmPasswordField.text)
+            {
+                Debug.LogError("Passwords do not match");
+                ShowProcessFailed();
+                return;
+            }
+
+            if (!IsPasswordStrong(passwordField.text))
+            {
+                Debug.LogError("Password must include at least one uppercase letter and one special character.");
                 ShowProcessFailed();
                 return;
             }
@@ -100,7 +141,7 @@ public class RegManager : MonoBehaviour
                 if (isGoogleFlow)
                 {
                     Debug.Log("Username available. Saving Google user...");
-                    SaveGoogleUserToFirestore(username);
+                    LinkGoogleUserWithEmailPassword(username, passwordField.text);
                 }
                 else
                 {
@@ -157,18 +198,95 @@ public class RegManager : MonoBehaviour
         });
     }
 
+    private void LinkGoogleUserWithEmailPassword(string username, string password)
+    {
+        if (googleUser == null)
+        {
+            Debug.LogError("Google user not set for registration.");
+            ShowProcessFailed();
+            return;
+        }
+
+        googleUser.UpdatePasswordAsync(password).ContinueWithOnMainThread(task =>
+        {
+            if (task.IsFaulted || task.IsCanceled)
+            {
+                Debug.LogError("Failed to set password for Google user: " + task.Exception);
+                LogAuthExceptionDetails(task.Exception);
+                ShowProcessFailed();
+                return;
+            }
+
+            Debug.Log("Password set for Google user. Email/password sign-in should work.");
+            SaveGoogleUserToFirestore(username);
+        });
+    }
+
+    private void LogAuthExceptionDetails(System.Exception exception)
+    {
+        AggregateException aggregate = exception as AggregateException;
+        if (aggregate == null)
+        {
+            Debug.LogWarning("Auth error (non-aggregate): " + exception.GetType().Name + ": " + exception.Message);
+            return;
+        }
+
+        foreach (System.Exception inner in aggregate.Flatten().InnerExceptions)
+        {
+            FirebaseException firebaseException = inner as FirebaseException;
+            if (firebaseException != null)
+            {
+                Debug.LogError("Firebase auth error code: " + firebaseException.ErrorCode + ", message: " + firebaseException.Message);
+                return;
+            }
+        }
+
+        Debug.LogWarning("Auth error (no FirebaseException found): " + aggregate.Flatten().Message);
+    }
+
+    private bool IsPasswordStrong(string password)
+    {
+        bool hasUpper = false;
+        bool hasSpecial = false;
+
+        foreach (char c in password)
+        {
+            if (char.IsUpper(c))
+            {
+                hasUpper = true;
+            }
+            else if (!char.IsLetterOrDigit(c))
+            {
+                hasSpecial = true;
+            }
+
+            if (hasUpper && hasSpecial)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     // ==========================================
     // POPUP HANDLING
     // ==========================================
 
     private void ShowRegComplete()
     {
+        if (regAnimController != null)
+        {
+            regAnimController.ClosePanels();
+        }
+        if (popupContainer) popupContainer.SetActive(true);
         if (regCompletePopup) regCompletePopup.SetActive(true);
         Debug.Log("regcomplete popup shown.");
     }
 
     private void ShowProcessFailed()
     {
+        if (popupContainer) popupContainer.SetActive(true);
         if (processFailedPopup) processFailedPopup.SetActive(true);
         Debug.Log("processfailed popup shown.");
     }
@@ -177,14 +295,22 @@ public class RegManager : MonoBehaviour
     {
         if (regCompletePopup) regCompletePopup.SetActive(false);
         if (processFailedPopup) processFailedPopup.SetActive(false);
+        if (popupContainer) popupContainer.SetActive(false);
     }
 
     // Link this to the 'Confirm' button inside the 'regcomplete' popup
     public void OnRegCompletePopupConfirmed()
     {
         CloseAllPopups();
+        if (regAnimController != null)
+        {
+            regAnimController.ClosePanels();
+        }
+        if (registrationPanel != null)
+        {
+            registrationPanel.SetActive(false);
+        }
         Debug.Log("regcomplete confirm clicked. Finalizing login.");
-        // Trigger the final exit animation in LoginManager
         loginManager.FinalizeLogin();
     }
 
