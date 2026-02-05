@@ -148,9 +148,8 @@ public class LoginManager : MonoBehaviour
         {
             Debug.Log(">>> SUCCESS: Token received. Google SSO is working.");
 
-            var googleProvider = oidc.OidcProvider as GoogleOidcProvider;
-            string idToken = googleProvider != null ? googleProvider.IdToken : null;
-            googleIdToken = idToken;
+            string idToken = null;
+            googleIdToken = null;
             googleAccessToken = oidc.AccessToken;
             Debug.Log(">>> GOOGLE: AccessToken length=" + (string.IsNullOrEmpty(oidc.AccessToken) ? 0 : oidc.AccessToken.Length)
                 + ", IdToken length=" + (string.IsNullOrEmpty(idToken) ? 0 : idToken.Length));
@@ -163,7 +162,7 @@ public class LoginManager : MonoBehaviour
 
             Debug.Log(">>> GOOGLE: Exchanging token with Firebase...");
 
-            Credential credential = GoogleAuthProvider.GetCredential(idToken, oidc.AccessToken);
+            Credential credential = GoogleAuthProvider.GetCredential(null, oidc.AccessToken);
             Task<FirebaseUser> signInTask = auth.SignInWithCredentialAsync(credential);
             Task completedSignIn = await Task.WhenAny(signInTask, Task.Delay(TimeSpan.FromSeconds(30)));
             if (completedSignIn != signInTask)
