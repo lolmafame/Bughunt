@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using TMPro;
 using System.Collections;
 
@@ -15,10 +16,17 @@ public class ResentButtonTimer : MonoBehaviour
     public float cooldownIncrease = 30f;
     public float maxCooldown = 120f;
 
+    /*
     [Header("Attempt Settings")]
     public int maxAttempts = 5;
+    */
 
+    [Header("Callbacks")]
+    public UnityEvent onResendRequested;
+
+    /*
     private int currentAttempts = 0;
+    */
     private float currentCooldown;
     private bool isCooldownRunning = false;
     private Coroutine cooldownCoroutine;
@@ -41,6 +49,7 @@ public class ResentButtonTimer : MonoBehaviour
     {
         if (isCooldownRunning) return;
 
+        /*
         if (currentAttempts >= maxAttempts)
         {
             Debug.Log("Max OTP attempts reached.");
@@ -48,8 +57,16 @@ public class ResentButtonTimer : MonoBehaviour
         }
 
         Debug.Log("OTP Resent");
+        */
 
+        if (onResendRequested != null)
+        {
+            onResendRequested.Invoke();
+        }
+
+        /*
         currentAttempts++;
+        */
 
         // Increase cooldown for this next run
         currentCooldown = Mathf.Min(currentCooldown + cooldownIncrease, maxCooldown);
@@ -87,7 +104,9 @@ public class ResentButtonTimer : MonoBehaviour
 
     public void ResetAttempts()
     {
+        /*
         currentAttempts = 0;
+        */
         currentCooldown = baseCooldown;
         buttonText.text = defaultButtonText;
         resendButton.interactable = true;

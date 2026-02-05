@@ -21,6 +21,9 @@ public class LoginManager : MonoBehaviour
     [SerializeField] private GameObject regAnimObject; // The object with regAnim.cs
     [SerializeField] private GameObject registrationRoot; // Parent container for registration UI
 
+    [Header("Forgot Password Dependencies")]
+    [SerializeField] private GameObject forgotPasswordRoot;
+
     private FirebaseAuth auth;
     private FirebaseFirestore db;
     private string googleIdToken;
@@ -264,6 +267,12 @@ public class LoginManager : MonoBehaviour
     // ==========================================
     public void OnLoginButtonClicked()
     {
+        Debug.Log(">>> EMAIL LOGIN: Button clicked.");
+        if (forgotPasswordRoot != null && forgotPasswordRoot.activeSelf)
+        {
+            forgotPasswordRoot.SetActive(false);
+        }
+
         string email = emailInput.text;
         string pass = passwordInput.text;
 
@@ -273,21 +282,86 @@ public class LoginManager : MonoBehaviour
             return;
         }
 
-        // FIX 1: Change parameter to base 'Task'
+        if (email.Contains("@"))
+        {
+            Debug.Log(">>> EMAIL LOGIN: Signing in with email " + email);
+            SignInWithEmail(email, pass);
+        }
+        else
+        {
+            string username = email.Trim();
+            Debug.Log(">>> USERNAME LOGIN: Resolving username " + username);
+            ResolveUsernameAndLogin(username, pass);
+        }
+    }
+
+    private void SignInWithEmail(string email, string pass)
+    {
         auth.SignInWithEmailAndPasswordAsync(email, pass).ContinueWithOnMainThread((Task task) =>
         {
             if (task.IsFaulted || task.IsCanceled)
             {
-                Debug.LogError("Wrong Credentials or Login Error.");
+                Debug.LogError(">>> EMAIL LOGIN ERROR: " + task.Exception);
                 return;
             }
 
-            // FIX 2: Cast to 'Task<AuthResult>'
             AuthResult result = ((Task<AuthResult>)task).Result;
             FirebaseUser user = result.User;
 
-            Debug.Log("Email Login Successful: " + user.UserId);
+            Debug.Log(">>> EMAIL LOGIN: Successful. UID=" + user.UserId + ", Email=" + user.Email);
             TriggerSuccessAnimation();
+        });
+    }
+
+    private void ResolveUsernameAndLogin(string username, string pass)
+    {
+        DocumentReference usernameDoc = db.Collection("usernames").Document(username);
+        usernameDoc.GetSnapshotAsync().ContinueWithOnMainThread((Task<DocumentSnapshot> task) =>
+        {
+            if (task.IsFaulted || task.IsCanceled)
+            {
+                Debug.LogError(">>> USERNAME LOGIN ERROR: " + task.Exception);
+                return;
+            }
+
+            DocumentSnapshot snapshot = ((Task<DocumentSnapshot>)task).Result;
+            if (!snapshot.Exists)
+            {
+                Debug.LogError(">>> USERNAME LOGIN ERROR: Username not found.");
+                return;
+            }
+
+            if (!snapshot.TryGetValue("uid", out string uid) || string.IsNullOrEmpty(uid))
+            {
+                Debug.LogError(">>> USERNAME LOGIN ERROR: UID not found for username.");
+                return;
+            }
+
+            DocumentReference userDoc = db.Collection("users").Document(uid);
+            userDoc.GetSnapshotAsync().ContinueWithOnMainThread((Task<DocumentSnapshot> userTask) =>
+            {
+                if (userTask.IsFaulted || userTask.IsCanceled)
+                {
+                    Debug.LogError(">>> USERNAME LOGIN ERROR: " + userTask.Exception);
+                    return;
+                }
+
+                DocumentSnapshot userSnapshot = ((Task<DocumentSnapshot>)userTask).Result;
+                if (!userSnapshot.Exists)
+                {
+                    Debug.LogError(">>> USERNAME LOGIN ERROR: User record not found.");
+                    return;
+                }
+
+                if (!userSnapshot.TryGetValue("email", out string email) || string.IsNullOrEmpty(email))
+                {
+                    Debug.LogError(">>> USERNAME LOGIN ERROR: Email not found for UID.");
+                    return;
+                }
+
+                Debug.Log(">>> USERNAME LOGIN: Resolved email " + email);
+                SignInWithEmail(email, pass);
+            });
         });
     }
 
