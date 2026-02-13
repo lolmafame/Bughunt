@@ -452,6 +452,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &70823871
 MeshFilter:
@@ -969,6 +970,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &234912559
 MeshFilter:
@@ -1468,14 +1470,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 410087039}
   m_Enabled: 1
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 2
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 2
     m_Resolution: -1
@@ -2943,6 +2945,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &720478782
 MeshFilter:
@@ -3839,6 +3842,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &936213848
 MeshFilter:
@@ -4735,6 +4739,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1109761780
 MeshFilter:
@@ -8771,8 +8776,10 @@ MonoBehaviour:
   pausePanel: {fileID: 674937314}
   gameOverPanel: {fileID: 1885782866}
   completionPanel: {fileID: 961411823}
-  finalTimeText: {fileID: 1857985833}
-  terminalsCompletedText: {fileID: 528454523}
+  gameOverTimeText: {fileID: 0}
+  gameOverTerminalText: {fileID: 0}
+  completionTimeText: {fileID: 0}
+  completionTerminalText: {fileID: 0}
   gameTimer: {fileID: 1073012470}
 --- !u!4 &1785852811
 Transform:
@@ -9281,6 +9288,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1868399554
 MeshFilter:
