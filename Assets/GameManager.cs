@@ -70,8 +70,9 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0f;
 
         gameTimer.StopTimer();
-
         gameOverPanel.SetActive(true);
+        gameOverPanel.GetComponent<SpringPanel>().PlayDropBounce();
+
 
         float finalTime = gameTimer.GetFinalTime();
 
@@ -93,6 +94,7 @@ public class GameManager : MonoBehaviour
         gameTimer.StopTimer();
 
         completionPanel.SetActive(true);
+        completionPanel.GetComponent<SpringPanel>().PlayDropBounce();
 
         float finalTime = gameTimer.GetFinalTime();
 

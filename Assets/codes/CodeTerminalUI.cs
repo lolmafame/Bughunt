@@ -7,6 +7,8 @@ public class CodeTerminalUI : MonoBehaviour
 
     public GameObject codePanel;
     public InputField inputField;
+    public TransitionFlow transitionFlow;
+    public ProcessTransition processFlow;
 
     private Terminal currentTerminal;
     private bool isActive = false;
@@ -21,6 +23,7 @@ public class CodeTerminalUI : MonoBehaviour
     {
         currentTerminal = terminal;
         codePanel.SetActive(true);
+        transitionFlow.PlayTransition();
         inputField.text = "";
         isActive = true;
 
@@ -59,17 +62,25 @@ public class CodeTerminalUI : MonoBehaviour
     {
         if (currentTerminal == null) return;
 
-        // Example: correct code = "int x;"
         if (inputField.text == "int x;")
         {
-            currentTerminal.CompleteTerminal();
-            Close();
+            processFlow.PlaySuccess(() =>
+            {
+                currentTerminal.CompleteTerminal();
+                Close();
+            });
         }
         else
         {
-            Debug.Log("Wrong code! Try again.");
+            processFlow.PlayFail(() =>
+            {
+                codePanel.SetActive(true);
+            });
         }
     }
+
+
+
 
     void Update()
     {

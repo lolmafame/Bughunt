@@ -14,10 +14,10 @@ public class SceneSwitcher : MonoBehaviour
 
     IEnumerator LoadSceneRoutine(string sceneName)
     {
-        loadingPanel.SetActive(true); // show loading panel
+        loadingPanel.SetActive(true); 
 
-        yield return new WaitForSeconds(loadingTime); // wait 5 seconds
+        yield return new WaitForSeconds(loadingTime); 
 
-        SceneManager.LoadScene(sceneName); // load next scene
+        SceneManager.LoadScene(sceneName); 
     }
 }

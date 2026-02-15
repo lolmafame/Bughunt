@@ -1,31 +1,53 @@
-using System.Collections;
-using TMPro;
 using UnityEngine;
+using TMPro;
+using System.Collections;
 
 public class LoadingDots : MonoBehaviour
 {
-    public TMP_Text loadingText;   // Assign your text here
-    public float interval = 0.5f;  // Time between dot changes
+    public TMP_Text loadingText;
 
-    private int dotCount = 0;
+    [SerializeField]
+    private string baseText = "Please Wait"; 
 
-    void Start()
+    public float dotSpeed = 0.4f;
+
+    private Coroutine dotRoutine;
+
+    void OnEnable()
     {
-        StartCoroutine(AnimateLoading());
+        dotRoutine = StartCoroutine(AnimateDots());
     }
 
-    IEnumerator AnimateLoading()
+    void OnDisable()
     {
+        if (dotRoutine != null)
+            StopCoroutine(dotRoutine);
+    }
+
+    public void SetBaseText(string newText)
+    {
+        baseText = newText;
+    }
+
+    public void StopDots()
+    {
+        StopAllCoroutines();
+        loadingText.text = baseText;
+    }
+
+    IEnumerator AnimateDots()
+    {
+        int dotCount = 0;
+
         while (true)
         {
-            dotCount++;
+            loadingText.text = baseText + new string('.', dotCount);
 
+            dotCount++;
             if (dotCount > 3)
                 dotCount = 0;
 
-            loadingText.text = "Loading" + new string('.', dotCount);
-
-            yield return new WaitForSeconds(interval);
+            yield return new WaitForSecondsRealtime(dotSpeed);
         }
     }
 }
