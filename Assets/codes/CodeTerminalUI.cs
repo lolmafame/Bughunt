@@ -26,13 +26,14 @@ public class CodeTerminalUI : MonoBehaviour
         transitionFlow.PlayTransition();
         inputField.text = "";
         isActive = true;
+        GameManager.Instance.SetInputLocked(true);
 
         ThirdPersonMovement playerMove =
             GameObject.FindGameObjectWithTag("Player")
             .GetComponent<ThirdPersonMovement>();
 
         playerMove.enabled = false;
-       
+
         // Tell spider where you are
         SpiderAI spider = FindObjectOfType<SpiderAI>();
         if (spider != null)
@@ -50,6 +51,8 @@ public class CodeTerminalUI : MonoBehaviour
         // Unlock player movement
         ThirdPersonMovement playerMove = GameObject.FindGameObjectWithTag("Player").GetComponent<ThirdPersonMovement>();
         playerMove.enabled = true;
+        GameManager.Instance.SetInputLocked(false);
+
 
         // Stop spider investigation
         SpiderAI spider = FindObjectOfType<SpiderAI>();
@@ -84,9 +87,18 @@ public class CodeTerminalUI : MonoBehaviour
 
     void Update()
     {
-        if (isActive && Input.GetKeyDown(KeyCode.Escape))
+        if (!isActive) return;
+
+        // TAB closes terminal
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
             Close();
         }
     }
+
+    public bool IsActive()
+    {
+        return isActive;
+    }
 }
+

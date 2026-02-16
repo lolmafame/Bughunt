@@ -35,12 +35,20 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        // Toggle pause with Escape
+        // ESC should ALWAYS work
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (!isPaused) PauseGame();
-            else ResumeGame();
+            if (!isPaused)
+                PauseGame();
+            else
+                ResumeGame();
+
+            return; // stop here so no double processing
         }
+
+        // Only block other inputs, NOT pause
+        if (inputLocked) return;
+
     }
 
     // ---------------- Pause ----------------
@@ -113,5 +121,12 @@ public class GameManager : MonoBehaviour
         int minutes = Mathf.FloorToInt(time / 60f);
         int seconds = Mathf.FloorToInt(time % 60f);
         return string.Format("{0:00}:{1:00}", minutes, seconds);
+    }
+
+    private bool inputLocked = false;
+
+    public void SetInputLocked(bool value)
+    {
+        inputLocked = value;
     }
 }
