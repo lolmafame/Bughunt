@@ -678,9 +678,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f19c7f94c794c5097d8bd11e39c750d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Motion: 2
+  TranslationDistance: {x: 5, y: 0, z: 0}
+  TranslationSpeed: 1
   SpinSpeed: 1.25
   RotationRange: 20
-  Motion: 2
 --- !u!108 &181840063
 Light:
   m_ObjectHideFlags: 0
@@ -1214,9 +1216,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f19c7f94c794c5097d8bd11e39c750d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Motion: 1
+  TranslationDistance: {x: 5, y: 0, z: 0}
+  TranslationSpeed: 1
   SpinSpeed: 1.5
   RotationRange: 25
-  Motion: 1
 --- !u!108 &1041320349
 Light:
   m_ObjectHideFlags: 0
@@ -1327,9 +1331,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f19c7f94c794c5097d8bd11e39c750d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Motion: 2
+  TranslationDistance: {x: 5, y: 0, z: 0}
+  TranslationSpeed: 1
   SpinSpeed: 1
   RotationRange: 20
-  Motion: 2
 --- !u!108 &1079961350
 Light:
   m_ObjectHideFlags: 0
@@ -1841,9 +1847,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f19c7f94c794c5097d8bd11e39c750d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Motion: 1
+  TranslationDistance: {x: 5, y: 0, z: 0}
+  TranslationSpeed: 1
   SpinSpeed: 2
   RotationRange: 25
-  Motion: 1
 --- !u!1 &1185126715
 GameObject:
   m_ObjectHideFlags: 0
@@ -1874,9 +1882,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f19c7f94c794c5097d8bd11e39c750d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Motion: 1
+  TranslationDistance: {x: 5, y: 0, z: 0}
+  TranslationSpeed: 1
   SpinSpeed: 0
   RotationRange: 30
-  Motion: 1
 --- !u!108 &1185126717
 Light:
   m_ObjectHideFlags: 0
@@ -2133,9 +2143,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f19c7f94c794c5097d8bd11e39c750d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Motion: 1
+  TranslationDistance: {x: 5, y: 0, z: 0}
+  TranslationSpeed: 1
   SpinSpeed: 2.5
   RotationRange: 25
-  Motion: 1
 --- !u!108 &1328606986
 Light:
   m_ObjectHideFlags: 0
@@ -2504,9 +2516,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f19c7f94c794c5097d8bd11e39c750d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Motion: 2
+  TranslationDistance: {x: 5, y: 0, z: 0}
+  TranslationSpeed: 1
   SpinSpeed: 1.5
   RotationRange: 30
-  Motion: 2
 --- !u!108 &1625386228
 Light:
   m_ObjectHideFlags: 0
@@ -2697,9 +2711,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f19c7f94c794c5097d8bd11e39c750d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Motion: 1
+  TranslationDistance: {x: 5, y: 0, z: 0}
+  TranslationSpeed: 1
   SpinSpeed: 2
   RotationRange: 45
-  Motion: 1
 --- !u!1 &1746165346
 GameObject:
   m_ObjectHideFlags: 0

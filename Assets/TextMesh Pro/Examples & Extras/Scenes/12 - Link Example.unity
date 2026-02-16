@@ -519,7 +519,6 @@ MonoBehaviour:
     Lines:
     5   Pages: 1'
   m_TextComponent: {fileID: 934502350}
-  m_Transform: {fileID: 934502352}
 --- !u!114 &934502350
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -373,7 +373,6 @@ MonoBehaviour:
 
     Lines: 19   Pages: 1'
   m_TextComponent: {fileID: 1063675291}
-  m_Transform: {fileID: 1063675290}
 --- !u!1 &1728718679
 GameObject:
   m_ObjectHideFlags: 0

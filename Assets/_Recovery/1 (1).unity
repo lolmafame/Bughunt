@@ -5457,6 +5457,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CodeTerminalUI
   codePanel: {fileID: 2000008753}
   inputField: {fileID: 1754643699}
+  transitionFlow: {fileID: 0}
+  processFlow: {fileID: 0}
 --- !u!4 &1309890605
 Transform:
   m_ObjectHideFlags: 0

@@ -45533,7 +45533,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   loadingText: {fileID: 326185020}
-  interval: 0.5
+  baseText: Please Wait
+  dotSpeed: 0.4
 --- !u!1 &1570332119
 GameObject:
   m_ObjectHideFlags: 0
@@ -52352,7 +52353,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
 --- !u!4 &1788781044 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: -7216209095358595467, guid: 07f115f2fba822542b762e6d92f24226, type: 3}
+  m_CorrespondingSourceObject: {fileID: 3969538393327941604, guid: 07f115f2fba822542b762e6d92f24226, type: 3}
   m_PrefabInstance: {fileID: 1788781040}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1790656494

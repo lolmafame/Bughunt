@@ -45566,7 +45566,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   loadingText: {fileID: 326185020}
-  interval: 0.5
+  baseText: Please Wait
+  dotSpeed: 0.4
 --- !u!1 &1570332119
 GameObject:
   m_ObjectHideFlags: 0
