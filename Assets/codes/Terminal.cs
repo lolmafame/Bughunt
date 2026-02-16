@@ -5,6 +5,9 @@ public class Terminal : MonoBehaviour
     public bool isCompleted = false;
     public GameObject interactPrompt;
 
+    [TextArea]
+    public string correctAnswer;   // Different per terminal
+
     private void OnTriggerEnter(Collider other)
     {
         if (isCompleted) return;

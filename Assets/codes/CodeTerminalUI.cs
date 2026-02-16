@@ -27,10 +27,12 @@ public class CodeTerminalUI : MonoBehaviour
         inputField.text = "";
         isActive = true;
 
-        // Lock player movement
-        ThirdPersonMovement playerMove = GameObject.FindGameObjectWithTag("Player").GetComponent<ThirdPersonMovement>();
-        playerMove.enabled = false;
+        ThirdPersonMovement playerMove =
+            GameObject.FindGameObjectWithTag("Player")
+            .GetComponent<ThirdPersonMovement>();
 
+        playerMove.enabled = false;
+       
         // Tell spider where you are
         SpiderAI spider = FindObjectOfType<SpiderAI>();
         if (spider != null)
@@ -62,7 +64,7 @@ public class CodeTerminalUI : MonoBehaviour
     {
         if (currentTerminal == null) return;
 
-        if (inputField.text == "int x;")
+        if (inputField.text == currentTerminal.correctAnswer)
         {
             processFlow.PlaySuccess(() =>
             {
@@ -78,8 +80,6 @@ public class CodeTerminalUI : MonoBehaviour
             });
         }
     }
-
-
 
 
     void Update()

@@ -1352,6 +1352,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
+  correctAnswer: int d;
 --- !u!65 &234912557
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4286,6 +4287,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
+  correctAnswer: int a;
 --- !u!65 &720478780
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5397,6 +5399,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
+  correctAnswer: int c;
 --- !u!65 &936213846
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6293,7 +6296,7 @@ GameObject:
   - component: {fileID: 1109761776}
   - component: {fileID: 1109761775}
   m_Layer: 0
-  m_Name: terminal 6777777777777777
+  m_Name: terminal 5
   m_TagString: terminal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6376,6 +6379,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
+  correctAnswer: int e;
 --- !u!65 &1109761778
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -12030,6 +12034,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
+  correctAnswer: int b;
 --- !u!65 &1868399552
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14679,12 +14684,24 @@ PrefabInstance:
     m_TransformParent: {fileID: 1474353005}
     m_Modifications:
     - target: {fileID: 1393866862213941620, guid: 36cdd10d7c24be6418f215fd864fd8ed, type: 3}
+      propertyPath: Orbits.Top.Height
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 1393866862213941620, guid: 36cdd10d7c24be6418f215fd864fd8ed, type: 3}
       propertyPath: Orbits.Top.Radius
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1393866862213941620, guid: 36cdd10d7c24be6418f215fd864fd8ed, type: 3}
+      propertyPath: Orbits.Bottom.Height
+      value: -1.59
+      objectReference: {fileID: 0}
+    - target: {fileID: 1393866862213941620, guid: 36cdd10d7c24be6418f215fd864fd8ed, type: 3}
       propertyPath: Orbits.Bottom.Radius
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1393866862213941620, guid: 36cdd10d7c24be6418f215fd864fd8ed, type: 3}
+      propertyPath: Orbits.Center.Height
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1393866862213941620, guid: 36cdd10d7c24be6418f215fd864fd8ed, type: 3}
       propertyPath: Orbits.Center.Radius
@@ -14704,19 +14721,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3484652266543125338, guid: 36cdd10d7c24be6418f215fd864fd8ed, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9732491
+      value: 0.973249
       objectReference: {fileID: 0}
     - target: {fileID: 3484652266543125338, guid: 36cdd10d7c24be6418f215fd864fd8ed, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.22975291
+      value: 0.2297529
       objectReference: {fileID: 0}
     - target: {fileID: 3484652266543125338, guid: 36cdd10d7c24be6418f215fd864fd8ed, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.00000019522204
+      value: 0.000003200149
       objectReference: {fileID: 0}
     - target: {fileID: 3484652266543125338, guid: 36cdd10d7c24be6418f215fd864fd8ed, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.000000046085667
+      value: -0.00000075545273
       objectReference: {fileID: 0}
     - target: {fileID: 3484652266543125338, guid: 36cdd10d7c24be6418f215fd864fd8ed, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -14772,15 +14789,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1720002759758408411, guid: c1e7aa59e1e955540aebf045678f7b42, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.22975296
+      value: 0.22975293
       objectReference: {fileID: 0}
     - target: {fileID: 1720002759758408411, guid: c1e7aa59e1e955540aebf045678f7b42, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.00000019522209
+      value: 0.0000032001492
       objectReference: {fileID: 0}
     - target: {fileID: 1720002759758408411, guid: c1e7aa59e1e955540aebf045678f7b42, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.000000046085688
+      value: -0.00000075545273
       objectReference: {fileID: 0}
     - target: {fileID: 1720002759758408411, guid: c1e7aa59e1e955540aebf045678f7b42, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
