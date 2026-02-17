@@ -20,6 +20,7 @@ public class LoginManager : MonoBehaviour
     [SerializeField] private RegManager regManager;
     [SerializeField] private GameObject regAnimObject; // The object with regAnim.cs
     [SerializeField] private GameObject registrationRoot; // Parent container for registration UI
+    [SerializeField] private AccountManager accountManager;
 
     [Header("Forgot Password Dependencies")]
     [SerializeField] private GameObject forgotPasswordRoot;
@@ -94,7 +95,7 @@ public class LoginManager : MonoBehaviour
                 userDoc.SetAsync(newUserData);
             }
 
-            TriggerSuccessAnimation();
+            FinalizeLogin();
         });
     }
 
@@ -212,7 +213,7 @@ public class LoginManager : MonoBehaviour
                 userDoc.UpdateAsync(new Dictionary<string, object> {
                     { "lastLogin", FieldValue.ServerTimestamp }
                 });
-                TriggerSuccessAnimation();
+                FinalizeLogin();
             }
             else
             {
@@ -308,7 +309,7 @@ public class LoginManager : MonoBehaviour
             FirebaseUser user = result.User;
 
             Debug.Log(">>> EMAIL LOGIN: Successful. UID=" + user.UserId + ", Email=" + user.Email);
-            TriggerSuccessAnimation();
+            FinalizeLogin();
         });
     }
 
@@ -367,6 +368,17 @@ public class LoginManager : MonoBehaviour
     public void FinalizeLogin()
     {
         TriggerSuccessAnimation();
+
+        // DEBUGGING BLOCK
+        if (accountManager == null)
+        {
+            Debug.LogError(">>> CRITICAL ERROR: AccountManager is NULL in LoginManager! You forgot to drag the object into the Inspector slot!");
+        }
+        else
+        {
+            Debug.Log(">>> LOGIN MANAGER: Calling OpenAccountPanel...");
+            accountManager.RefreshUserData();
+        }
     }
 
     private void TriggerSuccessAnimation()
