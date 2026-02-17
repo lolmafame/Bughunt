@@ -103,3 +103,4 @@ InitTestScene*.unity*
 **/Assets/Editor Default Resources/Firebase/**
 # I5 & MapMagic Assets
 **/Assets/i5 Toolkit for Unity/**
+!Assets/i5 Toolkit for Unity/Runtime/ServiceCore/Scripts/ServiceManager.cs

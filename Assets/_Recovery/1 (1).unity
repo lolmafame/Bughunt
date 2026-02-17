@@ -902,6 +902,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
+  correctAnswer: 
 --- !u!65 &234912557
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2877,6 +2878,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
+  correctAnswer: 
 --- !u!65 &720478780
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3774,6 +3776,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
+  correctAnswer: 
 --- !u!65 &936213846
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4671,6 +4674,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
+  correctAnswer: 
 --- !u!65 &1109761778
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9222,6 +9226,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
+  correctAnswer: 
 --- !u!65 &1868399552
 BoxCollider:
   m_ObjectHideFlags: 0

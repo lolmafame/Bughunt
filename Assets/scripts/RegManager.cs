@@ -19,8 +19,8 @@ public class RegManager : MonoBehaviour
     [Header("Popups")]
     [SerializeField] private GameObject regCompletePopup;
     [SerializeField] private GameObject processFailedPopup;
+    [SerializeField] private TMP_Text processFailedText;
     [SerializeField] private GameObject popupContainer;
-    // Add other popups here if needed (e.g. noRecordWarning)
 
     [Header("Dependencies")]
     [SerializeField] private LoginManager loginManager;
@@ -71,8 +71,7 @@ public class RegManager : MonoBehaviour
         // 1. Basic Validation
         if (string.IsNullOrEmpty(username))
         {
-            Debug.LogError("Username is empty");
-            ShowProcessFailed();
+            ShowProcessFailed("Username cannot be empty.");
             return;
         }
 
@@ -81,15 +80,13 @@ public class RegManager : MonoBehaviour
         {
             if (passwordField.text != confirmPasswordField.text)
             {
-                Debug.LogError("Passwords do not match");
-                ShowProcessFailed();
+                ShowProcessFailed("Passwords do not match.");
                 return;
             }
 
             if (!IsPasswordStrong(passwordField.text))
             {
-                Debug.LogError("Password must include at least one uppercase letter and one special character.");
-                ShowProcessFailed();
+                ShowProcessFailed("Password must include at least one uppercase letter and one special character.");
                 return;
             }
         }
@@ -97,22 +94,19 @@ public class RegManager : MonoBehaviour
         {
             if (string.IsNullOrEmpty(passwordField.text) || string.IsNullOrEmpty(confirmPasswordField.text))
             {
-                Debug.LogError("Password fields are required for Google linking");
-                ShowProcessFailed();
+                ShowProcessFailed("Both password fields are required.");
                 return;
             }
 
             if (passwordField.text != confirmPasswordField.text)
             {
-                Debug.LogError("Passwords do not match");
-                ShowProcessFailed();
+                ShowProcessFailed("Passwords do not match.");
                 return;
             }
 
             if (!IsPasswordStrong(passwordField.text))
             {
-                Debug.LogError("Password must include at least one uppercase letter and one special character.");
-                ShowProcessFailed();
+                ShowProcessFailed("Password must include at least one uppercase letter and one special character.");
                 return;
             }
         }
@@ -124,16 +118,14 @@ public class RegManager : MonoBehaviour
         {
             if (task.IsFaulted)
             {
-                Debug.LogError("Username check failed: " + task.Exception);
-                ShowProcessFailed();
+                ShowProcessFailed("Unable to check username. Please try again.");
                 return;
             }
 
             DocumentSnapshot snap = task.Result;
             if (snap.Exists)
             {
-                Debug.LogError("Username already taken!");
-                ShowProcessFailed(); // Or a specific "Username Taken" popup if you have one
+                ShowProcessFailed("Username is already taken. Please choose another.");
             }
             else
             {
@@ -155,8 +147,7 @@ public class RegManager : MonoBehaviour
     {
         if (googleUser == null)
         {
-            Debug.LogError("Google user not set for registration.");
-            ShowProcessFailed();
+            ShowProcessFailed("Google user session expired. Please sign in again.");
             return;
         }
         // Batch write to ensure both User and Username are reserved together
@@ -187,8 +178,7 @@ public class RegManager : MonoBehaviour
         {
             if (task.IsFaulted)
             {
-                Debug.LogError("Failed to save user data: " + task.Exception);
-                ShowProcessFailed();
+                ShowProcessFailed("Failed to save your data. Please try again.");
             }
             else
             {
@@ -202,8 +192,7 @@ public class RegManager : MonoBehaviour
     {
         if (googleUser == null)
         {
-            Debug.LogError("Google user not set for registration.");
-            ShowProcessFailed();
+            ShowProcessFailed("Google user session expired. Please sign in again.");
             return;
         }
 
@@ -211,9 +200,8 @@ public class RegManager : MonoBehaviour
         {
             if (task.IsFaulted || task.IsCanceled)
             {
-                Debug.LogError("Failed to set password for Google user: " + task.Exception);
                 LogAuthExceptionDetails(task.Exception);
-                ShowProcessFailed();
+                ShowProcessFailed("Failed to set password. Please try again.");
                 return;
             }
 
@@ -284,11 +272,11 @@ public class RegManager : MonoBehaviour
         Debug.Log("regcomplete popup shown.");
     }
 
-    private void ShowProcessFailed()
+    private void ShowProcessFailed(string message)
     {
         if (popupContainer) popupContainer.SetActive(true);
+        if (processFailedText) processFailedText.text = message;
         if (processFailedPopup) processFailedPopup.SetActive(true);
-        Debug.Log("processfailed popup shown.");
     }
 
     private void CloseAllPopups()

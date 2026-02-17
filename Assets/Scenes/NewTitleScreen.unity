@@ -57702,6 +57702,7 @@ MonoBehaviour:
   confirmPasswordField: {fileID: 621616808}
   regCompletePopup: {fileID: 405531239}
   processFailedPopup: {fileID: 1194271856}
+  processFailedText: {fileID: 1245599579}
   popupContainer: {fileID: 576149347}
   loginManager: {fileID: 469937965}
   regAnimController: {fileID: 1270835474}
