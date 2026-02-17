@@ -102,5 +102,13 @@ InitTestScene*.unity*
 **/Assets/Firebase/**
 **/Assets/Editor Default Resources/Firebase/**
 # I5 & MapMagic Assets
+# 1. Ignore the main folder
 **/Assets/i5 Toolkit for Unity/**
-!Assets/i5 Toolkit for Unity/Runtime/ServiceCore/Scripts/ServiceManager.cs
+
+# 2. Specifically un-ignore the path leading to the file
+!**/Assets/i5 Toolkit for Unity/Runtime/
+!**/Assets/i5 Toolkit for Unity/Runtime/ServiceCore/
+!**/Assets/i5 Toolkit for Unity/Runtime/ServiceCore/Scripts/
+
+# 3. Finally, allow the ServiceManager.cs file
+!**/Assets/i5 Toolkit for Unity/Runtime/ServiceCore/Scripts/ServiceManager.cs
