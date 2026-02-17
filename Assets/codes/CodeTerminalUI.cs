@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+
 
 public class CodeTerminalUI : MonoBehaviour
 {
@@ -13,7 +15,11 @@ public class CodeTerminalUI : MonoBehaviour
     private Terminal currentTerminal;
     private bool isActive = false;
 
-    void Awake()
+
+  
+    public TMP_Text instructionText; // Assign in Inspector
+
+void Awake()
     {
         Instance = this;
         codePanel.SetActive(false);
@@ -26,21 +32,21 @@ public class CodeTerminalUI : MonoBehaviour
         transitionFlow.PlayTransition();
         inputField.text = "";
         isActive = true;
-        GameManager.Instance.SetInputLocked(true);
 
+        // ===== ADDED: Show instruction =====
+        if (instructionText != null)
+            instructionText.text = terminal.instructions;
+
+        GameManager.Instance.SetInputLocked(true);
         ThirdPersonMovement playerMove =
             GameObject.FindGameObjectWithTag("Player")
             .GetComponent<ThirdPersonMovement>();
-
         playerMove.enabled = false;
-
-        // Tell spider where you are
         SpiderAI spider = FindObjectOfType<SpiderAI>();
         if (spider != null)
         {
-            spider.ForceInvestigate(playerMove.transform); // pass transform
+            spider.ForceInvestigate(playerMove.transform);
         }
-
     }
 
     public void Close()
