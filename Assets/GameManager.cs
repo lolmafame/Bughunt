@@ -25,8 +25,8 @@ public class GameManager : MonoBehaviour
     public string mainMenuSceneName = "MainMenu"; // match your scene name exactly
 
     [Header("Spawn Point")]
-    public Transform spawnPoint; // drag your spawn point object here in Inspector
-
+    public Transform spawnPoint; // drag your spawn point object here in Inspector\
+    public string level2SceneName = "Level2"; 
     private bool isPaused = false;
     private bool inputLocked = false;
 
@@ -128,8 +128,7 @@ public class GameManager : MonoBehaviour
     public void CompletionContinue()
     {
         Time.timeScale = 1f;
-        PlayerPrefs.SetInt("OpenCampaign", 1);
-        SceneManager.LoadScene(mainMenuSceneName);
+        SceneManager.LoadScene(level2SceneName);
     }
 
     // Called by "Quit" button in Pause OR Game Over panel

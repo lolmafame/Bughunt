@@ -2634,8 +2634,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
-  instructions: 
-  correctAnswer: int d;
+  instructions: 'Instructions:
+
+    virus_name = "Subject-27"
+
+    Print virus_name
+    on the terminal.'
+  correctAnswer: print(virus_name)
 --- !u!65 &234912557
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3318,13 +3323,14 @@ GameObject:
   m_Component:
   - component: {fileID: 300741745}
   - component: {fileID: 300741746}
+  - component: {fileID: 300741747}
   m_Layer: 0
   m_Name: DetectionSphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &300741745
 Transform:
   m_ObjectHideFlags: 0
@@ -3361,6 +3367,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 40
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &300741747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 300741744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10c01336feb5f164c84a45a5faa678fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
 --- !u!208 &302297032
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -5153,7 +5171,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -10.1, y: 58.6}
+  m_AnchoredPosition: {x: -10.1, y: 61.2}
   m_SizeDelta: {x: 1000, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &448518372
@@ -8235,10 +8253,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
-  instructions: 'PRINT YHIS ON PYTHON
+  instructions: 'Instructions:
 
-    robot_name = BOB'
-  correctAnswer: b
+    robot_name = "BOB"
+
+    Print robot_name on the
+    terminal.'
+  correctAnswer: print(robot_name)
 --- !u!65 &720478780
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -10545,8 +10566,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
-  instructions: 
-  correctAnswer: int c;
+  instructions: 'Instructions:
+
+    creator_name = "Dr. Reyes"
+
+    Print creator_name
+    on the terminal.'
+  correctAnswer: print(creator_name)
 --- !u!65 &936213846
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -12042,8 +12068,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
-  instructions: 
-  correctAnswer: int e;
+  instructions: 'Instructions:
+
+    core_status = "Stable"
+
+    Print core_status
+    on the terminal.'
+  correctAnswer: print(core_status)
 --- !u!65 &1109761778
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -17747,7 +17778,7 @@ Transform:
   m_GameObject: {fileID: 1694255163}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 105.8, y: 2.4, z: 221.1}
+  m_LocalPosition: {x: 105.8, y: 2.4, z: 271.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -17772,6 +17803,13 @@ MonoBehaviour:
   patrolRadius: 20
   patrolTimer: 5
   chaseSpeed: 5
+  detectionSphere: {fileID: 1694255170}
+  calmSpeed: 5
+  calmDetectionRadius: 40
+  alertSpeed: 7
+  alertDetectionRadius: 55
+  maxSpeed: 9
+  maxDetectionRadius: 70
 --- !u!195 &1694255168
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -19032,6 +19070,7 @@ MonoBehaviour:
   gameTimer: {fileID: 1073012470}
   mainMenuSceneName: NewTitleScreen
   spawnPoint: {fileID: 1455875621}
+  level2SceneName: level 2
 --- !u!4 &1785852811
 Transform:
   m_ObjectHideFlags: 0
@@ -19898,8 +19937,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
-  instructions: print(robot_name)
-  correctAnswer: print(robot_name)
+  instructions: 'Instructions:
+
+    unit_type = "Helper Robot"
+
+    Print unit_type
+    on the terminal.'
+  correctAnswer: print(unit_type)
 --- !u!65 &1868399552
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -21098,7 +21142,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -60.399994, y: 76.600006}
+  m_AnchoredPosition: {x: -60.399994, y: 80.1}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1935523747
@@ -24120,15 +24164,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1720002759758408411, guid: c1e7aa59e1e955540aebf045678f7b42, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.22975287
+      value: 0.22975294
       objectReference: {fileID: 0}
     - target: {fileID: 1720002759758408411, guid: c1e7aa59e1e955540aebf045678f7b42, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.00000004101939
+      value: 6.0814914e-10
       objectReference: {fileID: 0}
     - target: {fileID: 1720002759758408411, guid: c1e7aa59e1e955540aebf045678f7b42, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.000000009683361
+      value: -1.4356454e-10
       objectReference: {fileID: 0}
     - target: {fileID: 1720002759758408411, guid: c1e7aa59e1e955540aebf045678f7b42, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -29538,7 +29582,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8680651027663319065, guid: 80ae7471e06e1144288f9684172a7624, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 5.9
+      value: 2.3
       objectReference: {fileID: 0}
     - target: {fileID: 8797944556667577628, guid: 80ae7471e06e1144288f9684172a7624, type: 3}
       propertyPath: m_Text

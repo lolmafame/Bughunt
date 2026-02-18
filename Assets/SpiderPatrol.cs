@@ -14,24 +14,39 @@ public class SpiderAI : MonoBehaviour
     private bool isChasing = false;
     private Transform player;
 
+    [Header("Threat Escalation")]
+    public SphereCollider detectionSphere; // drag Spider's own SphereCollider here
+    public float calmSpeed = 5f;
+    public float calmDetectionRadius = 40f;
+    public float alertSpeed = 7f;
+    public float alertDetectionRadius = 55f;
+    public float maxSpeed = 9f;
+    public float maxDetectionRadius = 70f;
+
     [Header("Terminal Investigation")]
     private bool isInvestigating = false;
     private Transform investigateTargetTransform;
 
+    private float gameTime = 0f;
+
     void Start()
     {
         if (agent == null) agent = GetComponent<NavMeshAgent>();
+        if (detectionSphere == null) detectionSphere = GetComponent<SphereCollider>();
         timer = patrolTimer;
         SetNewPatrolDestination();
     }
 
     void Update()
     {
+        gameTime += Time.deltaTime;
+        UpdateThreatLevel();
+
         // ---------------- Investigation Mode ----------------
         if (isInvestigating && investigateTargetTransform != null)
         {
             agent.SetDestination(investigateTargetTransform.position);
-            return; // skip patrol/chase logic
+            return;
         }
 
         // ---------------- Chasing Mode ----------------
@@ -45,13 +60,47 @@ public class SpiderAI : MonoBehaviour
             timer += Time.deltaTime;
             if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance + 0.2f)
                 SetNewPatrolDestination();
-
             if (timer >= patrolTimer)
             {
                 SetNewPatrolDestination();
                 timer = 0f;
             }
         }
+    }
+
+    void UpdateThreatLevel()
+    {
+        float minutes = gameTime / 60f;
+
+        float targetSpeed;
+        float targetRadius;
+
+        if (minutes < 3f)
+        {
+            targetSpeed = calmSpeed;
+            targetRadius = calmDetectionRadius;
+        }
+        else if (minutes < 6f)
+        {
+            targetSpeed = alertSpeed;
+            targetRadius = alertDetectionRadius;
+        }
+        else
+        {
+            targetSpeed = maxSpeed;
+            targetRadius = maxDetectionRadius;
+        }
+
+        // Smoothly grow detection radius
+        if (detectionSphere != null)
+            detectionSphere.radius = Mathf.Lerp(detectionSphere.radius, targetRadius, Time.deltaTime * 0.5f);
+
+        // Update chase speed
+        chaseSpeed = targetSpeed;
+
+        // If currently chasing, apply new speed immediately
+        if (isChasing)
+            agent.speed = chaseSpeed;
     }
 
     void SetNewPatrolDestination()
@@ -76,8 +125,6 @@ public class SpiderAI : MonoBehaviour
             player = other.transform;
             isChasing = true;
             agent.speed = chaseSpeed;
-
-            // Damage handled in PlayerHealth or separate script
         }
     }
 
@@ -105,8 +152,6 @@ public class SpiderAI : MonoBehaviour
     {
         isInvestigating = false;
         investigateTargetTransform = null;
-
-        // Only resume patrol if player is not currently in detection trigger
         if (player == null)
         {
             isChasing = false;
