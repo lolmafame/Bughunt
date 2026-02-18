@@ -42,7 +42,7 @@ void Awake()
             GameObject.FindGameObjectWithTag("Player")
             .GetComponent<ThirdPersonMovement>();
         playerMove.enabled = false;
-        SpiderAI spider = FindObjectOfType<SpiderAI>();
+        SpiderAI spider = FindAnyObjectByType<SpiderAI>();
         if (spider != null)
         {
             spider.ForceInvestigate(playerMove.transform);
@@ -61,7 +61,7 @@ void Awake()
 
 
         // Stop spider investigation
-        SpiderAI spider = FindObjectOfType<SpiderAI>();
+        SpiderAI spider = FindAnyObjectByType<SpiderAI>();
         if (spider != null)
         {
             spider.StopInvestigate();
