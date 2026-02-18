@@ -23,9 +23,13 @@ public class SpringPanel : MonoBehaviour
 
     public void PlayDropBounce()
     {
+        if (panel == null) return;
+
+        panel.gameObject.SetActive(true);
         StopAllCoroutines();
         StartCoroutine(DropBounceAnimation());
     }
+
 
     IEnumerator DropBounceAnimation()
     {
