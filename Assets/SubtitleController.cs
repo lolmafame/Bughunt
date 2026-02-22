@@ -7,7 +7,7 @@ public class SubtitleController : MonoBehaviour
     [Header("UI")]
     public TextMeshProUGUI subtitleText;
 
-    public GameObject continueIcon;        
+    public GameObject continueIcon;
     public TextMeshProUGUI spaceIndicator;
 
     [Header("Typing SFX")]
@@ -17,14 +17,18 @@ public class SubtitleController : MonoBehaviour
     [Header("Glitch SFX")]
     public AudioSource glitchAudioSource;
 
-    [Header("Dialogue")]
-    public SubtitleLine[] lines;
+    [Header("Content")]
+    public GameObject contentGroup;
 
     [Header("Dialogue Box")]
     public GameObject dialogueBox;
+    public Animator dialogueAnimator;
 
     [Header("Blink Settings")]
     public float blinkSpeed = 0.5f;
+
+    [Header("Dialogue")]
+    public SubtitleLine[] lines;
 
     private Coroutine blinkCoroutine;
 
@@ -36,6 +40,24 @@ public class SubtitleController : MonoBehaviour
 
     void Start()
     {
+        StartCoroutine(StartDialogue());
+    }
+
+    IEnumerator StartDialogue()
+    {
+        dialogueBox.SetActive(true);
+
+        if (contentGroup != null)
+            contentGroup.SetActive(false);
+
+        if (dialogueAnimator != null)
+            dialogueAnimator.SetTrigger("Open");
+
+        yield return new WaitForSeconds(0.5f); // match fold animation length
+
+        if (contentGroup != null)
+            contentGroup.SetActive(true);
+
         HideIndicators();
         StartLine();
     }
@@ -62,10 +84,21 @@ public class SubtitleController : MonoBehaviour
 
         SubtitleLine line = lines[currentIndex];
 
+        // Show focus object if exists
+        if (line.focusObject != null)
+            line.focusObject.SetActive(true);
+
         if (line.glitchClip != null && glitchAudioSource != null)
         {
             glitchAudioSource.PlayOneShot(line.glitchClip);
         }
+
+        StartCoroutine(LineDelay(line));
+    }
+
+    IEnumerator LineDelay(SubtitleLine line)
+    {
+        yield return new WaitForSeconds(line.delayBeforeTyping);
 
         typingCoroutine = StartCoroutine(TypeLine(line));
     }
@@ -113,20 +146,38 @@ public class SubtitleController : MonoBehaviour
 
     void NextLine()
     {
+        // Hide previous focus object
+        if (lines[currentIndex].focusObject != null)
+            lines[currentIndex].focusObject.SetActive(false);
+
         currentIndex++;
 
         if (currentIndex >= lines.Length)
         {
-            subtitleText.text = "";
-            HideIndicators();
-
-            if (dialogueBox != null)
-                dialogueBox.SetActive(false);
-
+            StartCoroutine(EndDialogue());
             return;
         }
 
         StartLine();
+    }
+
+    IEnumerator EndDialogue()
+    {
+        subtitleText.text = "";
+        HideIndicators();
+
+        // Hide text and icons FIRST
+        if (contentGroup != null)
+            contentGroup.SetActive(false);
+
+        yield return new WaitForSeconds(0.05f);
+
+        if (dialogueAnimator != null)
+            dialogueAnimator.SetTrigger("Close");
+
+        yield return new WaitForSeconds(0.5f);
+
+        dialogueBox.SetActive(false);
     }
 
     void ShowIndicators()
@@ -157,7 +208,6 @@ public class SubtitleController : MonoBehaviour
             spaceIndicator.gameObject.SetActive(false);
     }
 
-
     void StartTypingSound()
     {
         if (typingClip == null || typingAudioSource == null) return;
@@ -181,5 +231,4 @@ public class SubtitleController : MonoBehaviour
             yield return new WaitForSeconds(blinkSpeed);
         }
     }
-
 }
