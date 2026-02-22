@@ -30175,6 +30175,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 77
       objectReference: {fileID: 0}
+    - target: {fileID: 3004834807799562231, guid: 80ae7471e06e1144288f9684172a7624, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3338082370472974244, guid: 80ae7471e06e1144288f9684172a7624, type: 3}
       propertyPath: m_Text
       value: hello
