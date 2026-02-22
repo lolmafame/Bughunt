@@ -37,9 +37,14 @@ public class SubtitleController : MonoBehaviour
 
     private bool isTyping = false;
     private bool lineFinished = false;
+    private bool dialogueStarted = false;
 
-    void Start()
+
+    public void BeginDialogue()
     {
+        if (dialogueStarted) return;
+
+        dialogueStarted = true;
         StartCoroutine(StartDialogue());
     }
 

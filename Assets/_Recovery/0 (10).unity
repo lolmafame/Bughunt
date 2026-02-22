@@ -5857,7 +5857,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 9.997314, y: -49.999878}
+  m_AnchoredPosition: {x: 9.997314, y: -49.999924}
   m_SizeDelta: {x: -1820, y: -980}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &459419688
@@ -14243,7 +14243,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   screenTransitionMaterial: {fileID: 2100000, guid: 6b53ac930b13f8544b2bac2f01b5142a, type: 2}
-  transitionTime: 5
+  transitionTime: 3
   propertyName: _Progress
   OnTransitionDone:
     m_PersistentCalls:
