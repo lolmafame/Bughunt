@@ -22776,8 +22776,8 @@ MonoBehaviour:
     glitchClip: {fileID: 0}
     focusObject: {fileID: 0}
     delayBeforeTyping: 0.3
-  - text: '"Approach them and press <color=#E4F6B1>E</color> to interact. Repair
-      the corrupted code inside to restore system integrity."'
+  - text: '"Approach them and press E to interact. Repair the corrupted code inside
+      to restore system integrity."'
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
@@ -22826,7 +22826,7 @@ MonoBehaviour:
     glitchClip: {fileID: 0}
     focusObject: {fileID: 0}
     delayBeforeTyping: 0.3
-  - text: ---CONNECTION LOST---
+  - text: '[ CONNECTION LOST ]'
     typingSpeed: 0.05
     glitchTyping: 1
     glitchClip: {fileID: 8300000, guid: d9c01f9b61818d2438258dd25a148977, type: 3}

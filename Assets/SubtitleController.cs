@@ -66,6 +66,9 @@ public class SubtitleController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            if (currentIndex >= lines.Length)
+                return;
+
             if (isTyping)
             {
                 StopTypingInstant();
@@ -110,9 +113,24 @@ public class SubtitleController : MonoBehaviour
 
         StartTypingSound();
 
-        foreach (char letter in line.text)
+        string fullText = line.text;
+        int i = 0;
+
+        while (i < fullText.Length)
         {
-            subtitleText.text += letter;
+            if (fullText[i] == '<')
+            {
+                int closingIndex = fullText.IndexOf('>', i);
+                if (closingIndex != -1)
+                {
+                    subtitleText.text += fullText.Substring(i, closingIndex - i + 1);
+                    i = closingIndex + 1;
+                    continue;
+                }
+            }
+
+            subtitleText.text += fullText[i];
+            i++;
 
             float speed = line.typingSpeed;
 
@@ -146,6 +164,9 @@ public class SubtitleController : MonoBehaviour
 
     void NextLine()
     {
+        if (currentIndex >= lines.Length)
+            return;
+
         // Hide previous focus object
         if (lines[currentIndex].focusObject != null)
             lines[currentIndex].focusObject.SetActive(false);
