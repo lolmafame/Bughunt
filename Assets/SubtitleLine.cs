@@ -7,9 +7,13 @@ public class SubtitleLine
     public string text;
 
     public float typingSpeed = 0.04f;
-
     public bool glitchTyping = false;
 
-    [Header("Glitch SFX")]
     public AudioClip glitchClip;
+
+    [Header("Focus Object (Optional)")]
+    public GameObject focusObject;
+
+    [Header("Delay Before Text")]
+    public float delayBeforeTyping = 0.3f;
 }
