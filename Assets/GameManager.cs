@@ -22,11 +22,12 @@ public class GameManager : MonoBehaviour
     public GameTimer gameTimer;
 
     [Header("Scene Settings")]
-    public string mainMenuSceneName = "MainMenu"; // match your scene name exactly
+    public string mainMenuSceneName = "MainMenu";
+    public string level2SceneName = "Level2";
 
     [Header("Spawn Point")]
-    public Transform spawnPoint; // drag your spawn point object here in Inspector\
-    public string level2SceneName = "Level2"; 
+    public Transform spawnPoint;
+
     private bool isPaused = false;
     private bool inputLocked = false;
 
@@ -58,22 +59,23 @@ public class GameManager : MonoBehaviour
         isPaused = true;
         Time.timeScale = 0f;
         pausePanel.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         if (gameTimer != null) gameTimer.StopTimer();
     }
 
-    // Called by "Continue" button in Pause panel
     public void ResumeGame()
     {
         isPaused = false;
         Time.timeScale = 1f;
         pausePanel.SetActive(false);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         if (gameTimer != null) gameTimer.StartTimer();
     }
 
-    // Called by "Settings" button in Pause panel
     public void OpenSettings()
     {
-        // Hook up your settings panel here when ready
         Debug.Log("Settings opened");
     }
 
@@ -84,6 +86,8 @@ public class GameManager : MonoBehaviour
         gameTimer.StopTimer();
         gameOverPanel.SetActive(true);
         gameOverPanel.GetComponent<SpringPanel>().PlayDropBounce();
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
 
         float finalTime = gameTimer.GetFinalTime();
         gameOverTimeText.text = "Time: " + FormatTime(finalTime);
@@ -92,20 +96,17 @@ public class GameManager : MonoBehaviour
             " / " + TerminalManager.Instance.totalTerminals;
     }
 
-    // Called by "Retry" button in Game Over panel
     public void RetryGame()
     {
         Time.timeScale = 1f;
-
-        // Reset timer
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         gameTimer.StopTimer();
 
-        // Move player to spawn point
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null && spawnPoint != null)
             player.transform.position = spawnPoint.position;
 
-        // Reload the current scene (resets terminals, timer, everything)
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
@@ -116,6 +117,8 @@ public class GameManager : MonoBehaviour
         gameTimer.StopTimer();
         completionPanel.SetActive(true);
         completionPanel.GetComponent<SpringPanel>().PlayDropBounce();
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
 
         float finalTime = gameTimer.GetFinalTime();
         completionTimeText.text = "Time: " + FormatTime(finalTime);
@@ -124,17 +127,19 @@ public class GameManager : MonoBehaviour
             " / " + TerminalManager.Instance.totalTerminals;
     }
 
-    // Called by "Continue" button in Completion panel
     public void CompletionContinue()
     {
         Time.timeScale = 1f;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         SceneManager.LoadScene(level2SceneName);
     }
 
-    // Called by "Quit" button in Pause OR Game Over panel
     public void QuitToMainMenu()
     {
         Time.timeScale = 1f;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         PlayerPrefs.SetInt("OpenCampaign", 1);
         SceneManager.LoadScene(mainMenuSceneName);
     }
@@ -151,7 +156,4 @@ public class GameManager : MonoBehaviour
     {
         inputLocked = value;
     }
-
-
-
 }
