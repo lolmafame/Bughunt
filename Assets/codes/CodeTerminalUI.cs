@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
@@ -81,11 +81,18 @@ void Awake()
                 Close();
             });
         }
-        else
+        else  // ← replace everything from here
         {
             processFlow.PlayFail(() =>
             {
                 codePanel.SetActive(true);
+                isActive = true;
+                inputField.gameObject.SetActive(true);
+                inputField.text = "";
+                inputField.Select();
+                inputField.ActivateInputField();
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
             });
         }
     }

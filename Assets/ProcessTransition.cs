@@ -44,19 +44,15 @@ public class ProcessTransition : MonoBehaviour
 
     IEnumerator FailRoutine(Action onReturn)
     {
+        // Hide CodeInputField while fail animation plays
         transitionPanel.SetActive(true);
-
         yield return new WaitForSecondsRealtime(transitionDuration);
-
         loadingDots.StopDots();
-
         failedPanel.SetActive(true);
         transitionPanel.SetActive(false);
-
         yield return new WaitForSecondsRealtime(failReturnDelay);
-
         failedPanel.SetActive(false);
-
+        transitionPanel.SetActive(false); // make sure process panel is fully gone
         onReturn?.Invoke();
     }
 }
