@@ -1,46 +1,43 @@
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.UI; 
 using Firebase.Functions;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
 public class MayaPaymentController : MonoBehaviour
 {
+    [Header("Assign in Inspector")]
+    public Button buyButton; // Drag your Button GameObject here in the Unity Editor
+
     private FirebaseFunctions functions;
-    private Button buyButton;
 
     void Start()
     {
         // 1. Initialize Firebase Functions
         functions = FirebaseFunctions.DefaultInstance;
 
-        // 2. Hook up your UI Toolkit button
-        var root = GetComponent<UIDocument>().rootVisualElement;
-
-        // Make sure the name inside Q<Button> matches the name of your button in the UI Builder
-        buyButton = root.Q<Button>("BuySkinButton");
-
+        // 2. Hook up the button click event
         if (buyButton != null)
         {
-            buyButton.clicked += OnBuyButtonClicked;
+            buyButton.onClick.AddListener(OnBuyButtonClicked);
         }
         else
         {
-            Debug.LogError("Could not find the BuySkinButton in the UI Document!");
+            Debug.LogError("Buy Button is not assigned! Please drag it into the inspector.");
         }
     }
 
     // 3. This runs when the player clicks the button
     private async void OnBuyButtonClicked()
     {
-        // Optional: Disable the button so they don't spam click it while loading
-        buyButton.SetEnabled(false);
+        // Disable the button to prevent double-clicking while it loads
+        buyButton.interactable = false;
         Debug.Log("Contacting server for PHP 50 Sandbox Checkout...");
 
         await RequestMayaCheckout();
 
         // Re-enable the button after the browser opens
-        buyButton.SetEnabled(true);
+        buyButton.interactable = true;
     }
 
     // 4. The actual call to your Cloud Function
@@ -48,11 +45,8 @@ public class MayaPaymentController : MonoBehaviour
     {
         try
         {
-            // The string here MUST perfectly match the name of the function you exported in Node.js
+            // Call the cloud function you deployed earlier
             var createCheckoutFunc = functions.GetHttpsCallable("createMayaCheckout");
-
-            // Call the cloud function. We don't even need to send the price, 
-            // because the server already knows this function is for the PHP 50 item!
             var result = await createCheckoutFunc.CallAsync();
 
             // Extract the checkoutUrl that your Node.js code sent back
@@ -67,15 +61,6 @@ public class MayaPaymentController : MonoBehaviour
         catch (System.Exception e)
         {
             Debug.LogError("Failed to get payment link from server: " + e.Message);
-        }
-    }
-
-    void OnDestroy()
-    {
-        // Good practice to unregister UI Toolkit events
-        if (buyButton != null)
-        {
-            buyButton.clicked -= OnBuyButtonClicked;
         }
     }
 }
