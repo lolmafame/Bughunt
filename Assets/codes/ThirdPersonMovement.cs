@@ -35,7 +35,7 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         currentStamina = maxStamina;
         animator = GetComponentInChildren<Animator>();
-        Cursor.lockState = CursorLockMode.Locked; // locks cursor for camera control
+        //Cursor.lockState = CursorLockMode.Locked; // locks cursor for camera control
     }
 
     void Update()
