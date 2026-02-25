@@ -1,66 +1,125 @@
 using UnityEngine;
-using UnityEngine.UI; 
+using UnityEngine.UI;
 using Firebase.Functions;
+using Firebase.Auth;
+using Firebase.Firestore;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
 public class MayaPaymentController : MonoBehaviour
 {
     [Header("Assign in Inspector")]
-    public Button buyButton; // Drag your Button GameObject here in the Unity Editor
+    public Button buyButton;
 
     private FirebaseFunctions functions;
+    private FirebaseAuth auth;
+    private FirebaseFirestore db;
+    private ListenerRegistration dbListener;
 
     void Start()
     {
-        // 1. Initialize Firebase Functions
         functions = FirebaseFunctions.DefaultInstance;
+        auth = FirebaseAuth.DefaultInstance;
+        db = FirebaseFirestore.DefaultInstance;
 
-        // 2. Hook up the button click event
         if (buyButton != null)
         {
             buyButton.onClick.AddListener(OnBuyButtonClicked);
         }
-        else
-        {
-            Debug.LogError("Buy Button is not assigned! Please drag it into the inspector.");
-        }
     }
 
-    // 3. This runs when the player clicks the button
     private async void OnBuyButtonClicked()
     {
-        // Disable the button to prevent double-clicking while it loads
+        // 1. Check if the user is actually logged in with Google SSO
+        if (auth.CurrentUser == null)
+        {
+            Debug.LogError("Player is not logged in! Cannot make a purchase.");
+            return;
+        }
+
         buyButton.interactable = false;
-        Debug.Log("Contacting server for PHP 50 Sandbox Checkout...");
+        Debug.Log($"Player {auth.CurrentUser.UserId} is buying player_skin1...");
 
-        await RequestMayaCheckout();
-
-        // Re-enable the button after the browser opens
-        buyButton.interactable = true;
+        await RequestMayaCheckout("player_skin1"); // Tell the server which skin to buy
     }
 
-    // 4. The actual call to your Cloud Function
-    private async Task RequestMayaCheckout()
+    private async Task RequestMayaCheckout(string skinToBuy)
     {
         try
         {
-            // Call the cloud function you deployed earlier
             var createCheckoutFunc = functions.GetHttpsCallable("createMayaCheckout");
-            var result = await createCheckoutFunc.CallAsync();
 
-            // Extract the checkoutUrl that your Node.js code sent back
-            var data = (Dictionary<object, object>)result.Data;
+            var dataToSend = new Dictionary<string, object> { { "skinId", skinToBuy } };
+            var result = await createCheckoutFunc.CallAsync(dataToSend);
+
+            // 1. Safely cast the data so Unity doesn't crash
+            var data = result.Data as System.Collections.IDictionary;
+
+            if (data == null)
+            {
+                Debug.LogError("Server Error: The backend returned invalid data.");
+                buyButton.interactable = true;
+                return;
+            }
+
+            // 2. Did Maya actually give us a URL, or did they reject us?
+            if (!data.Contains("checkoutUrl") || data["checkoutUrl"] == null)
+            {
+                Debug.LogError("MAYA REJECTED THE REQUEST! Here is what the server returned instead:");
+
+                // Print out every piece of data the server sent us so we can find the bug
+                foreach (System.Collections.DictionaryEntry item in data)
+                {
+                    Debug.Log($"   -> {item.Key}: {item.Value}");
+                }
+
+                buyButton.interactable = true;
+                return;
+            }
+
+            // 3. If we made it here, Maya accepted it!
             string checkoutUrl = data["checkoutUrl"].ToString();
+            string orderId = data["orderId"].ToString();
 
-            Debug.Log("Success! Opening browser to: " + checkoutUrl);
+            Debug.Log("Success! Opening browser... Listening for payment completion on " + orderId);
 
-            // 5. Open the Maya Sandbox payment page in the player's web browser
+            ListenForPaymentSuccess(orderId, skinToBuy);
             Application.OpenURL(checkoutUrl);
         }
         catch (System.Exception e)
         {
-            Debug.LogError("Failed to get payment link from server: " + e.Message);
+            Debug.LogError("Payment Error: " + e.Message);
+            buyButton.interactable = true;
         }
+    }
+
+    private void ListenForPaymentSuccess(string orderId, string skinId)
+    {
+        DocumentReference docRef = db.Collection("payments").Document(orderId);
+
+        // 4. This block constantly watches the specific receipt in the database
+        dbListener = docRef.Listen(snapshot =>
+        {
+            if (snapshot.Exists && snapshot.ContainsField("status"))
+            {
+                string status = snapshot.GetValue<string>("status");
+
+                if (status == "PAID")
+                {
+                    Debug.Log("PAYMENT SUCCESS! Maya confirmed it.");
+                    Debug.Log($"The database has automatically unlocked {skinId} for the player!");
+
+                    // TODO: Run your visual game logic here (e.g., equip the skin, play a sound)
+
+                    buyButton.interactable = true; // Re-enable button
+                    dbListener.Stop(); // Stop listening to save memory
+                }
+            }
+        });
+    }
+
+    void OnDestroy()
+    {
+        if (dbListener != null) dbListener.Stop(); // Clean up if they change scenes
     }
 }
