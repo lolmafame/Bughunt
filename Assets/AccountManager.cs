@@ -3,22 +3,22 @@ using TMPro;
 using Firebase.Auth;
 using Firebase.Firestore;
 using Firebase.Extensions;
+using System.Collections.Generic;
 
 public class AccountManager : MonoBehaviour
 {
     [Header("UI Display Elements")]
     [SerializeField] private TMP_Text displayUsernameText;
     [SerializeField] private TMP_Text displayEmailText;
-    [Tooltip("Drag the Account Panel here so we can hide it on logout")]
-    [SerializeField] private GameObject accountPanel; // Brought this back!
+    [SerializeField] private GameObject accountPanel;
 
     [Header("Scene Transitions")]
-    [Tooltip("Drag the Login Panel (with the SpringPanel script) here")]
-    [SerializeField] private SpringPanel loginSpringPanel;
+    [SerializeField] private GameObject loginPanelRoot;
 
     private FirebaseAuth auth;
     private FirebaseFirestore db;
 
+    // CHANGED: Use Awake for earlier initialization
     void Awake()
     {
         InitializeFirebase();
@@ -32,9 +32,10 @@ public class AccountManager : MonoBehaviour
 
     public void OpenAccountPanel()
     {
+        // SAFETY: Ensure Firebase is loaded even if Awake didn't run yet
         InitializeFirebase();
 
-        Debug.Log(">>> ACCOUNT MANAGER: OpenAccountPanel called!");
+        Debug.Log(">>> ACCOUNT MANAGER: OpenAccountPanel called!"); // Debug Proof
 
         if (auth.CurrentUser == null)
         {
@@ -42,14 +43,25 @@ public class AccountManager : MonoBehaviour
             return;
         }
 
-        // We assume the animation/transition into this panel is handled elsewhere,
-        // but we still need to populate the data.
+        // 1. Hide Login UI / Show Account UI
+        if (loginPanelRoot != null) loginPanelRoot.SetActive(false);
+
+        if (accountPanel != null)
+        {
+            accountPanel.SetActive(true);
+        }
+        else
+        {
+            Debug.LogError(">>> ERROR: Account Panel GameObject is not assigned in Inspector!");
+        }
+
+        // 2. Populate the text fields
         RefreshUserData();
     }
 
     public void RefreshUserData()
     {
-        InitializeFirebase();
+        InitializeFirebase(); // Double safety
         FirebaseUser user = auth.CurrentUser;
         if (user == null) return;
 
@@ -93,27 +105,8 @@ public class AccountManager : MonoBehaviour
 
     public void OnLogoutClicked()
     {
-        // 1. Sign out of Firebase
-        if (auth != null && auth.CurrentUser != null)
-        {
-            auth.SignOut();
-            Debug.Log(">>> ACCOUNT MANAGER: User logged out successfully.");
-        }
-
-        // 2. Hide the Account Panel instantly
-        if (accountPanel != null)
-        {
-            accountPanel.SetActive(false);
-        }
-
-        // 3. Trigger the animated Login Panel to drop down
-        if (loginSpringPanel != null)
-        {
-            loginSpringPanel.PlayDropBounce();
-        }
-        else
-        {
-            Debug.LogWarning(">>> WARNING: loginSpringPanel is not assigned in the Inspector!");
-        }
+        if (auth != null && auth.CurrentUser != null) auth.SignOut();
+        if (accountPanel != null) accountPanel.SetActive(false);
+        if (loginPanelRoot != null) loginPanelRoot.SetActive(true);
     }
 }
