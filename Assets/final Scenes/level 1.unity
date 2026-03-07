@@ -3023,6 +3023,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   blinkSpeed: 0.5
+--- !u!4 &631544232 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5723655050469798513, guid: 1e9e12c2be1b57a41851034399d2e60e, type: 3}
+  m_PrefabInstance: {fileID: 987274066}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &664882308
 GameObject:
   m_ObjectHideFlags: 0
@@ -6124,15 +6129,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 5588479f8435dd4459d182962edf3921, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 125.59
+      value: 127.95
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 5588479f8435dd4459d182962edf3921, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6.88
+      value: 7.18
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 5588479f8435dd4459d182962edf3921, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 29.53
+      value: 50.42
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 5588479f8435dd4459d182962edf3921, type: 3}
       propertyPath: m_LocalRotation.w
@@ -7458,8 +7463,8 @@ MonoBehaviour:
   completionTerminalText: {fileID: 415907458}
   gameTimer: {fileID: 1073012470}
   mainMenuSceneName: NewTitleScreen
-  spawnPoint: {fileID: 1455875621}
   level2SceneName: level 2
+  spawnPoint: {fileID: 1455875621}
 --- !u!4 &1785852811
 Transform:
   m_ObjectHideFlags: 0
@@ -11233,7 +11238,7 @@ PrefabInstance:
     - target: {fileID: 3744686653714557371, guid: 783af2bcb30ad784a99491081f2a5fae, type: 3}
       propertyPath: groundCheck
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 631544232}
     - target: {fileID: 4058050132138690207, guid: 783af2bcb30ad784a99491081f2a5fae, type: 3}
       propertyPath: m_IsActive
       value: 0
