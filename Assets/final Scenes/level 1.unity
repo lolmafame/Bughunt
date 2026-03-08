@@ -7458,8 +7458,8 @@ MonoBehaviour:
   completionTerminalText: {fileID: 415907458}
   gameTimer: {fileID: 1073012470}
   mainMenuSceneName: NewTitleScreen
-  spawnPoint: {fileID: 1455875621}
   level2SceneName: level 2
+  spawnPoint: {fileID: 1455875621}
 --- !u!4 &1785852811
 Transform:
   m_ObjectHideFlags: 0
