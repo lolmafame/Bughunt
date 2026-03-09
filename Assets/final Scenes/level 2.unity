@@ -2634,13 +2634,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
-  instructions: 'Instructions:
+  instructions: 'Fix the code
 
-    virus_name = "Subject-27"
+    Debug this Code!:
 
-    Print virus_name
-    on the terminal.'
-  correctAnswer: print(virus_name)
+    scientist = input("Enter
+    scientist name: ")
+
+    print("Last Access By: " + Scientist)
+
+    
+
+'
+  correctAnswer: 'print("Last Access By: " + scientist)'
 --- !u!65 &234912557
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8240,13 +8246,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
-  instructions: 'Instructions:
+  instructions: 'Fix the code
 
-    robot_name = "BOB"
+    Debug this Code!:
 
-    Print robot_name on the
-    terminal.'
-  correctAnswer: print(robot_name)
+    robot_name = input Enter
+    robot name:
+
+    print("Robot Name: " + robot_name)
+
+'
+  correctAnswer: 'robot_name = input(''Enter robot name''):'
 --- !u!65 &720478780
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -10553,13 +10563,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
-  instructions: 'Instructions:
+  instructions: 'Fix the code
 
-    creator_name = "Dr. Reyes"
+    Debug this Code!:
 
-    Print creator_name
-    on the terminal.'
-  correctAnswer: print(creator_name)
+    power_level = input("Enter
+    power level: ")
+
+    print("Power Level: " power_level)
+
+    
+
+'
+  correctAnswer: 'print("Power Level: " + power_level)'
 --- !u!65 &936213846
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -12055,13 +12071,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
-  instructions: 'Instructions:
+  instructions: 'Fix the code
 
-    core_status = "Stable"
+    Debug this Code!:
 
-    Print core_status
-    on the terminal.'
-  correctAnswer: print(core_status)
+    virus = input("Enter virus
+    name: ")
+
+    print("Searching database for: " + virus_name)
+
+'
+  correctAnswer: 'print("Searching database for: " + virus)'
 --- !u!65 &1109761778
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -19056,6 +19076,7 @@ MonoBehaviour:
   completionTerminalText: {fileID: 415907458}
   gameTimer: {fileID: 1073012470}
   mainMenuSceneName: NewTitleScreen
+  level2SceneName: Level2
   spawnPoint: {fileID: 1455875621}
 --- !u!4 &1785852811
 Transform:
@@ -19923,13 +19944,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
-  instructions: 'Instructions:
+  instructions: 'Fix the code
 
-    unit_type = "Helper Robot"
+    Debug this Code!:
 
-    Print unit_type
-    on the terminal.'
-  correctAnswer: print(unit_type)
+    prototype = input("Enter
+    prototype number: ")
+
+    print("Current Prototype: " + prototype_number)
+
+'
+  correctAnswer: 'print("Current Prototype: " + prototype)'
 --- !u!65 &1868399552
 BoxCollider:
   m_ObjectHideFlags: 0
