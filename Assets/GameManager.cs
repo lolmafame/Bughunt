@@ -1,6 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Firebase.Auth;
+using Firebase.Firestore;
+using Firebase.Extensions;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
@@ -127,6 +131,9 @@ public class GameManager : MonoBehaviour
         completionTerminalText.text = "Terminals: " +
             TerminalManager.Instance.GetCompletedTerminals() +
             " / " + TerminalManager.Instance.totalTerminals;
+
+        // Trigger the database save
+        SaveLevelProgress();
     }
 
     public void CompletionContinue()
@@ -144,6 +151,44 @@ public class GameManager : MonoBehaviour
         Cursor.visible = true;
         PlayerPrefs.SetInt("OpenCampaign", 1);
         SceneManager.LoadScene(mainMenuSceneName);
+    }
+
+    private void SaveLevelProgress()
+    {
+        // 1. Grab the currently logged-in user
+        FirebaseUser currentUser = FirebaseAuth.DefaultInstance.CurrentUser;
+
+        if (currentUser != null)
+        {
+            // 2. Get a reference to the user's document in Firestore
+            FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
+            DocumentReference userDoc = db.Collection("users").Document(currentUser.UserId);
+
+            // 3. Prepare the data to update. 
+            // We are marking Level 1 as complete, and as a bonus, saving their completion time!
+            Dictionary<string, object> progressData = new Dictionary<string, object>
+        {
+            { "level1_completed", true },
+            { "level1_best_time", gameTimer.GetFinalTime() }
+        };
+
+            // 4. Push the update to Firestore asynchronously
+            userDoc.UpdateAsync(progressData).ContinueWithOnMainThread(task =>
+            {
+                if (task.IsFaulted || task.IsCanceled)
+                {
+                    Debug.LogError("Failed to save level progress to database: " + task.Exception);
+                }
+                else
+                {
+                    Debug.Log("Successfully saved Level 1 completion to database for user: " + currentUser.UserId);
+                }
+            });
+        }
+        else
+        {
+            Debug.LogWarning("No user is currently logged in. Level progress will not be saved.");
+        }
     }
 
     // ---------------- Utilities ----------------
