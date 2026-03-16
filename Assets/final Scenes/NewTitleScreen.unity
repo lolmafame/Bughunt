@@ -21848,10 +21848,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a834900a887d6849b3dd3ec6bc80e47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AccountManager
-  displayUsernameText: {fileID: 0}
-  displayEmailText: {fileID: 0}
-  accountPanel: {fileID: 0}
-  loginPanelRoot: {fileID: 0}
 --- !u!1 &778139376
 GameObject:
   m_ObjectHideFlags: 0
@@ -22765,6 +22761,30 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1747301475}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1768531436}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &805386915
 MonoBehaviour:
@@ -30565,7 +30585,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1040926091
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68081,7 +68101,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fc33ce7fdf78ca4e9623f471a732e2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MayaPaymentController
-  buyButton: {fileID: 0}
 --- !u!1 &2041290546
 GameObject:
   m_ObjectHideFlags: 0
