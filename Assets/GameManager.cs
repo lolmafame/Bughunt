@@ -155,6 +155,14 @@ public class GameManager : MonoBehaviour
 
     private void SaveLevelProgress()
     {
+        // Save to PlayerPrefs as a local backup
+        PlayerPrefs.SetInt("level1_completed", 1);
+        if (gameTimer != null)
+        {
+            PlayerPrefs.SetFloat("level1_best_time", gameTimer.GetFinalTime());
+        }
+        PlayerPrefs.Save();
+
         // 1. Grab the currently logged-in user
         FirebaseUser currentUser = FirebaseAuth.DefaultInstance.CurrentUser;
 

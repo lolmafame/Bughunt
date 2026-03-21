@@ -73,10 +73,10 @@ namespace i5.Toolkit.Core.ServiceCore
                 return;
             }
 
-            runnerObject = new GameObject("Service Manager Runner");
-
-            GameObject.DontDestroyOnLoad(runnerObject);
-
+            // create a new runner object and make it persistent
+            runnerObject = ObjectPool<GameObject>.RequestResource(() => { return new GameObject(); });
+            runnerObject.name = "Service Manager Runner";
+            PersistenceScene.MarkPersistent(runnerObject);
             Runner = runnerObject.AddComponent<ServiceManagerRunner>();
             Runner.Initialize(this);
         }
@@ -213,8 +213,13 @@ namespace i5.Toolkit.Core.ServiceCore
         /// </summary>
         public void OnRunnerDestroyed()
         {
-            // Do nothing.
-            // Runner should not recreate itself during scene unload.
+            // make sure that the entire object is destroyed
+            GameObject.Destroy(runnerObject);
+            // then re-create it
+            if (!applicationQuitting)
+            {
+                CreateRunner();
+            }
         }
 
         // called when the application is quitting

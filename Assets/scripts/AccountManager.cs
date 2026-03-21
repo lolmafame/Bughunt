@@ -103,10 +103,15 @@ public class AccountManager : MonoBehaviour
         }
     }
 
-    public void OnLogoutClicked()
+
+    /// Executes ONLY the Firebase SignOut logic.
+    public void SignOutFirebaseOnly()
     {
-        if (auth != null && auth.CurrentUser != null) auth.SignOut();
-        if (accountPanel != null) accountPanel.SetActive(false);
-        if (loginPanelRoot != null) loginPanelRoot.SetActive(true);
+        InitializeFirebase();
+        if (auth != null && auth.CurrentUser != null)
+        {
+            auth.SignOut();
+            Debug.Log(">>> ACCOUNT MANAGER: Firebase SignOut complete.");
+        }
     }
 }

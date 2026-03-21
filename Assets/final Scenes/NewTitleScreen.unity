@@ -13690,7 +13690,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LevelUI
   lockIcon: {fileID: 972515212}
-  checkmarkIcon: {fileID: 0}
+  checkmarkIcon: {fileID: 959595979}
   levelButton: {fileID: 491878226}
   baseImage: {fileID: 491878227}
 --- !u!1 &493889816
@@ -22033,9 +22033,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 776787827}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a834900a887d6849b3dd3ec6bc80e47, type: 3}
+  m_Script: {fileID: 11500000, guid: 5b8afd363b1a6404691af53e28bff75a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AccountManager
+  displayUsernameText: {fileID: 1864458637}
+  displayEmailText: {fileID: 684395710}
+  accountPanel: {fileID: 1859979278}
+  loginPanelRoot: {fileID: 460468376}
 --- !u!1 &778139376
 GameObject:
   m_ObjectHideFlags: 0
@@ -22878,6 +22882,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 776787829}
+        m_TargetAssemblyTypeName: AccountManager, Assembly-CSharp
+        m_MethodName: SignOutFirebaseOnly
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 525349933}
         m_TargetAssemblyTypeName: SpringPanel, Assembly-CSharp
         m_MethodName: PlayDropBounce
@@ -63570,6 +63586,59 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1885793304}
   m_CullTransparentMesh: 1
+--- !u!1 &1891245579
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1891245580}
+  - component: {fileID: 1891245581}
+  m_Layer: 5
+  m_Name: LevelManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1891245580
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1891245579}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1907601129}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1891245581
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1891245579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aab5be86e3ee15548be43b092672b43e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LevelSelectManager
+  level1UI: {fileID: 491878230}
+  level2UI: {fileID: 1991140491}
+  level3UI: {fileID: 1894189106}
+  level4UI: {fileID: 348993120}
+  level5UI: {fileID: 1595652749}
 --- !u!1 &1892339550
 GameObject:
   m_ObjectHideFlags: 0
@@ -64204,6 +64273,7 @@ RectTransform:
   - {fileID: 1894189102}
   - {fileID: 348993116}
   - {fileID: 1595652745}
+  - {fileID: 1891245580}
   m_Father: {fileID: 1958505997}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -68868,9 +68938,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2041219505}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fc33ce7fdf78ca4e9623f471a732e2d, type: 3}
+  m_Script: {fileID: 11500000, guid: 7749ec5613d5df842a5bfad381978ff7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MayaPaymentController
+  buyButton: {fileID: 1611884942}
 --- !u!1 &2041290546
 GameObject:
   m_ObjectHideFlags: 0
