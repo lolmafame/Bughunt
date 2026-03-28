@@ -5,9 +5,8 @@ public class SpiderAI : MonoBehaviour
 {
     [Header("Patrol Settings")]
     public NavMeshAgent agent;
-    public float patrolRadius = 20f;
-    public float patrolTimer = 5f;
-    private float timer;
+    public float patrolWaitTime = 1f;        // how long it waits at each terminal
+    public float patrolSpeed = 3.5f;
 
     [Header("Chase Settings")]
     public float chaseSpeed = 5f;
@@ -15,7 +14,7 @@ public class SpiderAI : MonoBehaviour
     private Transform player;
 
     [Header("Threat Escalation")]
-    public SphereCollider detectionSphere; // drag Spider's own SphereCollider here
+    public SphereCollider detectionSphere;
     public float calmSpeed = 5f;
     public float calmDetectionRadius = 40f;
     public float alertSpeed = 7f;
@@ -23,108 +22,207 @@ public class SpiderAI : MonoBehaviour
     public float maxSpeed = 9f;
     public float maxDetectionRadius = 70f;
 
-    [Header("Terminal Investigation")]
-    private bool isInvestigating = false;
-    private Transform investigateTargetTransform;
+    [Header("Investigation Settings")]
+    public float baseSearchDuration = 5f;    // how long it searches after arriving
+    public float searchDurationIncrement = 3f; // adds this much per trigger
+    public float maxSearchDuration = 20f;
+
+    [Header("Roaming")]
+    public float stuckThreshold = 2f;
+    public float stuckDistanceLimit = 1f;
+
+    // ---- Private State ----
+    private enum SpiderState { Patrol, Investigating, Searching, Chasing }
+    private SpiderState state = SpiderState.Patrol;
+
+    private Terminal[] allTerminals;         // all terminals in scene
+    private int currentPatrolIndex = 0;
+    private float patrolWaitTimer = 0f;
+    private bool isWaitingAtTerminal = false;
+
+    private Transform investigateTarget;     // terminal position being investigated
+    private float searchTimer = 0f;
+    private float currentSearchDuration;
+    private int suspicionLevel = 0;          // increases each trigger
 
     private float gameTime = 0f;
+
+    private float stuckTimer = 0f;
+    private Vector3 lastPosition;
 
     void Start()
     {
         if (agent == null) agent = GetComponent<NavMeshAgent>();
         if (detectionSphere == null) detectionSphere = GetComponent<SphereCollider>();
-        timer = patrolTimer;
-        SetNewPatrolDestination();
+
+        // Find all terminals automatically
+        allTerminals = FindObjectsByType<Terminal>(FindObjectsSortMode.None);
+
+        if (allTerminals.Length == 0)
+        {
+            Debug.LogWarning("SpiderAI: No terminals found in scene!");
+            return;
+        }
+
+        // Shuffle terminals for unpredictable patrol order
+        ShuffleTerminals();
+
+        currentSearchDuration = baseSearchDuration;
+        lastPosition = transform.position;
+        agent.speed = patrolSpeed;
+
+        GoToNextPatrolTerminal();
     }
 
     void Update()
     {
         gameTime += Time.deltaTime;
         UpdateThreatLevel();
+        CheckIfStuck();
 
-        // ---------------- Investigation Mode ----------------
-        if (isInvestigating && investigateTargetTransform != null)
+        switch (state)
         {
-            agent.SetDestination(investigateTargetTransform.position);
+            case SpiderState.Patrol:
+                HandlePatrol();
+                break;
+            case SpiderState.Investigating:
+                HandleInvestigating();
+                break;
+            case SpiderState.Searching:
+                HandleSearching();
+                break;
+            case SpiderState.Chasing:
+                HandleChasing();
+                break;
+        }
+    }
+
+    // ------------------------------------------------
+    // PATROL
+    // ------------------------------------------------
+    void HandlePatrol()
+    {
+        if (allTerminals.Length == 0) return;
+
+        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance + 0.2f)
+        {
+            if (!isWaitingAtTerminal)
+            {
+                isWaitingAtTerminal = true;
+                patrolWaitTimer = patrolWaitTime;
+            }
+
+            patrolWaitTimer -= Time.deltaTime;
+
+            if (patrolWaitTimer <= 0f)
+            {
+                isWaitingAtTerminal = false;
+                GoToNextPatrolTerminal();
+            }
+        }
+    }
+
+    void GoToNextPatrolTerminal()
+    {
+        if (allTerminals.Length == 0) return;
+
+        // Skip completed terminals
+        int attempts = 0;
+        while (allTerminals[currentPatrolIndex].isCompleted && attempts < allTerminals.Length)
+        {
+            currentPatrolIndex = (currentPatrolIndex + 1) % allTerminals.Length;
+            attempts++;
+        }
+
+        agent.speed = patrolSpeed;
+        agent.SetDestination(allTerminals[currentPatrolIndex].transform.position);
+        currentPatrolIndex = (currentPatrolIndex + 1) % allTerminals.Length;
+    }
+
+    // ------------------------------------------------
+    // INVESTIGATION
+    // ------------------------------------------------
+    public void InvestigateTerminal(Transform terminalTransform)
+    {
+        // Increase suspicion each time triggered
+        suspicionLevel++;
+        currentSearchDuration = Mathf.Min(
+            baseSearchDuration + (searchDurationIncrement * suspicionLevel),
+            maxSearchDuration
+        );
+
+        investigateTarget = terminalTransform;
+        state = SpiderState.Investigating;
+        agent.speed = chaseSpeed;
+        agent.SetDestination(investigateTarget.position);
+
+        Debug.Log("Spider investigating terminal. Suspicion level: " + suspicionLevel);
+    }
+
+    void HandleInvestigating()
+    {
+        if (investigateTarget == null)
+        {
+            ResumePatrol();
             return;
         }
 
-        // ---------------- Chasing Mode ----------------
-        if (isChasing && player != null)
+        agent.SetDestination(investigateTarget.position);
+
+        // Arrived at terminal
+        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance + 0.5f)
         {
-            agent.SetDestination(player.position);
-        }
-        else
-        {
-            // ---------------- Patrol Mode ----------------
-            timer += Time.deltaTime;
-            if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance + 0.2f)
-                SetNewPatrolDestination();
-            if (timer >= patrolTimer)
-            {
-                SetNewPatrolDestination();
-                timer = 0f;
-            }
+            Debug.Log("Spider arrived at terminal, searching for " + currentSearchDuration + " seconds");
+            searchTimer = currentSearchDuration;
+            state = SpiderState.Searching;
         }
     }
 
-    void UpdateThreatLevel()
+    // ------------------------------------------------
+    // SEARCHING
+    // ------------------------------------------------
+    void HandleSearching()
     {
-        float minutes = gameTime / 60f;
+        searchTimer -= Time.deltaTime;
 
-        float targetSpeed;
-        float targetRadius;
-
-        if (minutes < 3f)
+        // Wander near terminal while searching
+        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance + 0.2f)
         {
-            targetSpeed = calmSpeed;
-            targetRadius = calmDetectionRadius;
-        }
-        else if (minutes < 6f)
-        {
-            targetSpeed = alertSpeed;
-            targetRadius = alertDetectionRadius;
-        }
-        else
-        {
-            targetSpeed = maxSpeed;
-            targetRadius = maxDetectionRadius;
-        }
-
-        // Smoothly grow detection radius
-        if (detectionSphere != null)
-            detectionSphere.radius = Mathf.Lerp(detectionSphere.radius, targetRadius, Time.deltaTime * 0.5f);
-
-        // Update chase speed
-        chaseSpeed = targetSpeed;
-
-        // If currently chasing, apply new speed immediately
-        if (isChasing)
-            agent.speed = chaseSpeed;
-    }
-
-    void SetNewPatrolDestination()
-    {
-        for (int i = 0; i < 10; i++)
-        {
-            Vector3 randomDir = Random.insideUnitSphere * patrolRadius + transform.position;
+            // Pick a small random nearby point to wander
+            Vector3 randomDir = Random.insideUnitSphere * 8f + transform.position;
             NavMeshHit hit;
-            if (NavMesh.SamplePosition(randomDir, out hit, patrolRadius, NavMesh.AllAreas))
-            {
+            if (NavMesh.SamplePosition(randomDir, out hit, 8f, NavMesh.AllAreas))
                 agent.SetDestination(hit.position);
-                return;
-            }
+        }
+
+        if (searchTimer <= 0f)
+        {
+            Debug.Log("Spider finished searching, resuming patrol");
+            ResumePatrol();
         }
     }
 
-    // ---------------- Detection ----------------
+    // ------------------------------------------------
+    // CHASING
+    // ------------------------------------------------
+    void HandleChasing()
+    {
+        if (player != null)
+            agent.SetDestination(player.position);
+    }
+
+    // ------------------------------------------------
+    // DETECTION TRIGGER
+    // ------------------------------------------------
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
             player = other.transform;
             isChasing = true;
+            state = SpiderState.Chasing;
             agent.speed = chaseSpeed;
+            Debug.Log("Spider detected player!");
         }
     }
 
@@ -134,29 +232,99 @@ public class SpiderAI : MonoBehaviour
         {
             player = null;
             isChasing = false;
-            agent.speed = 3.5f;
-            SetNewPatrolDestination();
+
+            // Go back to searching if we were investigating, otherwise patrol
+            if (investigateTarget != null)
+            {
+                state = SpiderState.Searching;
+                searchTimer = currentSearchDuration;
+            }
+            else
+            {
+                ResumePatrol();
+            }
         }
     }
 
-    // ---------------- Terminal Investigation ----------------
-    public void ForceInvestigate(Transform targetTransform)
+    // ------------------------------------------------
+    // UTILITIES
+    // ------------------------------------------------
+    void ResumePatrol()
     {
-        isInvestigating = true;
-        investigateTargetTransform = targetTransform;
-        isChasing = true;
-        agent.speed = chaseSpeed;
+        state = SpiderState.Patrol;
+        investigateTarget = null;
+        agent.speed = patrolSpeed;
+        GoToNextPatrolTerminal();
+    }
+
+    void UpdateThreatLevel()
+    {
+        float minutes = gameTime / 60f;
+        float targetRadius;
+
+        if (minutes < 3f)
+        {
+            chaseSpeed = calmSpeed;
+            targetRadius = calmDetectionRadius;
+        }
+        else if (minutes < 6f)
+        {
+            chaseSpeed = alertSpeed;
+            targetRadius = alertDetectionRadius;
+        }
+        else
+        {
+            chaseSpeed = maxSpeed;
+            targetRadius = maxDetectionRadius;
+        }
+
+        if (detectionSphere != null)
+            detectionSphere.radius = Mathf.Lerp(detectionSphere.radius, targetRadius, Time.deltaTime * 0.5f);
+    }
+
+    void CheckIfStuck()
+    {
+        if (state == SpiderState.Chasing) return;
+
+        stuckTimer += Time.deltaTime;
+        if (stuckTimer >= stuckThreshold)
+        {
+            float distanceMoved = Vector3.Distance(transform.position, lastPosition);
+            if (distanceMoved < stuckDistanceLimit)
+            {
+                // Force move to next terminal
+                GoToNextPatrolTerminal();
+            }
+            lastPosition = transform.position;
+            stuckTimer = 0f;
+        }
+    }
+
+    void ShuffleTerminals()
+    {
+        for (int i = allTerminals.Length - 1; i > 0; i--)
+        {
+            int rand = Random.Range(0, i + 1);
+            Terminal temp = allTerminals[i];
+            allTerminals[i] = allTerminals[rand];
+            allTerminals[rand] = temp;
+        }
+    }
+
+    // Called by ForceInvestigate from CodeTerminalUI
+    public void ForceInvestigate(Transform terminalTransform)
+    {
+        InvestigateTerminal(terminalTransform);
     }
 
     public void StopInvestigate()
     {
-        isInvestigating = false;
-        investigateTargetTransform = null;
-        if (player == null)
+        // Don't stop immediately — let search duration run
+        // Only stop if currently still travelling to terminal
+        if (state == SpiderState.Investigating)
         {
-            isChasing = false;
-            agent.speed = 3.5f;
-            SetNewPatrolDestination();
+            searchTimer = currentSearchDuration;
+            state = SpiderState.Searching;
         }
     }
 }

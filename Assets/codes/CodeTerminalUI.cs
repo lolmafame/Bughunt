@@ -2,24 +2,19 @@
 using UnityEngine.UI;
 using TMPro;
 
-
 public class CodeTerminalUI : MonoBehaviour
 {
     public static CodeTerminalUI Instance;
-
     public GameObject codePanel;
     public InputField inputField;
     public TransitionFlow transitionFlow;
     public ProcessTransition processFlow;
-
     private Terminal currentTerminal;
     private bool isActive = false;
 
+    public TMP_Text instructionText;
 
-  
-    public TMP_Text instructionText; // Assign in Inspector
-
-void Awake()
+    void Awake()
     {
         Instance = this;
         codePanel.SetActive(false);
@@ -33,20 +28,27 @@ void Awake()
         inputField.text = "";
         isActive = true;
 
-        // ===== ADDED: Show instruction =====
         if (instructionText != null)
             instructionText.text = terminal.instructions;
 
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        inputField.Select();
+        inputField.ActivateInputField();
+
         GameManager.Instance.SetInputLocked(true);
-        ThirdPersonMovement playerMove =
-            GameObject.FindGameObjectWithTag("Player")
-            .GetComponent<ThirdPersonMovement>();
+
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj == null) { Debug.LogError("Player not found!"); return; }
+
+        ThirdPersonMovement playerMove = playerObj.GetComponent<ThirdPersonMovement>();
+        if (playerMove == null) { Debug.LogError("ThirdPersonMovement not found!"); return; }
+
         playerMove.enabled = false;
+
         SpiderAI spider = FindAnyObjectByType<SpiderAI>();
         if (spider != null)
-        {
-            spider.ForceInvestigate(playerMove.transform);
-        }
+            spider.ForceInvestigate(terminal.transform); // CHANGED: terminal not player
     }
 
     public void Close()
@@ -54,20 +56,17 @@ void Awake()
         codePanel.SetActive(false);
         isActive = false;
 
-        // Unlock player movement
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
         ThirdPersonMovement playerMove = GameObject.FindGameObjectWithTag("Player").GetComponent<ThirdPersonMovement>();
         playerMove.enabled = true;
         GameManager.Instance.SetInputLocked(false);
 
-
-        // Stop spider investigation
         SpiderAI spider = FindAnyObjectByType<SpiderAI>();
         if (spider != null)
-        {
             spider.StopInvestigate();
-        }
     }
-
 
     public void Submit()
     {
@@ -81,7 +80,7 @@ void Awake()
                 Close();
             });
         }
-        else  // ← replace everything from here
+        else
         {
             processFlow.PlayFail(() =>
             {
@@ -97,12 +96,10 @@ void Awake()
         }
     }
 
-
     void Update()
     {
         if (!isActive) return;
 
-        // TAB closes terminal
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             Close();
@@ -114,4 +111,3 @@ void Awake()
         return isActive;
     }
 }
-
