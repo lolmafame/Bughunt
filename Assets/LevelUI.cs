@@ -26,7 +26,7 @@ public class LevelUI : MonoBehaviour
                 lockIcon.SetActive(false);
                 checkmarkIcon.SetActive(false);
                 levelButton.interactable = true;
-                baseImage.color = completeColor;
+                baseImage.color = normalColor;
                 break;
 
             case LevelState.Complete:
