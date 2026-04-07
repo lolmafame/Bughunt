@@ -42,7 +42,7 @@ public class PlayerHealth : MonoBehaviour
             GameManager.Instance.GameOver();
             return;
         }
-
+        SoundManager.Instance.PlayHurt(); // ← add here
         UpdateHealthUI();
 
         // ===== 2. Refill stamina =====
