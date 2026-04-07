@@ -30,6 +30,8 @@ public class ThirdPersonMovement : MonoBehaviour
     bool isGrounded;
     float turnSmoothVelocity;
     public float turnSmoothTime = 0.05f; // snappier for RE4 feel
+    //running
+    public bool IsActuallyRunning() => Input.GetKey(KeyCode.LeftShift) && canRun && new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical")).magnitude >= 0.1f;
 
     void Start()
     {

@@ -272,7 +272,7 @@ MonoBehaviour:
   spiderFootstepSource: {fileID: 1792642993}
   spiderAmbientSource: {fileID: 1744335836}
   playerVoiceSource: {fileID: 1565690354}
-  bgMusicClip: {fileID: 8300000, guid: 75292fc431c2030499184eb455d10b62, type: 3}
+  bgMusicClip: {fileID: 0}
   dangerMusicClip: {fileID: 0}
   walkFootsteps:
   - {fileID: 8300000, guid: 54ae3f8ae48f21d42a7670f6c8f589f8, type: 3}
@@ -18023,7 +18023,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3484652266543125338, guid: 36cdd10d7c24be6418f215fd864fd8ed, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 129.85606
+      value: 130.22606
       objectReference: {fileID: 0}
     - target: {fileID: 3484652266543125338, guid: 36cdd10d7c24be6418f215fd864fd8ed, type: 3}
       propertyPath: m_LocalPosition.y
@@ -18095,7 +18095,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1720002759758408411, guid: c1e7aa59e1e955540aebf045678f7b42, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 129.85606
+      value: 130.22606
       objectReference: {fileID: 0}
     - target: {fileID: 1720002759758408411, guid: c1e7aa59e1e955540aebf045678f7b42, type: 3}
       propertyPath: m_LocalPosition.y
@@ -18844,7 +18844,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 451d85fdf1fd45b4fa13ec7a8858a94f, type: 2}
     - target: {fileID: 2705621360532978427, guid: 783af2bcb30ad784a99491081f2a5fae, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 128.83
+      value: 129.2
       objectReference: {fileID: 0}
     - target: {fileID: 2705621360532978427, guid: 783af2bcb30ad784a99491081f2a5fae, type: 3}
       propertyPath: m_LocalPosition.y

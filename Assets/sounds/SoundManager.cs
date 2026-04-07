@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
@@ -75,6 +75,10 @@ public class SoundManager : MonoBehaviour
 
     void Start()
     {
+
+
+
+
         // Find player and spider automatically
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
@@ -165,7 +169,7 @@ public class SoundManager : MonoBehaviour
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
         bool isMoving = new Vector3(h, 0f, v).magnitude >= 0.1f;
-        bool isRunning = Input.GetKey(KeyCode.LeftShift) && isMoving;
+        bool isRunning = playerMove.IsActuallyRunning(); // ← replaces old isRunning line
 
         if (isMoving)
         {
@@ -179,6 +183,8 @@ public class SoundManager : MonoBehaviour
         else
         {
             playerStepTimer = 0f;
+            if (footstepSource.isPlaying)
+                footstepSource.Stop();
         }
     }
 
@@ -186,8 +192,10 @@ public class SoundManager : MonoBehaviour
     {
         AudioClip[] clips = running ? runFootsteps : walkFootsteps;
         if (clips == null || clips.Length == 0) return;
+
         AudioClip clip = clips[Random.Range(0, clips.Length)];
-        footstepSource.PlayOneShot(clip, 0.6f);
+        footstepSource.clip = clip;
+        footstepSource.Play(); // interrupts the previous clip, no stacking, no delay
     }
 
     // ------------------------------------------------
@@ -205,7 +213,7 @@ public class SoundManager : MonoBehaviour
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
         bool isMoving = new Vector3(h, 0f, v).magnitude >= 0.1f;
-        bool isSprinting = Input.GetKey(KeyCode.LeftShift) && isMoving;
+        bool isSprinting = playerMove.IsActuallyRunning(); // ← replaces old isSprinting line
 
         if (sprintLoopClip != null)
         {
