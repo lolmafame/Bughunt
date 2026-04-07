@@ -92,9 +92,14 @@ public class SubtitleController : MonoBehaviour
 
         SubtitleLine line = lines[currentIndex];
 
-        // Show focus object if exists
-        if (line.focusObject != null)
-            line.focusObject.SetActive(true);
+        if (line.focusObjects != null)
+        {
+            foreach (GameObject obj in line.focusObjects)
+            {
+                if (obj != null)
+                    obj.SetActive(true);
+            }
+        }
 
         if (line.glitchClip != null && glitchAudioSource != null)
         {
@@ -172,9 +177,14 @@ public class SubtitleController : MonoBehaviour
         if (currentIndex >= lines.Length)
             return;
 
-        // Hide previous focus object
-        if (lines[currentIndex].focusObject != null)
-            lines[currentIndex].focusObject.SetActive(false);
+        if (lines[currentIndex].focusObjects != null)
+        {
+            foreach (GameObject obj in lines[currentIndex].focusObjects)
+            {
+                if (obj != null)
+                    obj.SetActive(false);
+            }
+        }
 
         currentIndex++;
 

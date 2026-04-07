@@ -12,7 +12,7 @@ public class SubtitleLine
     public AudioClip glitchClip;
 
     [Header("Focus Object (Optional)")]
-    public GameObject focusObject;
+    public GameObject[] focusObjects;
 
     [Header("Delay Before Text")]
     public float delayBeforeTyping = 0.3f;
