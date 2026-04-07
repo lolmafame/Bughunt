@@ -222,6 +222,7 @@ public class SpiderAI : MonoBehaviour
             isChasing = true;
             state = SpiderState.Chasing;
             agent.speed = chaseSpeed;
+            SoundManager.Instance.PlaySpiderDetected(); // ← add here
             Debug.Log("Spider detected player!");
         }
     }
@@ -232,6 +233,7 @@ public class SpiderAI : MonoBehaviour
         {
             player = null;
             isChasing = false;
+            SoundManager.Instance.PlaySpiderLost(); // ← add here
 
             // Go back to searching if we were investigating, otherwise patrol
             if (investigateTarget != null)

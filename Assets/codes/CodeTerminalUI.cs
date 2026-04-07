@@ -49,6 +49,7 @@ public class CodeTerminalUI : MonoBehaviour
         SpiderAI spider = FindAnyObjectByType<SpiderAI>();
         if (spider != null)
             spider.ForceInvestigate(terminal.transform); // CHANGED: terminal not player
+        SoundManager.Instance.PlayTerminalOpen(); // ← add here
     }
 
     public void Close()
@@ -66,6 +67,7 @@ public class CodeTerminalUI : MonoBehaviour
         SpiderAI spider = FindAnyObjectByType<SpiderAI>();
         if (spider != null)
             spider.StopInvestigate();
+        SoundManager.Instance.PlayTerminalClose(); // ← add here
     }
 
     public void Submit()
@@ -74,6 +76,7 @@ public class CodeTerminalUI : MonoBehaviour
 
         if (inputField.text == currentTerminal.correctAnswer)
         {
+            SoundManager.Instance.PlayTerminalCorrect(); // ← add here
             processFlow.PlaySuccess(() =>
             {
                 currentTerminal.CompleteTerminal();
@@ -82,6 +85,7 @@ public class CodeTerminalUI : MonoBehaviour
         }
         else
         {
+            SoundManager.Instance.PlayTerminalWrong(); // ← add here
             processFlow.PlayFail(() =>
             {
                 codePanel.SetActive(true);
@@ -100,10 +104,11 @@ public class CodeTerminalUI : MonoBehaviour
     {
         if (!isActive) return;
 
+        if (Input.anyKeyDown && !Input.GetKeyDown(KeyCode.Tab) && !Input.GetKeyDown(KeyCode.Return))
+            SoundManager.Instance.PlayTerminalTyping(); // ← fires on each keypress
+
         if (Input.GetKeyDown(KeyCode.Tab))
-        {
             Close();
-        }
     }
 
     public bool IsActive()

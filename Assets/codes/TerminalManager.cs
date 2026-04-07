@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class TerminalManager : MonoBehaviour
@@ -20,10 +20,12 @@ public class TerminalManager : MonoBehaviour
     {
         completedTerminals++;
         UpdateUI();
+        SoundManager.Instance.PlayTerminalComplete(); // ← single terminal done
 
         if (completedTerminals >= totalTerminals)
         {
             Debug.Log("ALL TERMINALS COMPLETED!");
+            SoundManager.Instance.PlayAllTerminalsDone(); // ← all terminals done
             GameManager.Instance.Completion();
             // Level complete later
         }

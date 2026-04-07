@@ -284,13 +284,13 @@ MonoBehaviour:
   sprintLoopClip: {fileID: 0}
   spiderFootsteps: []
   spiderAmbientClip: {fileID: 0}
-  spiderDetectedClip: {fileID: 0}
-  spiderLostClip: {fileID: 0}
-  terminalOpenClip: {fileID: 0}
-  terminalCloseClip: {fileID: 0}
-  terminalTypingClip: {fileID: 0}
-  terminalCorrectClip: {fileID: 0}
-  terminalWrongClip: {fileID: 0}
+  spiderDetectedClip: {fileID: 8300000, guid: 2b9b360c3048cdd4291dffd763e2c68f, type: 3}
+  spiderLostClip: {fileID: 8300000, guid: 9ca1457dc0cd49d48a4a7e32486538cb, type: 3}
+  terminalOpenClip: {fileID: 8300000, guid: 2b9b360c3048cdd4291dffd763e2c68f, type: 3}
+  terminalCloseClip: {fileID: 8300000, guid: 2b9b360c3048cdd4291dffd763e2c68f, type: 3}
+  terminalTypingClip: {fileID: 8300000, guid: 2b9b360c3048cdd4291dffd763e2c68f, type: 3}
+  terminalCorrectClip: {fileID: 8300000, guid: 2b9b360c3048cdd4291dffd763e2c68f, type: 3}
+  terminalWrongClip: {fileID: 8300000, guid: 2b9b360c3048cdd4291dffd763e2c68f, type: 3}
   pauseOpenClip: {fileID: 0}
   pauseCloseClip: {fileID: 0}
   buttonClickClip: {fileID: 0}
