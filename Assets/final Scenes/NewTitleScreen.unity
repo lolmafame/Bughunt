@@ -57311,7 +57311,7 @@ GameObject:
   - component: {fileID: 1576509752}
   - component: {fileID: 1576509751}
   m_Layer: 5
-  m_Name: confirmButton
+  m_Name: confirmcosmeticButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -57392,19 +57392,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1576509753}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1576509751}
-        m_TargetAssemblyTypeName: Quitgame, Assembly-CSharp
-        m_MethodName: QuitGame
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1576509753
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71712,7 +71700,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1632539754}
+      - m_Target: {fileID: 1701374364}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
         m_Mode: 6
@@ -79960,7 +79948,7 @@ GameObject:
   - component: {fileID: 2146734154}
   - component: {fileID: 2146734155}
   m_Layer: 5
-  m_Name: confirmButton
+  m_Name: confirmsubButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -80010,13 +79998,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2146734155}
-        m_TargetAssemblyTypeName: Quitgame, Assembly-CSharp
-        m_MethodName: QuitGame
+      - m_Target: {fileID: 2146734153}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgumentAssemblyTypeName: 
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
