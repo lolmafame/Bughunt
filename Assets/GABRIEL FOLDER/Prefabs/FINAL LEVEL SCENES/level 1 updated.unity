@@ -10719,6 +10719,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -61.813686
       objectReference: {fileID: 0}
+    - target: {fileID: 4201643264470770449, guid: 1e9e12c2be1b57a41851034399d2e60e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -31.086174
+      objectReference: {fileID: 0}
     - target: {fileID: 4857418597328192883, guid: 1e9e12c2be1b57a41851034399d2e60e, type: 3}
       propertyPath: m_LocalPosition.x
       value: -30.6138
@@ -11187,8 +11191,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   agent: {fileID: 1694255168}
-  patrolRadius: 20
-  patrolTimer: 5
+  patrolWaitTime: 1
+  patrolSpeed: 3.5
   chaseSpeed: 5
   detectionSphere: {fileID: 1694255170}
   calmSpeed: 5
@@ -11197,6 +11201,11 @@ MonoBehaviour:
   alertDetectionRadius: 55
   maxSpeed: 9
   maxDetectionRadius: 70
+  baseSearchDuration: 5
+  searchDurationIncrement: 3
+  maxSearchDuration: 20
+  stuckThreshold: 2
+  stuckDistanceLimit: 1
 --- !u!195 &1694255168
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -13773,88 +13782,88 @@ MonoBehaviour:
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
-    focusObject: {fileID: 0}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: '"Listen carefully. The signal is weak."'
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
-    focusObject: {fileID: 0}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: "\"Use <color=#E4F6B1>WASD</color> to move. Hold <color=#E4F6B1>Shift</color>
       to sprint\u2014but sprinting drains your energy.\""
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
-    focusObject: {fileID: 0}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: '"Monitor your health and power levels at all times."'
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
-    focusObject: {fileID: 280443688}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: "\"You\u2019ll find terminals around the facility.\""
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
-    focusObject: {fileID: 0}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: '"Approach them and press <color=#E4F6B1>E</color> to interact. Repair
       the corrupted code inside to restore system integrity."'
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
-    focusObject: {fileID: 1838560825}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: '"Once enough terminals are fixed, the lockdown should weaken. After that,
       meet me at the lower sec--"'
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
-    focusObject: {fileID: 76411161}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: "\u2014kzzzt\u2014"
     typingSpeed: 0.05
     glitchTyping: 1
     glitchClip: {fileID: 8300000, guid: 49ceba1c8b9fd68499b3880248b64821, type: 3}
-    focusObject: {fileID: 0}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: "\"\u2014the lower sector thr\u2014\""
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
-    focusObject: {fileID: 0}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: ---SIGNAL BUFFERING---
     typingSpeed: 0.05
     glitchTyping: 1
     glitchClip: {fileID: 8300000, guid: 49ceba1c8b9fd68499b3880248b64821, type: 3}
-    focusObject: {fileID: 0}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: "\"I\u2019ll be waiting at the\u2014\""
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
-    focusObject: {fileID: 0}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: "\u2014BZZZZT\u2014"
     typingSpeed: 0.05
     glitchTyping: 1
     glitchClip: {fileID: 8300000, guid: 49ceba1c8b9fd68499b3880248b64821, type: 3}
-    focusObject: {fileID: 0}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: "\"Don\u2019t trust the\u2014\""
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
-    focusObject: {fileID: 0}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: ---CONNECTION LOST---
     typingSpeed: 0.05
     glitchTyping: 1
     glitchClip: {fileID: 8300000, guid: d9c01f9b61818d2438258dd25a148977, type: 3}
-    focusObject: {fileID: 0}
+    focusObjects: []
     delayBeforeTyping: 0.3
 --- !u!1 &1935523745
 GameObject:
