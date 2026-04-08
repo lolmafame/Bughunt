@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/final Scenes/level 2.unity
     guid: eea8071b7733c844da2779f634bfb5e9
+  - enabled: 1
+    path: Assets/MULTIPLAYER/multiplayer.unity
+    guid: 23d215018eb367d46985a6015fbfe298
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
