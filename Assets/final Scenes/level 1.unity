@@ -1945,13 +1945,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
-  instructions: 'Instructions:
+  instructions: 'FIX!!:
 
-    virus_name = "Subject-27"
+    energy = 75
 
-    Print virus_name
-    on the terminal.'
-  correctAnswer: print(virus_name)
+    
+
+    print("Energy: " + energy)'
+  correctAnswer: print("Energy:", energy)
 --- !u!65 &234912557
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5744,13 +5745,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
-  instructions: 'Instructions:
+  instructions: 'FIX!!:
 
-    robot_name = "BOB"
+    robot_name = 808
 
-    Print robot_name on the
-    terminal.'
-  correctAnswer: print(robot_name)
+
+    print("Robot: " + robot_name)'
+  correctAnswer: robot_name = "808"
 --- !u!65 &720478780
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7003,13 +7004,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
-  instructions: 'Instructions:
-
-    creator_name = "Dr. Reyes"
-
-    Print creator_name
-    on the terminal.'
-  correctAnswer: print(creator_name)
+  instructions: "FIX!!:\nis_active = \"True\"\r\n\r\nif is_active:\r\n    print(\"Robot
+    is active\")"
+  correctAnswer: is_active = True
 --- !u!65 &936213846
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9227,13 +9224,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
-  instructions: 'Instructions:
-
-    core_status = "Stable"
-
-    Print core_status
-    on the terminal.'
-  correctAnswer: print(core_status)
+  instructions: "FIX!!:\ntemperature = \"30\"\r\n\r\nif temperature > 25:\r\n   
+    print(\"Warning: Overheat\")"
+  correctAnswer: temperature = 30
 --- !u!65 &1109761778
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14589,13 +14582,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
-  instructions: 'Instructions:
+  instructions: 'FIX!!:
 
-    unit_type = "Helper Robot"
+    battery_level = "50"
 
-    Print unit_type
-    on the terminal.'
-  correctAnswer: print(unit_type)
+    
+
+    print(battery_level
+    + 10)'
+  correctAnswer: battery_level = 50
 --- !u!65 &1868399552
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -15520,88 +15515,88 @@ MonoBehaviour:
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
-    focusObject: {fileID: 0}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: '"Listen carefully. The signal is weak."'
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
-    focusObject: {fileID: 0}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: "\"Use <color=#E4F6B1>WASD</color> to move. Hold <color=#E4F6B1>Shift</color>
       to sprint\u2014but sprinting drains your energy.\""
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
-    focusObject: {fileID: 0}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: '"Monitor your health and power levels at all times."'
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
-    focusObject: {fileID: 280443688}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: "\"You\u2019ll find terminals around the facility.\""
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
-    focusObject: {fileID: 0}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: '"Approach them and press <color=#E4F6B1>E</color> to interact. Repair
       the corrupted code inside to restore system integrity."'
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
-    focusObject: {fileID: 1838560825}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: '"Once enough terminals are fixed, the lockdown should weaken. After that,
       meet me at the lower sec--"'
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
-    focusObject: {fileID: 76411161}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: "\u2014kzzzt\u2014"
     typingSpeed: 0.05
     glitchTyping: 1
     glitchClip: {fileID: 8300000, guid: 49ceba1c8b9fd68499b3880248b64821, type: 3}
-    focusObject: {fileID: 0}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: "\"\u2014the lower sector thr\u2014\""
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
-    focusObject: {fileID: 0}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: ---SIGNAL BUFFERING---
     typingSpeed: 0.05
     glitchTyping: 1
     glitchClip: {fileID: 8300000, guid: 49ceba1c8b9fd68499b3880248b64821, type: 3}
-    focusObject: {fileID: 0}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: "\"I\u2019ll be waiting at the\u2014\""
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
-    focusObject: {fileID: 0}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: "\u2014BZZZZT\u2014"
     typingSpeed: 0.05
     glitchTyping: 1
     glitchClip: {fileID: 8300000, guid: 49ceba1c8b9fd68499b3880248b64821, type: 3}
-    focusObject: {fileID: 0}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: "\"Don\u2019t trust the\u2014\""
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
-    focusObject: {fileID: 0}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: ---CONNECTION LOST---
     typingSpeed: 0.05
     glitchTyping: 1
     glitchClip: {fileID: 8300000, guid: d9c01f9b61818d2438258dd25a148977, type: 3}
-    focusObject: {fileID: 0}
+    focusObjects: []
     delayBeforeTyping: 0.3
 --- !u!1 &1935523745
 GameObject:
