@@ -565,7 +565,6 @@ RectTransform:
   m_Children:
   - {fileID: 122812567}
   - {fileID: 2041219506}
-  - {fileID: 1936998244}
   m_Father: {fileID: 1369766102}
   m_LocalEulerAnglesHint: {x: 0, y: -87.743, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -71008,55 +71007,6 @@ MonoBehaviour:
   loginManager: {fileID: 469937965}
   regAnimController: {fileID: 1270835474}
   registrationPanel: {fileID: 1058828062}
---- !u!1 &1936998243
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1936998244}
-  - component: {fileID: 1936998245}
-  m_Layer: 5
-  m_Name: MayaManagerSubscription
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1936998244
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1936998243}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 14225036}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1936998245
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1936998243}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7749ec5613d5df842a5bfad381978ff7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MayaPaymentController
-  buyButton: {fileID: 2146734154}
 --- !u!1 &1940255426
 GameObject:
   m_ObjectHideFlags: 0
@@ -75691,7 +75641,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7749ec5613d5df842a5bfad381978ff7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MayaPaymentController
-  buyButton: {fileID: 1576509752}
+  skinButton: {fileID: 1611884942}
+  subscriptionButton: {fileID: 2037275419}
+  confirmationPopup: {fileID: 315482600}
+  itemNameText: {fileID: 1297587304}
+  itemPriceText: {fileID: 0}
+  confirmPurchaseButton: {fileID: 2146734154}
+  cancelPurchaseButton: {fileID: 1442368349}
 --- !u!1 &2041290546
 GameObject:
   m_ObjectHideFlags: 0

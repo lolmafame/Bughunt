@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using Firebase.Functions;
 using Firebase.Auth;
 using Firebase.Firestore;
@@ -8,13 +9,24 @@ using System.Collections.Generic;
 
 public class MayaPaymentController : MonoBehaviour
 {
-    [Header("Assign in Inspector")]
-    public Button buyButton;
+    [Header("Purchase Buttons")]
+    public Button skinButton;
+    public Button subscriptionButton;
+
+    [Header("Confirmation Popup")]
+    public GameObject confirmationPopup;
+    public TMP_Text itemNameText;
+    // PRICE TEXT REMOVED!
+    public Button confirmPurchaseButton;
+    public Button cancelPurchaseButton;
 
     private FirebaseFunctions functions;
     private FirebaseAuth auth;
     private FirebaseFirestore db;
     private ListenerRegistration dbListener;
+
+    private string currentItemId;
+    private string currentItemName;
 
     void Start()
     {
@@ -22,82 +34,148 @@ public class MayaPaymentController : MonoBehaviour
         auth = FirebaseAuth.DefaultInstance;
         db = FirebaseFirestore.DefaultInstance;
 
-        if (buyButton != null)
+        if (confirmationPopup != null)
         {
-            buyButton.onClick.AddListener(OnBuyButtonClicked);
+            confirmationPopup.SetActive(false);
+        }
+
+        // PRICE REMOVED FROM LISTENERS!
+        if (skinButton != null)
+        {
+            skinButton.onClick.AddListener(() => OpenConfirmationPopup("player_skin1", "Skin (Player)"));
+        }
+
+        if (subscriptionButton != null)
+        {
+            subscriptionButton.onClick.AddListener(() => OpenConfirmationPopup("premium_plan", "Premium Subscription"));
+        }
+
+        if (confirmPurchaseButton != null)
+        {
+            confirmPurchaseButton.onClick.AddListener(OnConfirmPurchaseClicked);
+        }
+
+        if (cancelPurchaseButton != null)
+        {
+            cancelPurchaseButton.onClick.AddListener(CloseConfirmationPopup);
         }
     }
 
-    private async void OnBuyButtonClicked()
+    private void OpenConfirmationPopup(string itemId, string itemName)
     {
-        // 1. Check if the user is actually logged in with Google SSO
+        currentItemId = itemId;
+        currentItemName = itemName;
+
+        if (itemNameText != null) itemNameText.text = itemName;
+
+        if (confirmationPopup != null)
+        {
+            confirmationPopup.SetActive(true);
+        }
+    }
+
+    private void CloseConfirmationPopup()
+    {
+        if (confirmationPopup != null)
+        {
+            confirmationPopup.SetActive(false);
+        }
+
+        if (confirmPurchaseButton != null)
+        {
+            confirmPurchaseButton.interactable = true;
+        }
+
+        if (dbListener != null)
+        {
+            dbListener.Stop();
+            dbListener = null;
+        }
+    }
+
+    private async void OnConfirmPurchaseClicked()
+    {
         if (auth.CurrentUser == null)
         {
             Debug.LogError("Player is not logged in! Cannot make a purchase.");
             return;
         }
 
-        buyButton.interactable = false;
-        Debug.Log($"Player {auth.CurrentUser.UserId} is buying player_skin1...");
+        if (confirmPurchaseButton != null) confirmPurchaseButton.interactable = false;
 
-        await RequestMayaCheckout("player_skin1"); // Tell the server which skin to buy
+        Debug.Log($"Player {auth.CurrentUser.UserId} is buying {currentItemId}...");
+
+        await RequestMayaCheckout(currentItemId, currentItemName);
     }
 
-    private async Task RequestMayaCheckout(string skinToBuy)
+    private async Task RequestMayaCheckout(string itemId, string itemName)
     {
         try
         {
             var createCheckoutFunc = functions.GetHttpsCallable("createMayaCheckout");
 
-            var dataToSend = new Dictionary<string, object> { { "skinId", skinToBuy } };
+            var dataToSend = new Dictionary<string, string>
+            {
+                { "itemId", itemId },
+                { "itemName", itemName }
+                // AMOUNT HAS BEEN COMPLETELY REMOVED!
+            };
+
             var result = await createCheckoutFunc.CallAsync(dataToSend);
 
-            // 1. Safely cast the data so Unity doesn't crash
             var data = result.Data as System.Collections.IDictionary;
 
             if (data == null)
             {
                 Debug.LogError("Server Error: The backend returned invalid data.");
-                buyButton.interactable = true;
+                if (confirmPurchaseButton != null) confirmPurchaseButton.interactable = true;
                 return;
             }
 
-            // 2. Did Maya actually give us a URL, or did they reject us?
             if (!data.Contains("checkoutUrl") || data["checkoutUrl"] == null)
             {
-                Debug.LogError("MAYA REJECTED THE REQUEST! Here is what the server returned instead:");
-
-                // Print out every piece of data the server sent us so we can find the bug
-                foreach (System.Collections.DictionaryEntry item in data)
-                {
-                    Debug.Log($"   -> {item.Key}: {item.Value}");
-                }
-
-                buyButton.interactable = true;
+                Debug.LogError("MAYA REJECTED THE REQUEST!");
+                if (confirmPurchaseButton != null) confirmPurchaseButton.interactable = true;
                 return;
             }
 
-            // 3. If we made it here, Maya accepted it!
             string checkoutUrl = data["checkoutUrl"].ToString();
             string orderId = data["orderId"].ToString();
 
+            UpdatePendingTransactionInDatabase(orderId, itemId, itemName);
+
             Debug.Log("Success! Opening browser... Listening for payment completion on " + orderId);
 
-            ListenForPaymentSuccess(orderId, skinToBuy);
+            ListenForPaymentSuccess(orderId, itemId, itemName);
             Application.OpenURL(checkoutUrl);
         }
         catch (System.Exception e)
         {
             Debug.LogError("Payment Error: " + e.Message);
-            buyButton.interactable = true;
+            if (confirmPurchaseButton != null) confirmPurchaseButton.interactable = true;
         }
     }
 
-    private void ListenForPaymentSuccess(string orderId, string skinId)
+    private void UpdatePendingTransactionInDatabase(string orderId, string itemId, string itemName)
+    {
+        if (auth.CurrentUser == null || string.IsNullOrEmpty(orderId)) return;
+
+        DocumentReference docRef = db.Collection("payments").Document(orderId);
+
+        Dictionary<string, object> updateData = new Dictionary<string, object>
+        {
+            { "clientItemId", itemId },
+            { "clientItemName", itemName },
+            { "clientUserId", auth.CurrentUser.UserId }
+        };
+
+        docRef.SetAsync(updateData, SetOptions.MergeAll);
+    }
+
+    private void ListenForPaymentSuccess(string orderId, string itemId, string itemName)
     {
         DocumentReference docRef = db.Collection("payments").Document(orderId);
 
-        // 4. This block constantly watches the specific receipt in the database
         dbListener = docRef.Listen(snapshot =>
         {
             if (snapshot.Exists && snapshot.ContainsField("status"))
@@ -107,12 +185,9 @@ public class MayaPaymentController : MonoBehaviour
                 if (status == "PAID")
                 {
                     Debug.Log("PAYMENT SUCCESS! Maya confirmed it.");
-                    Debug.Log($"The database has automatically unlocked {skinId} for the player!");
+                    Debug.Log($"The database has automatically unlocked {itemName} ({itemId}) for the player!");
 
-                    // TODO: Run your visual game logic here (e.g., equip the skin, play a sound)
-
-                    buyButton.interactable = true; // Re-enable button
-                    dbListener.Stop(); // Stop listening to save memory
+                    CloseConfirmationPopup();
                 }
             }
         });
@@ -120,6 +195,6 @@ public class MayaPaymentController : MonoBehaviour
 
     void OnDestroy()
     {
-        if (dbListener != null) dbListener.Stop(); // Clean up if they change scenes
+        if (dbListener != null) dbListener.Stop();
     }
 }
