@@ -5,14 +5,17 @@ public class MP_NetworkUI : MonoBehaviour
 {
     void OnGUI()
     {
+        // Add null check before accessing NetworkManager
+        if (NetworkManager.Singleton == null) return;
+
         GUILayout.BeginArea(new Rect(10, 10, 200, 100));
 
         if (!NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsServer)
         {
-            if (GUILayout.Button("Host")) // starts as server + player
+            if (GUILayout.Button("Host"))
                 NetworkManager.Singleton.StartHost();
 
-            if (GUILayout.Button("Client")) // joins existing host
+            if (GUILayout.Button("Client"))
                 NetworkManager.Singleton.StartClient();
         }
         else
