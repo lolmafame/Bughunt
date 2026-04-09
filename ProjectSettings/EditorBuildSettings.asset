@@ -5,7 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
+    path: Assets/MULTIPLAYER/multiplayer.unity
+    guid: 23d215018eb367d46985a6015fbfe298
+  - enabled: 1
     path: Assets/GABRIEL FOLDER/SCENESKO/Catseen Scene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
@@ -16,10 +19,7 @@ EditorBuildSettings:
     guid: 1372710b549ea904999c81b656aa0c76
   - enabled: 1
     path: Assets/final Scenes/level 2.unity
-    guid: eea8071b7733c844da2779f634bfb5e9
-  - enabled: 1
-    path: Assets/MULTIPLAYER/multiplayer.unity
-    guid: 23d215018eb367d46985a6015fbfe298
+    guid: 0deb0f57675afdc4db03a32ad7ba9cae
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
