@@ -5,7 +5,7 @@ public class SpiderAI : MonoBehaviour
 {
     [Header("Patrol Settings")]
     public NavMeshAgent agent;
-    public float patrolWaitTime = 1f;        // how long it waits at each terminal
+    public float patrolWaitTime = 1f;
     public float patrolSpeed = 3.5f;
 
     [Header("Chase Settings")]
@@ -23,8 +23,8 @@ public class SpiderAI : MonoBehaviour
     public float maxDetectionRadius = 70f;
 
     [Header("Investigation Settings")]
-    public float baseSearchDuration = 5f;    // how long it searches after arriving
-    public float searchDurationIncrement = 3f; // adds this much per trigger
+    public float baseSearchDuration = 5f;
+    public float searchDurationIncrement = 3f;
     public float maxSearchDuration = 20f;
 
     [Header("Roaming")]
@@ -35,15 +35,15 @@ public class SpiderAI : MonoBehaviour
     private enum SpiderState { Patrol, Investigating, Searching, Chasing }
     private SpiderState state = SpiderState.Patrol;
 
-    private Terminal[] allTerminals;         // all terminals in scene
+    private Terminal[] allTerminals;
     private int currentPatrolIndex = 0;
     private float patrolWaitTimer = 0f;
     private bool isWaitingAtTerminal = false;
 
-    private Transform investigateTarget;     // terminal position being investigated
+    private Transform investigateTarget;
     private float searchTimer = 0f;
     private float currentSearchDuration;
-    private int suspicionLevel = 0;          // increases each trigger
+    private int suspicionLevel = 0;
 
     private float gameTime = 0f;
 
@@ -55,7 +55,6 @@ public class SpiderAI : MonoBehaviour
         if (agent == null) agent = GetComponent<NavMeshAgent>();
         if (detectionSphere == null) detectionSphere = GetComponent<SphereCollider>();
 
-        // Find all terminals automatically
         allTerminals = FindObjectsByType<Terminal>(FindObjectsSortMode.None);
 
         if (allTerminals.Length == 0)
@@ -64,7 +63,6 @@ public class SpiderAI : MonoBehaviour
             return;
         }
 
-        // Shuffle terminals for unpredictable patrol order
         ShuffleTerminals();
 
         currentSearchDuration = baseSearchDuration;
@@ -126,7 +124,6 @@ public class SpiderAI : MonoBehaviour
     {
         if (allTerminals.Length == 0) return;
 
-        // Skip completed terminals
         int attempts = 0;
         while (allTerminals[currentPatrolIndex].isCompleted && attempts < allTerminals.Length)
         {
@@ -144,7 +141,6 @@ public class SpiderAI : MonoBehaviour
     // ------------------------------------------------
     public void InvestigateTerminal(Transform terminalTransform)
     {
-        // Increase suspicion each time triggered
         suspicionLevel++;
         currentSearchDuration = Mathf.Min(
             baseSearchDuration + (searchDurationIncrement * suspicionLevel),
@@ -169,7 +165,6 @@ public class SpiderAI : MonoBehaviour
 
         agent.SetDestination(investigateTarget.position);
 
-        // Arrived at terminal
         if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance + 0.5f)
         {
             Debug.Log("Spider arrived at terminal, searching for " + currentSearchDuration + " seconds");
@@ -185,10 +180,8 @@ public class SpiderAI : MonoBehaviour
     {
         searchTimer -= Time.deltaTime;
 
-        // Wander near terminal while searching
         if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance + 0.2f)
         {
-            // Pick a small random nearby point to wander
             Vector3 randomDir = Random.insideUnitSphere * 8f + transform.position;
             NavMeshHit hit;
             if (NavMesh.SamplePosition(randomDir, out hit, 8f, NavMesh.AllAreas))
@@ -222,7 +215,12 @@ public class SpiderAI : MonoBehaviour
             isChasing = true;
             state = SpiderState.Chasing;
             agent.speed = chaseSpeed;
-            SoundManager.Instance.PlaySpiderDetected(); // ← add here
+
+            if (SoundManager.Instance != null)
+                SoundManager.Instance.PlaySpiderDetected();
+            else
+                Debug.LogWarning("SpiderAI: SoundManager instance is missing!");
+
             Debug.Log("Spider detected player!");
         }
     }
@@ -233,9 +231,12 @@ public class SpiderAI : MonoBehaviour
         {
             player = null;
             isChasing = false;
-            SoundManager.Instance.PlaySpiderLost(); // ← add here
 
-            // Go back to searching if we were investigating, otherwise patrol
+            if (SoundManager.Instance != null)
+                SoundManager.Instance.PlaySpiderLost();
+            else
+                Debug.LogWarning("SpiderAI: SoundManager instance is missing!");
+
             if (investigateTarget != null)
             {
                 state = SpiderState.Searching;
@@ -294,7 +295,6 @@ public class SpiderAI : MonoBehaviour
             float distanceMoved = Vector3.Distance(transform.position, lastPosition);
             if (distanceMoved < stuckDistanceLimit)
             {
-                // Force move to next terminal
                 GoToNextPatrolTerminal();
             }
             lastPosition = transform.position;
@@ -313,7 +313,6 @@ public class SpiderAI : MonoBehaviour
         }
     }
 
-    // Called by ForceInvestigate from CodeTerminalUI
     public void ForceInvestigate(Transform terminalTransform)
     {
         InvestigateTerminal(terminalTransform);
@@ -321,8 +320,6 @@ public class SpiderAI : MonoBehaviour
 
     public void StopInvestigate()
     {
-        // Don't stop immediately — let search duration run
-        // Only stop if currently still travelling to terminal
         if (state == SpiderState.Investigating)
         {
             searchTimer = currentSearchDuration;

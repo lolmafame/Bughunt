@@ -353,7 +353,6 @@ GameObject:
   - component: {fileID: 70493323}
   - component: {fileID: 70493325}
   - component: {fileID: 70493324}
-  - component: {fileID: 70493326}
   m_Layer: 0
   m_Name: DamageSphere
   m_TagString: Untagged
@@ -410,21 +409,6 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 6
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &70493326
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 70493322}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4b798ac03ee0c74ba1057d533827925, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SpiderKnockback
-  knockbackForce: 10
-  knockbackDuration: 0.2
-  upwardForce: 0
 --- !u!1 &70823868
 GameObject:
   m_ObjectHideFlags: 0
