@@ -11,13 +11,23 @@ public class CodeTerminalUI : MonoBehaviour
     public ProcessTransition processFlow;
     private Terminal currentTerminal;
     private bool isActive = false;
-
     public TMP_Text instructionText;
+
+    private ThirdPersonMovement cachedPlayerMove;
 
     void Awake()
     {
         Instance = this;
         codePanel.SetActive(false);
+    }
+
+    void CachePlayerMovement()
+    {
+        if (cachedPlayerMove != null) return;
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj == null) { Debug.LogError("Player not found!"); return; }
+        cachedPlayerMove = playerObj.GetComponent<ThirdPersonMovement>();
+        if (cachedPlayerMove == null) Debug.LogError("ThirdPersonMovement not found!");
     }
 
     public void Open(Terminal terminal)
@@ -36,20 +46,22 @@ public class CodeTerminalUI : MonoBehaviour
         inputField.Select();
         inputField.ActivateInputField();
 
-        GameManager.Instance.SetInputLocked(true);
+        if (GameManager.Instance != null)
+            GameManager.Instance.SetInputLocked(true);
 
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        if (playerObj == null) { Debug.LogError("Player not found!"); return; }
-
-        ThirdPersonMovement playerMove = playerObj.GetComponent<ThirdPersonMovement>();
-        if (playerMove == null) { Debug.LogError("ThirdPersonMovement not found!"); return; }
-
-        playerMove.enabled = false;
+        // Lock player movement
+        CachePlayerMovement();
+        if (cachedPlayerMove != null)
+            cachedPlayerMove.enabled = false;
 
         SpiderAI spider = FindAnyObjectByType<SpiderAI>();
         if (spider != null)
-            spider.ForceInvestigate(terminal.transform); // CHANGED: terminal not player
-        SoundManager.Instance.PlayTerminalOpen(); // ← add here
+            spider.ForceInvestigate(terminal.transform);
+
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlayTerminalOpen();
+        else
+            Debug.LogWarning("CodeTerminalUI: SoundManager instance is missing!");
     }
 
     public void Close()
@@ -60,14 +72,22 @@ public class CodeTerminalUI : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        ThirdPersonMovement playerMove = GameObject.FindGameObjectWithTag("Player").GetComponent<ThirdPersonMovement>();
-        playerMove.enabled = true;
-        GameManager.Instance.SetInputLocked(false);
+        // Unlock player movement
+        CachePlayerMovement();
+        if (cachedPlayerMove != null)
+            cachedPlayerMove.enabled = true;
+
+        if (GameManager.Instance != null)
+            GameManager.Instance.SetInputLocked(false);
 
         SpiderAI spider = FindAnyObjectByType<SpiderAI>();
         if (spider != null)
             spider.StopInvestigate();
-        SoundManager.Instance.PlayTerminalClose(); // ← add here
+
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlayTerminalClose();
+        else
+            Debug.LogWarning("CodeTerminalUI: SoundManager instance is missing!");
     }
 
     public void Submit()
@@ -76,7 +96,9 @@ public class CodeTerminalUI : MonoBehaviour
 
         if (inputField.text == currentTerminal.correctAnswer)
         {
-            SoundManager.Instance.PlayTerminalCorrect(); // ← add here
+            if (SoundManager.Instance != null)
+                SoundManager.Instance.PlayTerminalCorrect();
+
             processFlow.PlaySuccess(() =>
             {
                 currentTerminal.CompleteTerminal();
@@ -85,7 +107,9 @@ public class CodeTerminalUI : MonoBehaviour
         }
         else
         {
-            SoundManager.Instance.PlayTerminalWrong(); // ← add here
+            if (SoundManager.Instance != null)
+                SoundManager.Instance.PlayTerminalWrong();
+
             processFlow.PlayFail(() =>
             {
                 codePanel.SetActive(true);
@@ -105,7 +129,10 @@ public class CodeTerminalUI : MonoBehaviour
         if (!isActive) return;
 
         if (Input.anyKeyDown && !Input.GetKeyDown(KeyCode.Tab) && !Input.GetKeyDown(KeyCode.Return))
-            SoundManager.Instance.PlayTerminalTyping(); // ← fires on each keypress
+        {
+            if (SoundManager.Instance != null)
+                SoundManager.Instance.PlayTerminalTyping();
+        }
 
         if (Input.GetKeyDown(KeyCode.Tab))
             Close();

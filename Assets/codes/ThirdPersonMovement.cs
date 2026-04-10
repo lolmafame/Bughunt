@@ -29,15 +29,16 @@ public class ThirdPersonMovement : MonoBehaviour
     Vector3 velocity;
     bool isGrounded;
     float turnSmoothVelocity;
-    public float turnSmoothTime = 0.05f; // snappier for RE4 feel
-    //running
-    public bool IsActuallyRunning() => Input.GetKey(KeyCode.LeftShift) && canRun && new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical")).magnitude >= 0.1f;
+    public float turnSmoothTime = 0.05f;
+
+    public bool IsActuallyRunning() =>
+        Input.GetKey(KeyCode.LeftShift) && canRun &&
+        new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical")).magnitude >= 0.1f;
 
     void Start()
     {
         currentStamina = maxStamina;
         animator = GetComponentInChildren<Animator>();
-        //Cursor.lockState = CursorLockMode.Locked; 
     }
 
     void Update()
@@ -47,13 +48,21 @@ public class ThirdPersonMovement : MonoBehaviour
         if (isGrounded && velocity.y < 0)
             velocity.y = -2f;
 
-        // ===== GRAVITY =====
+        // ===== GRAVITY (always applies even when terminal is open) =====
         if (velocity.y < 0)
             velocity.y += gravity * fallMultiplier * Time.deltaTime;
         else
             velocity.y += gravity * Time.deltaTime;
 
         controller.Move(velocity * Time.deltaTime);
+
+        // ===== BLOCK INPUT WHEN TERMINAL IS OPEN =====
+        // (component gets disabled by CodeTerminalUI, so this is a safety fallback)
+        if (CodeTerminalUI.Instance != null && CodeTerminalUI.Instance.IsActive())
+        {
+            animator.SetFloat("Speed", 0f);
+            return;
+        }
 
         // ===== MOVEMENT INPUT =====
         float horizontal = Input.GetAxisRaw("Horizontal");
@@ -91,7 +100,6 @@ public class ThirdPersonMovement : MonoBehaviour
         // ===== MOVEMENT relative to camera =====
         if (direction.magnitude >= 0.1f)
         {
-            // Move relative to where camera is facing
             Vector3 camForward = cam.forward;
             Vector3 camRight = cam.right;
             camForward.y = 0f;
