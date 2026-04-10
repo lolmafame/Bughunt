@@ -30,6 +30,13 @@ public class MP_ThirdPersonMovement : NetworkBehaviour
     private float turnSmoothVelocity;
     public float turnSmoothTime = 0.05f;
 
+    public void ResetStamina()
+    {
+        currentStamina = maxStamina;
+        canRun = true;
+    }
+
+
     public override void OnNetworkSpawn()
     {
         // Disable camera for non-local players
@@ -43,10 +50,13 @@ public class MP_ThirdPersonMovement : NetworkBehaviour
 
         currentStamina = maxStamina;
         animator = GetComponentInChildren<Animator>();
+
+        cam = GetComponentInChildren<Camera>().transform;
     }
 
     void Update()
     {
+
         if (!IsOwner) return; // only local player controls their own character
 
         // Ground check

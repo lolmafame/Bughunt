@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/MULTIPLAYER/testing ground plane.unity
+    guid: f6ef657f0460a894eaadd5fb1c505808
+  - enabled: 1
     path: Assets/MULTIPLAYER/multiplayer.unity
     guid: 23d215018eb367d46985a6015fbfe298
   - enabled: 1
