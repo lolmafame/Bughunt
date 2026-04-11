@@ -14007,7 +14007,7 @@ MonoBehaviour:
   completionTimeText: {fileID: 548666400}
   completionTerminalText: {fileID: 415907458}
   gameTimer: {fileID: 1073012470}
-  mainMenuSceneName: NewTitleScreen
+  mainMenuSceneName: LoginMainMenuupd
   levelSceneNames:
   - level 1 updated
   - level 2
