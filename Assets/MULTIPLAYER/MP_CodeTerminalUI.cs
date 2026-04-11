@@ -9,9 +9,10 @@ public class MP_CodeTerminalUI : MonoBehaviour
     public InputField inputField;
     public TransitionFlow transitionFlow;
     public ProcessTransition processFlow;
-    private Terminal currentTerminal;
+    private MP_Terminal currentTerminal;
     private bool isActive = false;
     public TMP_Text instructionText;
+
 
     void Awake()
     {
@@ -19,8 +20,12 @@ public class MP_CodeTerminalUI : MonoBehaviour
         codePanel.SetActive(false);
     }
 
-    public void Open(Terminal terminal)
+
+    public void Open(MP_Terminal terminal)
     {
+        if (terminal.isInUse.Value) return;
+        terminal.SetInUseServerRpc(true);
+
         currentTerminal = terminal;
         codePanel.SetActive(true);
         transitionFlow.PlayTransition();
@@ -32,7 +37,7 @@ public class MP_CodeTerminalUI : MonoBehaviour
         Cursor.visible = true;
         inputField.Select();
         inputField.ActivateInputField();
-        GameManager.Instance.SetInputLocked(true);
+        MP_GameManager.Instance.SetInputLocked(true);
         SoundManager.Instance.PlayTerminalOpen();
 
         // Find LOCAL player only
@@ -47,21 +52,30 @@ public class MP_CodeTerminalUI : MonoBehaviour
             }
         }
 
-        SpiderAI spider = FindAnyObjectByType<SpiderAI>();
-        if (spider != null)
-            spider.ForceInvestigate(terminal.transform);
+        if (MP_SpiderAI.Instance != null && MP_SpiderAI.Instance.IsSpawned)
+        {
+            MP_SpiderAI.Instance.InvestigateServerRpc(terminal.transform.position);
+        }
     }
 
     public void Close()
     {
+        if (currentTerminal != null)
+        {
+            currentTerminal.SetInUseServerRpc(false);
+
+            MP_GameManager.Instance.NotifySpiderInvestigateServerRpc(currentTerminal.transform.position);
+        }
+
         codePanel.SetActive(false);
         isActive = false;
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        GameManager.Instance.SetInputLocked(false);
+
+        MP_GameManager.Instance.SetInputLocked(false);
         SoundManager.Instance.PlayTerminalClose();
 
-        // Find LOCAL player only
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject p in players)
         {
@@ -72,27 +86,32 @@ public class MP_CodeTerminalUI : MonoBehaviour
                 break;
             }
         }
-
-        SpiderAI spider = FindAnyObjectByType<SpiderAI>();
-        if (spider != null)
-            spider.StopInvestigate();
     }
 
     public void Submit()
     {
-        if (currentTerminal == null) return;
-        if (inputField.text == currentTerminal.correctAnswer)
+        Debug.Log("Submit clicked");
+
+        if (currentTerminal == null)
+        {
+            Debug.LogError("NO TERMINAL SET!");
+            return;
+        }
+
+            if (inputField.text == currentTerminal.correctAnswer)
         {
             SoundManager.Instance.PlayTerminalCorrect();
+
             processFlow.PlaySuccess(() =>
             {
-                currentTerminal.CompleteTerminal();
+                currentTerminal.CompleteTerminalServerRpc();// ✅ FIXED
                 Close();
             });
         }
         else
         {
             SoundManager.Instance.PlayTerminalWrong();
+
             processFlow.PlayFail(() =>
             {
                 codePanel.SetActive(true);

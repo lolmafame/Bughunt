@@ -41,7 +41,7 @@ public class MP_PlayerHealth : NetworkBehaviour
         {
             currentHealth = 0;
             UpdateHealthUI();
-            GameManager.Instance.GameOver();
+            MP_GameManager.Instance.TriggerGameOverServerRpc();
             return;
         }
 
