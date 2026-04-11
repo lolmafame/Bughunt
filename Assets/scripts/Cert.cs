@@ -97,4 +97,5 @@ public class Cert : MonoBehaviour
         if (certificateButton != null) certificateButton.SetActive(isCompleted);
         if (incompleteTextObject != null) incompleteTextObject.SetActive(!isCompleted);
     }
+
 }

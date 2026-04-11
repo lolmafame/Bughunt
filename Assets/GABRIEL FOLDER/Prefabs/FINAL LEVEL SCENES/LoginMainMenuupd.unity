@@ -79209,7 +79209,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2044880292}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2069408255}
+        m_TargetAssemblyTypeName: CertExport, Assembly-CSharp
+        m_MethodName: OnDownloadButtonPressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2044880292
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -80188,6 +80200,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2069408253}
   - component: {fileID: 2069408254}
+  - component: {fileID: 2069408255}
   m_Layer: 0
   m_Name: Certificate Manager
   m_TagString: Untagged
@@ -80230,6 +80243,23 @@ MonoBehaviour:
   displayDateText: {fileID: 301233863}
   certificateButton: {fileID: 1396577979}
   incompleteTextObject: {fileID: 2084289240}
+--- !u!114 &2069408255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2069408252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 125d449cee9fe534892911e54ae93286, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CertExport
+  certificatePanel: {fileID: 1369413519}
+  captureCamera: {fileID: 0}
+  outputSubFolder: Certificates
+  exportingIndicator: {fileID: 0}
+  statusMessageText: {fileID: 0}
 --- !u!1 &2070796026
 GameObject:
   m_ObjectHideFlags: 0
