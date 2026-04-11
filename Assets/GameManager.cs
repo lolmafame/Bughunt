@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Firebase.Auth;
@@ -27,7 +27,16 @@ public class GameManager : MonoBehaviour
 
     [Header("Scene Settings")]
     public string mainMenuSceneName = "MainMenu";
-    public string level2SceneName = "Level2";
+
+    [Tooltip("Exact scene names in order: [0]=Level1, [1]=Level2, ... [4]=Level5")]
+    public string[] levelSceneNames = new string[5]
+    {
+        "level 1 updated", "level 2", "level 3", "level 4", "level 5"
+    };
+
+    [Header("Level Settings")]
+    [Tooltip("Set this to 1-5 in the Inspector for each level scene.")]
+    public int currentLevel = 1;
 
     [Header("Spawn Point")]
     public Transform spawnPoint;
@@ -132,7 +141,6 @@ public class GameManager : MonoBehaviour
             TerminalManager.Instance.GetCompletedTerminals() +
             " / " + TerminalManager.Instance.totalTerminals;
 
-        // Trigger the database save
         SaveLevelProgress();
     }
 
@@ -141,7 +149,41 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        SceneManager.LoadScene(level2SceneName);
+
+        if (currentLevel < 5)
+        {
+            int nextIndex = currentLevel; // 1-based level → 0-based array index of NEXT level
+
+            // Validate: array slot exists and is not empty
+            if (nextIndex < levelSceneNames.Length && !string.IsNullOrEmpty(levelSceneNames[nextIndex]))
+            {
+                string nextScene = levelSceneNames[nextIndex];
+
+                // Validate: scene actually exists in Build Settings before loading
+                if (Application.CanStreamedLevelBeLoaded(nextScene))
+                {
+                    SceneManager.LoadScene(nextScene);
+                }
+                else
+                {
+                    // Scene name is set but not found in Build Settings — safe fallback
+                    Debug.LogWarning($"Scene '{nextScene}' not found in Build Settings. Returning to Main Menu.");
+                    SceneManager.LoadScene(mainMenuSceneName);
+                }
+            }
+            else
+            {
+                // Array slot is empty or out of range — safe fallback
+                Debug.LogWarning($"No scene name set for Level {currentLevel + 1} in levelSceneNames. Returning to Main Menu.");
+                SceneManager.LoadScene(mainMenuSceneName);
+            }
+        }
+        else
+        {
+            // Level 5 completed — all levels done, return to main menu
+            PlayerPrefs.SetInt("OpenCampaign", 1);
+            SceneManager.LoadScene(mainMenuSceneName);
+        }
     }
 
     public void QuitToMainMenu()
@@ -155,47 +197,67 @@ public class GameManager : MonoBehaviour
 
     private void SaveLevelProgress()
     {
-        // Save to PlayerPrefs as a local backup
-        PlayerPrefs.SetInt("level1_completed", 1);
-        if (gameTimer != null)
+        string levelKey = $"level{currentLevel}_completed";
+        string levelTimeKey = $"level{currentLevel}_best_time";
+        float newTime = gameTimer != null ? gameTimer.GetFinalTime() : 0f;
+
+        // --- Best Time Validation ---
+        // Only update the time if it's better (lower) than the previously saved time.
+        // float.MaxValue means no previous time exists yet — always save in that case.
+        float previousBestTime = PlayerPrefs.GetFloat(levelTimeKey, float.MaxValue);
+        bool isNewBestTime = newTime < previousBestTime;
+
+        // --- PlayerPrefs (local backup) ---
+        PlayerPrefs.SetInt(levelKey, 1); // always mark completed
+
+        if (isNewBestTime)
         {
-            PlayerPrefs.SetFloat("level1_best_time", gameTimer.GetFinalTime());
+            PlayerPrefs.SetFloat(levelTimeKey, newTime);
+            Debug.Log($"Level {currentLevel}: New best time! {FormatTime(newTime)} (previous: {FormatTime(previousBestTime)})");
         }
+        else
+        {
+            Debug.Log($"Level {currentLevel}: Time {FormatTime(newTime)} did not beat best of {FormatTime(previousBestTime)}. Best time kept.");
+        }
+
+        if (currentLevel == 5)
+        {
+            PlayerPrefs.SetInt("all_levels_completed", 1);
+            Debug.Log("All 5 levels completed!");
+        }
+
         PlayerPrefs.Save();
 
-        // 1. Grab the currently logged-in user
+        // --- Firestore ---
         FirebaseUser currentUser = FirebaseAuth.DefaultInstance.CurrentUser;
-
         if (currentUser != null)
         {
-            // 2. Get a reference to the user's document in Firestore
             FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
             DocumentReference userDoc = db.Collection("users").Document(currentUser.UserId);
 
-            // 3. Prepare the data to update. 
-            // We are marking Level 1 as complete, and as a bonus, saving their completion time!
             Dictionary<string, object> progressData = new Dictionary<string, object>
-        {
-            { "level1_completed", true },
-            { "level1_best_time", gameTimer.GetFinalTime() }
-        };
+            {
+                { levelKey, true } // always mark completed in Firestore
+            };
 
-            // 4. Push the update to Firestore asynchronously
+            // Only push the new time to Firestore if it beats the local best
+            if (isNewBestTime)
+                progressData[levelTimeKey] = newTime;
+
+            if (currentLevel == 5)
+                progressData["all_levels_completed"] = true;
+
             userDoc.UpdateAsync(progressData).ContinueWithOnMainThread(task =>
             {
                 if (task.IsFaulted || task.IsCanceled)
-                {
-                    Debug.LogError("Failed to save level progress to database: " + task.Exception);
-                }
+                    Debug.LogError("Failed to save level progress: " + task.Exception);
                 else
-                {
-                    Debug.Log("Successfully saved Level 1 completion to database for user: " + currentUser.UserId);
-                }
+                    Debug.Log($"Saved Level {currentLevel} completion for user: {currentUser.UserId}");
             });
         }
         else
         {
-            Debug.LogWarning("No user is currently logged in. Level progress will not be saved.");
+            Debug.LogWarning("No user logged in. Level progress not saved to database.");
         }
     }
 

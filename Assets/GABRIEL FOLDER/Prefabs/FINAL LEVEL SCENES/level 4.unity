@@ -499,6 +499,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpiderDamage
   damageAmount: 20
+  knockbackForce: 5
+  knockbackDuration: 0.3
 --- !u!135 &70493325
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -9666,7 +9668,13 @@ MonoBehaviour:
   completionTerminalText: {fileID: 415907458}
   gameTimer: {fileID: 1073012470}
   mainMenuSceneName: NewTitleScreen
-  level2SceneName: level 2
+  levelSceneNames:
+  - level 1 updated
+  - level 2
+  - level 3
+  - level 4
+  - level 5
+  currentLevel: 4
   spawnPoint: {fileID: 1455875621}
 --- !u!4 &1785852811
 Transform:
