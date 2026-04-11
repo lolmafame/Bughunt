@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using Unity.Netcode;
+using System.Collections.Generic;
 
 public class MP_SpiderAI : NetworkBehaviour
 {
@@ -51,6 +52,7 @@ public class MP_SpiderAI : NetworkBehaviour
 
     private float stuckTimer = 0f;
     private Vector3 lastPosition;
+    private List<Transform> playersInRange = new List<Transform>();
     public override void OnNetworkSpawn()
     {
         if (!IsServer) return;
@@ -234,8 +236,25 @@ public class MP_SpiderAI : NetworkBehaviour
     // ------------------------------------------------
     void HandleChasing()
     {
-        if (player != null)
-            agent.SetDestination(player.position);
+        // Always chase nearest player
+        if (playersInRange.Count > 0)
+        {
+            Transform nearest = null;
+            float minDist = float.MaxValue;
+            foreach (Transform p in playersInRange)
+            {
+                if (p == null) continue;
+                float dist = Vector3.Distance(transform.position, p.position);
+                if (dist < minDist)
+                {
+                    minDist = dist;
+                    nearest = p;
+                }
+            }
+            player = nearest;
+            if (player != null)
+                agent.SetDestination(player.position);
+        }
     }
 
     // ------------------------------------------------
@@ -243,15 +262,14 @@ public class MP_SpiderAI : NetworkBehaviour
     // ------------------------------------------------
     private void OnTriggerEnter(Collider other)
     {
-        if (!IsServer) return; // 🔥 only server detects
-
+        if (!IsServer) return;
         if (other.CompareTag("Player"))
         {
-            player = other.transform;
+            if (!playersInRange.Contains(other.transform))
+                playersInRange.Add(other.transform);
             isChasing = true;
             state = SpiderState.Chasing;
             agent.speed = chaseSpeed;
-
             Debug.Log("Spider detected player!");
         }
     }
@@ -259,20 +277,23 @@ public class MP_SpiderAI : NetworkBehaviour
     private void OnTriggerExit(Collider other)
     {
         if (!IsServer) return;
-
         if (other.CompareTag("Player"))
         {
-            player = null;
-            isChasing = false;
+            playersInRange.Remove(other.transform);
 
-            if (investigateTarget != null)
+            if (playersInRange.Count == 0)
             {
-                state = SpiderState.Searching;
-                searchTimer = currentSearchDuration;
-            }
-            else
-            {
-                ResumePatrol();
+                player = null;
+                isChasing = false;
+                if (investigateTarget != null)
+                {
+                    state = SpiderState.Searching;
+                    searchTimer = currentSearchDuration;
+                }
+                else
+                {
+                    ResumePatrol();
+                }
             }
         }
     }
