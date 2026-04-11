@@ -430,7 +430,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpiderDamage
   damageAmount: 20
-  knockbackForce: 50
+  knockbackForce: 35
   knockbackDuration: 0.3
 --- !u!135 &70493325
 SphereCollider:
@@ -12467,7 +12467,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -19138,7 +19138,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 991ca2610d19d8b4b8e4f730b7946b60, type: 3}
+  m_Resource: {fileID: 8300000, guid: 34f842b7c90c6954ba0fe826d1180403, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -19631,7 +19631,7 @@ MonoBehaviour:
   continueIcon: {fileID: 560705377}
   spaceIndicator: {fileID: 953446758}
   typingAudioSource: {fileID: 1918730082}
-  typingClip: {fileID: 8300000, guid: 991ca2610d19d8b4b8e4f730b7946b60, type: 3}
+  typingClip: {fileID: 8300000, guid: 34f842b7c90c6954ba0fe826d1180403, type: 3}
   glitchAudioSource: {fileID: 1316327355}
   contentGroup: {fileID: 734817216}
   dialogueBox: {fileID: 1289031366}
