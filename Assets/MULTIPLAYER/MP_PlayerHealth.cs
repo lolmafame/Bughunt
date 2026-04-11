@@ -17,17 +17,47 @@ public class MP_PlayerHealth : NetworkBehaviour
     public Image redFlash;
     public Image greyFlash;
     public float invincibleTime = 3f;
+
     private bool isInvincible = false;
 
     public override void OnNetworkSpawn()
     {
         if (!IsOwner) return;
+
         currentHealth = maxHealth;
+
+        if (healthBar == null)
+        {
+            GameObject obj = GameObject.Find("HealthBarFill");
+            Debug.Log("HealthBarFill found: " + (obj != null));
+            if (obj != null)
+                healthBar = obj.GetComponent<Image>();
+        }
+
+        if (redFlash == null)
+        {
+            GameObject obj = GameObject.Find("hurt");
+            Debug.Log("hurt found: " + (obj != null));
+            if (obj != null)
+                redFlash = obj.GetComponent<Image>();
+        }
+
+        if (greyFlash == null)
+        {
+            GameObject obj = GameObject.Find("InvincibleFlash");
+            Debug.Log("InvincibleFlash found: " + (obj != null));
+            if (obj != null)
+                greyFlash = obj.GetComponent<Image>();
+        }
+
+        Debug.Log("healthBar assigned: " + (healthBar != null));
+        Debug.Log("redFlash assigned: " + (redFlash != null));
+        Debug.Log("greyFlash assigned: " + (greyFlash != null));
+
         UpdateHealthUI();
         if (redFlash != null) redFlash.enabled = false;
         if (greyFlash != null) greyFlash.enabled = false;
 
-        // Find movement component on this player only
         playerMovement = GetComponent<MP_ThirdPersonMovement>();
     }
 
@@ -37,6 +67,7 @@ public class MP_PlayerHealth : NetworkBehaviour
         if (isInvincible) return;
 
         currentHealth -= damage;
+
         if (currentHealth <= 0)
         {
             currentHealth = 0;
@@ -69,6 +100,7 @@ public class MP_PlayerHealth : NetworkBehaviour
     IEnumerator InvincibilityCoroutine()
     {
         isInvincible = true;
+
         if (greyFlash != null)
         {
             greyFlash.enabled = true;
@@ -82,6 +114,7 @@ public class MP_PlayerHealth : NetworkBehaviour
             }
             greyFlash.enabled = false;
         }
+
         isInvincible = false;
     }
 
