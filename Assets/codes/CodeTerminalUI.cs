@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 
 public class CodeTerminalUI : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class CodeTerminalUI : MonoBehaviour
     public ProcessTransition processFlow;
     private Terminal currentTerminal;
     private bool isActive = false;
+    private bool blockTypingSound = false;
     public TMP_Text instructionText;
 
     private ThirdPersonMovement cachedPlayerMove;
@@ -46,10 +48,13 @@ public class CodeTerminalUI : MonoBehaviour
         inputField.Select();
         inputField.ActivateInputField();
 
+        // Block typing sound briefly so open doesn't trigger it
+        blockTypingSound = true;
+        Invoke(nameof(UnblockTypingSound), 0.1f);
+
         if (GameManager.Instance != null)
             GameManager.Instance.SetInputLocked(true);
 
-        // Lock player movement
         CachePlayerMovement();
         if (cachedPlayerMove != null)
             cachedPlayerMove.enabled = false;
@@ -60,8 +65,11 @@ public class CodeTerminalUI : MonoBehaviour
 
         if (SoundManager.Instance != null)
             SoundManager.Instance.PlayTerminalOpen();
-        else
-            Debug.LogWarning("CodeTerminalUI: SoundManager instance is missing!");
+    }
+
+    void UnblockTypingSound()
+    {
+        blockTypingSound = false;
     }
 
     public void Close()
@@ -72,7 +80,6 @@ public class CodeTerminalUI : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        // Unlock player movement
         CachePlayerMovement();
         if (cachedPlayerMove != null)
             cachedPlayerMove.enabled = true;
@@ -86,8 +93,6 @@ public class CodeTerminalUI : MonoBehaviour
 
         if (SoundManager.Instance != null)
             SoundManager.Instance.PlayTerminalClose();
-        else
-            Debug.LogWarning("CodeTerminalUI: SoundManager instance is missing!");
     }
 
     public void Submit()
@@ -96,9 +101,8 @@ public class CodeTerminalUI : MonoBehaviour
 
         if (inputField.text == currentTerminal.correctAnswer)
         {
-            if (SoundManager.Instance != null)
-                SoundManager.Instance.PlayTerminalCorrect();
-
+            // ← Sound plays after transition duration
+            StartCoroutine(PlaySoundDelayed(true, processFlow.transitionDuration));
             processFlow.PlaySuccess(() =>
             {
                 currentTerminal.CompleteTerminal();
@@ -107,9 +111,8 @@ public class CodeTerminalUI : MonoBehaviour
         }
         else
         {
-            if (SoundManager.Instance != null)
-                SoundManager.Instance.PlayTerminalWrong();
-
+            // ← Sound plays after transition duration
+            StartCoroutine(PlaySoundDelayed(false, processFlow.transitionDuration));
             processFlow.PlayFail(() =>
             {
                 codePanel.SetActive(true);
@@ -124,11 +127,23 @@ public class CodeTerminalUI : MonoBehaviour
         }
     }
 
+    // ← New method that delays the sound
+    IEnumerator PlaySoundDelayed(bool success, float delay)
+    {
+        yield return new WaitForSecondsRealtime(delay);
+        if (SoundManager.Instance == null) yield break;
+        if (success)
+            SoundManager.Instance.PlayTerminalCorrect();
+        else
+            SoundManager.Instance.PlayTerminalWrong();
+    }
+
     void Update()
     {
         if (!isActive) return;
 
-        if (Input.anyKeyDown && !Input.GetKeyDown(KeyCode.Tab) && !Input.GetKeyDown(KeyCode.Return))
+        if (Input.anyKeyDown && !Input.GetKeyDown(KeyCode.Tab) &&
+            !Input.GetKeyDown(KeyCode.Return) && !blockTypingSound) // ← typing sound fix
         {
             if (SoundManager.Instance != null)
                 SoundManager.Instance.PlayTerminalTyping();

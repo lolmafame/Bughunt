@@ -71,7 +71,8 @@ public class GameManager : MonoBehaviour
     {
         isPaused = true;
         Time.timeScale = 0f;
-        AudioListener.pause = true;
+        SoundManager.Instance.PlayPauseOpen(); // ← play BEFORE pausing audio
+        AudioListener.pause = true; // ← then pause audio
         pausePanel.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -87,6 +88,7 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         if (gameTimer != null) gameTimer.StartTimer();
+        SoundManager.Instance.PlayPauseClose(); // ← add here
     }
 
     public void OpenSettings()
