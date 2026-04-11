@@ -78,8 +78,8 @@ public class MP_CodeTerminalUI : MonoBehaviour
         codePanel.SetActive(false);
         isActive = false;
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
 
         MP_GameManager.Instance.SetInputLocked(false);
         SoundManager.Instance.PlayTerminalClose();

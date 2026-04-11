@@ -306,6 +306,9 @@ MonoBehaviour:
   warningObject: {fileID: 1162864153}
   hideObject: {fileID: 726375967}
   openObject: {fileID: 1330208575}
+  loadingPanel: {fileID: 1330208575}
+  loadingTime: 5
+  sceneName: multiplayer
 --- !u!224 &2198190
 RectTransform:
   m_ObjectHideFlags: 0
