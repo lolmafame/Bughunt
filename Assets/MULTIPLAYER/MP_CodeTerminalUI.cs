@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 
 public class MP_CodeTerminalUI : MonoBehaviour
 {
@@ -13,13 +14,11 @@ public class MP_CodeTerminalUI : MonoBehaviour
     private bool isActive = false;
     public TMP_Text instructionText;
 
-
     void Awake()
     {
         Instance = this;
         codePanel.SetActive(false);
     }
-
 
     public void Open(MP_Terminal terminal)
     {
@@ -31,16 +30,19 @@ public class MP_CodeTerminalUI : MonoBehaviour
         transitionFlow.PlayTransition();
         inputField.text = "";
         isActive = true;
+
         if (instructionText != null)
             instructionText.text = terminal.instructions;
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        inputField.Select();
-        inputField.ActivateInputField();
+
+        // ← Delayed focus fix
+        StartCoroutine(FocusInputField());
+
         MP_GameManager.Instance.SetInputLocked(true);
         SoundManager.Instance.PlayTerminalOpen();
 
-        // Find LOCAL player only
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject p in players)
         {
@@ -53,9 +55,15 @@ public class MP_CodeTerminalUI : MonoBehaviour
         }
 
         if (MP_SpiderAI.Instance != null && MP_SpiderAI.Instance.IsSpawned)
-        {
             MP_SpiderAI.Instance.InvestigateServerRpc(terminal.transform.position);
-        }
+    }
+
+    // ← New focus coroutine
+    IEnumerator FocusInputField()
+    {
+        yield return new WaitForEndOfFrame();
+        inputField.Select();
+        inputField.ActivateInputField();
     }
 
     public void Close()
@@ -63,8 +71,8 @@ public class MP_CodeTerminalUI : MonoBehaviour
         if (currentTerminal != null)
         {
             currentTerminal.SetInUseServerRpc(false);
-
-            MP_GameManager.Instance.NotifySpiderInvestigateServerRpc(currentTerminal.transform.position);
+            MP_GameManager.Instance.NotifySpiderInvestigateServerRpc(
+                currentTerminal.transform.position);
         }
 
         codePanel.SetActive(false);
@@ -91,44 +99,66 @@ public class MP_CodeTerminalUI : MonoBehaviour
     public void Submit()
     {
         Debug.Log("Submit clicked");
-
+        Debug.Log("Current terminal: " + currentTerminal);
+        Debug.Log("Input text: " + inputField.text);
+        Debug.Log("Correct answer: " + currentTerminal?.correctAnswer);
+        Debug.Log("Is in use: " + currentTerminal?.isInUse.Value);
+        Debug.Log("Submit clicked");
         if (currentTerminal == null)
         {
             Debug.LogError("NO TERMINAL SET!");
             return;
         }
 
-            if (inputField.text == currentTerminal.correctAnswer)
+        if (inputField.text == currentTerminal.correctAnswer)
         {
-            SoundManager.Instance.PlayTerminalCorrect();
-
+            StartCoroutine(PlaySoundDelayed(true, processFlow.transitionDuration));
             processFlow.PlaySuccess(() =>
             {
-                currentTerminal.CompleteTerminalServerRpc();// ✅ FIXED
+                currentTerminal.CompleteTerminalServerRpc();
                 Close();
             });
         }
         else
         {
-            SoundManager.Instance.PlayTerminalWrong();
-
+            StartCoroutine(PlaySoundDelayed(false, processFlow.transitionDuration));
             processFlow.PlayFail(() =>
             {
                 codePanel.SetActive(true);
                 isActive = true;
                 inputField.gameObject.SetActive(true);
                 inputField.text = "";
-                inputField.Select();
-                inputField.ActivateInputField();
+                // ← Use coroutine here too so retype works
+                StartCoroutine(FocusInputField());
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
             });
         }
     }
 
+    IEnumerator PlaySoundDelayed(bool success, float delay)
+    {
+        yield return new WaitForSecondsRealtime(delay);
+        if (SoundManager.Instance == null) yield break;
+        if (success)
+            SoundManager.Instance.PlayTerminalCorrect();
+        else
+            SoundManager.Instance.PlayTerminalWrong();
+    }
+
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            Submit();
+        }
+
         if (!isActive) return;
+
+        // Keep input field always focused
+        if (!inputField.isFocused)
+            StartCoroutine(FocusInputField());
+
         if (Input.anyKeyDown && !Input.GetKeyDown(KeyCode.Tab) &&
             !Input.GetKeyDown(KeyCode.Return))
             SoundManager.Instance.PlayTerminalTyping();

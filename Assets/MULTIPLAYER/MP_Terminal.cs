@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Unity.Netcode;
 
 public class MP_Terminal : NetworkBehaviour
@@ -25,9 +25,10 @@ public class MP_Terminal : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (isCompleted.Value) return;
-
         if (other.CompareTag("Player"))
         {
+            MP_ThirdPersonMovement move = other.GetComponent<MP_ThirdPersonMovement>();
+            if (move == null || !move.IsOwner) return; // ← only show for local player
             interactPrompt.SetActive(true);
         }
     }
@@ -36,6 +37,8 @@ public class MP_Terminal : NetworkBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            MP_ThirdPersonMovement move = other.GetComponent<MP_ThirdPersonMovement>();
+            if (move == null || !move.IsOwner) return; // ← only hide for local player
             interactPrompt.SetActive(false);
             OnClose();
         }
@@ -46,12 +49,18 @@ public class MP_Terminal : NetworkBehaviour
         if (isCompleted.Value) return;
         if (isOpen) return;
 
-        if (other.CompareTag("Player") && Input.GetKeyDown(KeyCode.E))
+        // Check if this is the local player
+        if (other.CompareTag("Player"))
         {
-            isOpen = true;
-            interactPrompt.SetActive(false);
+            MP_ThirdPersonMovement move = other.GetComponent<MP_ThirdPersonMovement>();
+            if (move == null || !move.IsOwner) return; // ← only local player can open
 
-            MP_CodeTerminalUI.Instance.Open(this); 
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                isOpen = true;
+                interactPrompt.SetActive(false);
+                MP_CodeTerminalUI.Instance.Open(this);
+            }
         }
     }
 

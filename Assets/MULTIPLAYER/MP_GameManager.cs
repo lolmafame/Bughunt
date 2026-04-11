@@ -36,9 +36,6 @@ public class MP_GameManager : NetworkBehaviour
     private bool isPaused = false;
     private bool inputLocked = false;
 
-    // ----------------------------
-    // INIT
-    // ----------------------------
     void Awake()
     {
         if (Instance != null)
@@ -46,7 +43,6 @@ public class MP_GameManager : NetworkBehaviour
             Destroy(gameObject);
             return;
         }
-
         Instance = this;
     }
 
@@ -54,11 +50,8 @@ public class MP_GameManager : NetworkBehaviour
     public void NotifySpiderInvestigateServerRpc(Vector3 pos)
     {
         MP_SpiderAI spider = FindFirstObjectByType<MP_SpiderAI>();
-
         if (spider != null && spider.IsSpawned)
-        {
             spider.InvestigatePosition(pos);
-        }
     }
 
     public override void OnNetworkSpawn()
@@ -75,26 +68,19 @@ public class MP_GameManager : NetworkBehaviour
             if (!isPaused) PauseGame();
             else ResumeGame();
         }
-
-        if (inputLocked) return;
+        // inputLocked removed — was blocking UI buttons
     }
 
-    // ----------------------------
-    // PAUSE (LOCAL ONLY)
-    // ----------------------------
     public void PauseGame()
     {
         isPaused = true;
         Time.timeScale = 0f;
+        SoundManager.Instance.PlayPauseOpen();
         AudioListener.pause = true;
-
         pausePanel.SetActive(true);
-
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-
-        if (gameTimer != null)
-            gameTimer.StopTimer();
+        if (gameTimer != null) gameTimer.StopTimer();
     }
 
     public void ResumeGame()
@@ -102,19 +88,12 @@ public class MP_GameManager : NetworkBehaviour
         isPaused = false;
         Time.timeScale = 1f;
         AudioListener.pause = false;
-
+        SoundManager.Instance.PlayPauseClose();
         pausePanel.SetActive(false);
-
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-
-        if (gameTimer != null)
-            gameTimer.StartTimer();
+        if (gameTimer != null) gameTimer.StartTimer();
     }
-
-    // ----------------------------
-    // GAME OVER (MULTIPLAYER SAFE)
-    // ----------------------------
 
     [ServerRpc(RequireOwnership = false)]
     public void TriggerGameOverServerRpc()
@@ -126,17 +105,12 @@ public class MP_GameManager : NetworkBehaviour
     void TriggerGameOverClientRpc()
     {
         Time.timeScale = 0f;
-
         gameTimer.StopTimer();
-
         gameOverPanel.SetActive(true);
         gameOverPanel.GetComponent<SpringPanel>().PlayDropBounce();
-
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-
         float finalTime = gameTimer.GetFinalTime();
-
         gameOverTimeText.text = "Time: " + FormatTime(finalTime);
         gameOverTerminalText.text =
             MP_TerminalManager.Instance.completedTerminals.Value +
@@ -147,16 +121,10 @@ public class MP_GameManager : NetworkBehaviour
     {
         Time.timeScale = 1f;
         gameTimer.StopTimer();
-
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
-
-    // ----------------------------
-    // COMPLETION (MULTIPLAYER SAFE)
-    // ----------------------------
 
     [ServerRpc(RequireOwnership = false)]
     public void TriggerCompletionServerRpc()
@@ -168,90 +136,63 @@ public class MP_GameManager : NetworkBehaviour
     void TriggerCompletionClientRpc()
     {
         Time.timeScale = 0f;
-
         gameTimer.StopTimer();
-
         completionPanel.SetActive(true);
         completionPanel.GetComponent<SpringPanel>().PlayDropBounce();
-
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-
         float finalTime = gameTimer.GetFinalTime();
-
         completionTimeText.text = "Time: " + FormatTime(finalTime);
         completionTerminalText.text =
             MP_TerminalManager.Instance.completedTerminals.Value +
             " / " + MP_TerminalManager.Instance.totalTerminals;
-
         SaveLevelProgress();
     }
 
     public void CompletionContinue()
     {
         Time.timeScale = 1f;
-
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-
         SceneManager.LoadScene(level2SceneName);
     }
 
     public void QuitToMainMenu()
     {
         Time.timeScale = 1f;
-
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-
         PlayerPrefs.SetInt("OpenCampaign", 1);
         SceneManager.LoadScene(mainMenuSceneName);
     }
 
-    // ----------------------------
-    // FIREBASE SAVE (LOCAL CALL OK)
-    // ----------------------------
     private void SaveLevelProgress()
     {
         PlayerPrefs.SetInt("level1_completed", 1);
-
         if (gameTimer != null)
-        {
             PlayerPrefs.SetFloat("level1_best_time", gameTimer.GetFinalTime());
-        }
-
         PlayerPrefs.Save();
 
         FirebaseUser currentUser = FirebaseAuth.DefaultInstance.CurrentUser;
-
         if (currentUser != null)
         {
             FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
             DocumentReference userDoc = db.Collection("users").Document(currentUser.UserId);
-
             Dictionary<string, object> progressData = new Dictionary<string, object>
             {
                 { "level1_completed", true },
                 { "level1_best_time", gameTimer.GetFinalTime() }
             };
-
             userDoc.UpdateAsync(progressData).ContinueWithOnMainThread(task =>
             {
                 if (task.IsFaulted || task.IsCanceled)
-                {
                     Debug.LogError("Failed to save progress: " + task.Exception);
-                }
                 else
-                {
                     Debug.Log("Progress saved for: " + currentUser.UserId);
-                }
             });
         }
     }
 
-    // ----------------------------
-    // UTILITIES
-    // ----------------------------
     string FormatTime(float time)
     {
         int minutes = Mathf.FloorToInt(time / 60f);

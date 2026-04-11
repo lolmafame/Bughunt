@@ -363,9 +363,9 @@ MonoBehaviour:
   spiderAmbientClip: {fileID: 0}
   spiderDetectedClip: {fileID: 8300000, guid: 2b9b360c3048cdd4291dffd763e2c68f, type: 3}
   spiderLostClip: {fileID: 8300000, guid: 9ca1457dc0cd49d48a4a7e32486538cb, type: 3}
-  terminalOpenClip: {fileID: 8300000, guid: 2b9b360c3048cdd4291dffd763e2c68f, type: 3}
-  terminalCloseClip: {fileID: 8300000, guid: 2b9b360c3048cdd4291dffd763e2c68f, type: 3}
-  terminalTypingClip: {fileID: 8300000, guid: 2b9b360c3048cdd4291dffd763e2c68f, type: 3}
+  terminalOpenClip: {fileID: 0}
+  terminalCloseClip: {fileID: 0}
+  terminalTypingClip: {fileID: 0}
   terminalCorrectClip: {fileID: 8300000, guid: 2b9b360c3048cdd4291dffd763e2c68f, type: 3}
   terminalWrongClip: {fileID: 8300000, guid: 2b9b360c3048cdd4291dffd763e2c68f, type: 3}
   pauseOpenClip: {fileID: 0}
@@ -20032,6 +20032,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 335532801061111084, guid: 80ae7471e06e1144288f9684172a7624, type: 3}
       propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 515611193910447434, guid: 80ae7471e06e1144288f9684172a7624, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 515611193910447434, guid: 80ae7471e06e1144288f9684172a7624, type: 3}
