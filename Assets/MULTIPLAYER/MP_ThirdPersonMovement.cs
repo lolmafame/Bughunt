@@ -1,9 +1,8 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Unity.Netcode;
 
 public class MP_ThirdPersonMovement : NetworkBehaviour
 {
-    
     public CharacterController controller;
     public Transform cam;
 
@@ -31,34 +30,50 @@ public class MP_ThirdPersonMovement : NetworkBehaviour
     private float turnSmoothVelocity;
     public float turnSmoothTime = 0.05f;
 
+    // ADD THIS — syncs animation state across network
+    private NetworkVariable<float> networkAnimSpeed = new NetworkVariable<float>(
+        0f,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Owner
+    );
+
     public void ResetStamina()
     {
         currentStamina = maxStamina;
         canRun = true;
     }
 
-
     public override void OnNetworkSpawn()
     {
-        // Disable camera for non-local players
         if (!IsOwner)
         {
             if (cam != null)
                 cam.gameObject.SetActive(false);
-            enabled = false; // disable this script for non-local players
+
+            // Don't disable the whole script — we need it for animation sync
+            // enabled = false; ← REMOVE THIS
+            animator = GetComponentInChildren<Animator>();
+
+            // Subscribe to animation changes from network
+            networkAnimSpeed.OnValueChanged += OnAnimSpeedChanged;
             return;
         }
 
         currentStamina = maxStamina;
         animator = GetComponentInChildren<Animator>();
-
         cam = GetComponentInChildren<Camera>().transform;
+    }
+
+    // Called on non-owner clients when animation speed changes
+    void OnAnimSpeedChanged(float oldVal, float newVal)
+    {
+        if (animator != null)
+            animator.SetFloat("Speed", newVal);
     }
 
     void Update()
     {
-
-        if (!IsOwner) return; // only local player controls their own character
+        if (!IsOwner) return;
 
         // Ground check
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
@@ -120,9 +135,12 @@ public class MP_ThirdPersonMovement : NetworkBehaviour
             controller.Move(moveDir * currentSpeed * Time.deltaTime);
         }
 
-        // Animator
+        // Animator — sync to network
         float animSpeed = direction.magnitude >= 0.1f ? 1f : 0f;
         animator.SetFloat("Speed", animSpeed);
+
+        // ADD THIS — broadcast animation state to other clients
+        networkAnimSpeed.Value = animSpeed;
     }
 
     public float GetStaminaNormalized() => currentStamina / maxStamina;
