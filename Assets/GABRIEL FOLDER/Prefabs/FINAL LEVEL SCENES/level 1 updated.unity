@@ -430,7 +430,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpiderDamage
   damageAmount: 20
-  knockbackForce: 5
+  knockbackForce: 50
   knockbackDuration: 0.3
 --- !u!135 &70493325
 SphereCollider:
@@ -22016,7 +22016,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3484652266543125338, guid: 36cdd10d7c24be6418f215fd864fd8ed, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 56.080925
+      value: 90.204926
       objectReference: {fileID: 0}
     - target: {fileID: 3484652266543125338, guid: 36cdd10d7c24be6418f215fd864fd8ed, type: 3}
       propertyPath: m_LocalRotation.w
@@ -22163,7 +22163,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1720002759758408411, guid: c1e7aa59e1e955540aebf045678f7b42, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 56.080925
+      value: 90.204926
       objectReference: {fileID: 0}
     - target: {fileID: 1720002759758408411, guid: c1e7aa59e1e955540aebf045678f7b42, type: 3}
       propertyPath: m_LocalRotation.w
@@ -23239,7 +23239,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2705621360532978427, guid: 783af2bcb30ad784a99491081f2a5fae, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 58.9
+      value: 93.024
       objectReference: {fileID: 0}
     - target: {fileID: 2705621360532978427, guid: 783af2bcb30ad784a99491081f2a5fae, type: 3}
       propertyPath: m_LocalRotation.w
