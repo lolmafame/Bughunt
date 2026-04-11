@@ -199,52 +199,53 @@ public class GameManager : MonoBehaviour
 
     private void SaveLevelProgress()
     {
-        string levelKey = $"level{currentLevel}_completed";
-        string levelTimeKey = $"level{currentLevel}_best_time";
+        FirebaseUser currentUser = FirebaseAuth.DefaultInstance.CurrentUser;
+        string userId = currentUser != null ? currentUser.UserId : "guest";
+
+        // --- Keys ---
+        // 1. Cloud Database Keys (Keep these standard so Firestore looks clean)
+        string dbLevelKey = $"level{currentLevel}_completed";
+        string dbTimeKey = $"level{currentLevel}_best_time";
+
+        // 2. Local Cache Keys (Append UserId to prevent account data bleeding)
+        string localLevelKey = $"level{currentLevel}_completed_{userId}";
+        string localTimeKey = $"level{currentLevel}_best_time_{userId}";
+
         float newTime = gameTimer != null ? gameTimer.GetFinalTime() : 0f;
 
-        // --- Best Time Validation ---
-        // Only update the time if it's better (lower) than the previously saved time.
-        // float.MaxValue means no previous time exists yet — always save in that case.
-        float previousBestTime = PlayerPrefs.GetFloat(levelTimeKey, float.MaxValue);
+        // --- Local PlayerPrefs Saving ---
+        float previousBestTime = PlayerPrefs.GetFloat(localTimeKey, float.MaxValue);
         bool isNewBestTime = newTime < previousBestTime;
 
-        // --- PlayerPrefs (local backup) ---
-        PlayerPrefs.SetInt(levelKey, 1); // always mark completed
+        PlayerPrefs.SetInt(localLevelKey, 1); // Mark local complete
 
         if (isNewBestTime)
         {
-            PlayerPrefs.SetFloat(levelTimeKey, newTime);
-            Debug.Log($"Level {currentLevel}: New best time! {FormatTime(newTime)} (previous: {FormatTime(previousBestTime)})");
-        }
-        else
-        {
-            Debug.Log($"Level {currentLevel}: Time {FormatTime(newTime)} did not beat best of {FormatTime(previousBestTime)}. Best time kept.");
+            PlayerPrefs.SetFloat(localTimeKey, newTime);
+            Debug.Log($"Level {currentLevel}: New best time! {FormatTime(newTime)}");
         }
 
         if (currentLevel == 5)
         {
-            PlayerPrefs.SetInt("all_levels_completed", 1);
-            Debug.Log("All 5 levels completed!");
+            PlayerPrefs.SetInt($"all_levels_completed_{userId}", 1);
         }
 
         PlayerPrefs.Save();
 
-        // --- Firestore ---
-        FirebaseUser currentUser = FirebaseAuth.DefaultInstance.CurrentUser;
+        // --- Firestore Saving ---
         if (currentUser != null)
         {
             FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
-            DocumentReference userDoc = db.Collection("users").Document(currentUser.UserId);
+            DocumentReference userDoc = db.Collection("users").Document(userId);
 
             Dictionary<string, object> progressData = new Dictionary<string, object>
             {
-                { levelKey, true } // always mark completed in Firestore
+                { dbLevelKey, true } // Save using standard db key
             };
 
             // Only push the new time to Firestore if it beats the local best
             if (isNewBestTime)
-                progressData[levelTimeKey] = newTime;
+                progressData[dbTimeKey] = newTime; // Save using standard db key
 
             if (currentLevel == 5)
                 progressData["all_levels_completed"] = true;
@@ -254,12 +255,8 @@ public class GameManager : MonoBehaviour
                 if (task.IsFaulted || task.IsCanceled)
                     Debug.LogError("Failed to save level progress: " + task.Exception);
                 else
-                    Debug.Log($"Saved Level {currentLevel} completion for user: {currentUser.UserId}");
+                    Debug.Log($"Saved Level {currentLevel} completion to cloud.");
             });
-        }
-        else
-        {
-            Debug.LogWarning("No user logged in. Level progress not saved to database.");
         }
     }
 
