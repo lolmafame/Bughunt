@@ -14,48 +14,24 @@ public class LevelSelectManager : MonoBehaviour
 
     private LevelUI[] levels;
 
+    private string GetUserId()
+    {
+        FirebaseUser user = FirebaseAuth.DefaultInstance.CurrentUser;
+        return user != null ? user.UserId : "guest";
+    }
+
     void Start()
     {
-        // Put all level UIs into an array for easy looping
         levels = new LevelUI[] { level1UI, level2UI, level3UI, level4UI, level5UI };
 
-        // 1. Set default states: Level 1 Open, the rest Closed
-        if (levels[0] != null) levels[0].SetState(LevelState.Open);
-        for (int i = 1; i < levels.Length; i++)
+        // 1. Lock everything down initially while we wait for Firebase
+        for (int i = 0; i < levels.Length; i++)
         {
             if (levels[i] != null) levels[i].SetState(LevelState.Closed);
         }
 
-        // 2. Check local PlayerPrefs progress immediately for quick UI loading
-        UpdateUIFromLocalPrefs();
-
-        // 3. Fetch cloud progress to update the UI with remote data
+        // 2. ONLY fetch from Firebase. Local data is strictly a fallback now.
         FetchLevelProgress();
-    }
-
-    private void UpdateUIFromLocalPrefs()
-    {
-        for (int i = 0; i < levels.Length; i++)
-        {
-            int levelNum = i + 1; // 1-based index for your keys (level1, level2, etc.)
-            bool isCompleted = PlayerPrefs.GetInt($"level{levelNum}_completed", 0) == 1;
-
-            if (isCompleted)
-            {
-                // Mark current level as Complete
-                if (levels[i] != null) levels[i].SetState(LevelState.Complete);
-
-                // Open the next level if it exists and isn't already completed
-                if (i + 1 < levels.Length && levels[i + 1] != null)
-                {
-                    bool isNextCompleted = PlayerPrefs.GetInt($"level{levelNum + 1}_completed", 0) == 1;
-                    if (!isNextCompleted)
-                    {
-                        levels[i + 1].SetState(LevelState.Open);
-                    }
-                }
-            }
-        }
     }
 
     private void FetchLevelProgress()
@@ -64,55 +40,100 @@ public class LevelSelectManager : MonoBehaviour
 
         if (currentUser != null)
         {
+            string userId = currentUser.UserId;
             FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
-            DocumentReference userDoc = db.Collection("users").Document(currentUser.UserId);
+            DocumentReference userDoc = db.Collection("users").Document(userId);
 
+            // Attempt to read from Cloud FIRST
             userDoc.GetSnapshotAsync().ContinueWithOnMainThread(task =>
             {
+                // IF OFFLINE: Task will fault. Fallback to local save for this specific account.
                 if (task.IsFaulted || task.IsCanceled)
                 {
-                    Debug.LogError("Failed to fetch level progress: " + task.Exception);
+                    Debug.LogWarning("Lost connection to Firebase. Falling back to local save for user: " + userId);
+                    LoadFromOfflineBackup(userId);
                     return;
                 }
 
+                // IF ONLINE: Firebase is King. 
                 DocumentSnapshot snapshot = task.Result;
+
+                // Open Level 1 by default
+                if (levels[0] != null) levels[0].SetState(LevelState.Open);
+
                 if (snapshot.Exists)
                 {
                     for (int i = 0; i < levels.Length; i++)
                     {
                         int levelNum = i + 1;
-                        string levelKey = $"level{levelNum}_completed";
+                        string dbLevelKey = $"level{levelNum}_completed";
+                        string localLevelKey = $"level{levelNum}_completed_{userId}";
 
-                        // If this level is marked as completed in Firestore
-                        if (snapshot.ContainsField(levelKey) && snapshot.GetValue<bool>(levelKey))
+                        // Check cloud status
+                        if (snapshot.ContainsField(dbLevelKey) && snapshot.GetValue<bool>(dbLevelKey))
                         {
-                            // Mark complete in UI
                             if (levels[i] != null) levels[i].SetState(LevelState.Complete);
 
-                            // Sync local PlayerPrefs as a backup
-                            PlayerPrefs.SetInt(levelKey, 1);
+                            // Cloud says complete, so force local cache to match
+                            PlayerPrefs.SetInt(localLevelKey, 1);
 
-                            // Open the next level if it exists
+                            // Unlock next level
                             if (i + 1 < levels.Length && levels[i + 1] != null)
                             {
-                                string nextLevelKey = $"level{levelNum + 1}_completed";
-                                bool isNextComplete = snapshot.ContainsField(nextLevelKey) && snapshot.GetValue<bool>(nextLevelKey);
+                                string nextDbKey = $"level{levelNum + 1}_completed";
+                                bool isNextComplete = snapshot.ContainsField(nextDbKey) && snapshot.GetValue<bool>(nextDbKey);
 
-                                // Only set to Open if the player hasn't already completed it
                                 if (!isNextComplete)
                                 {
                                     levels[i + 1].SetState(LevelState.Open);
                                 }
                             }
                         }
+                        else
+                        {
+                            // Cloud says NOT complete. Force local cache to match (prevents local cheating/bleeding)
+                            PlayerPrefs.SetInt(localLevelKey, 0);
+                        }
                     }
                     PlayerPrefs.Save();
+                }
+                else
+                {
+                    Debug.Log("New user in database. Starting fresh.");
+                    // Optional: Wipe local cache for this user just to be absolutely sure it's a fresh start
                 }
             });
         }
         else
         {
-            Debug.LogWarning("No user logged in. Showing default level states.");
+            Debug.LogWarning("No user logged in. Showing default level 1 open.");
+            if (levels[0] != null) levels[0].SetState(LevelState.Open);
+        }
+    }
+
+    // This method ONLY runs if Firebase cannot be reached
+    private void LoadFromOfflineBackup(string userId)
+    {
+        if (levels[0] != null) levels[0].SetState(LevelState.Open);
+
+        for (int i = 0; i < levels.Length; i++)
+        {
+            int levelNum = i + 1;
+            bool isCompleted = PlayerPrefs.GetInt($"level{levelNum}_completed_{userId}", 0) == 1;
+
+            if (isCompleted)
+            {
+                if (levels[i] != null) levels[i].SetState(LevelState.Complete);
+
+                if (i + 1 < levels.Length && levels[i + 1] != null)
+                {
+                    bool isNextCompleted = PlayerPrefs.GetInt($"level{levelNum + 1}_completed_{userId}", 0) == 1;
+                    if (!isNextCompleted)
+                    {
+                        levels[i + 1].SetState(LevelState.Open);
+                    }
+                }
+            }
         }
     }
 }
