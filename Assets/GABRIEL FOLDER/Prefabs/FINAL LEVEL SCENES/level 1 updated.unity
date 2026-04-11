@@ -430,7 +430,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpiderDamage
   damageAmount: 20
-  knockbackForce: 35
+  knockbackForce: 20
   knockbackDuration: 0.3
 --- !u!135 &70493325
 SphereCollider:
@@ -6745,7 +6745,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 671238737}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ca7de3aefa901374ba29464584a3109a, type: 3}
   m_Name: 
@@ -22016,7 +22016,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3484652266543125338, guid: 36cdd10d7c24be6418f215fd864fd8ed, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 90.204926
+      value: -25.579079
       objectReference: {fileID: 0}
     - target: {fileID: 3484652266543125338, guid: 36cdd10d7c24be6418f215fd864fd8ed, type: 3}
       propertyPath: m_LocalRotation.w
@@ -22163,7 +22163,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1720002759758408411, guid: c1e7aa59e1e955540aebf045678f7b42, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 90.204926
+      value: -25.579079
       objectReference: {fileID: 0}
     - target: {fileID: 1720002759758408411, guid: c1e7aa59e1e955540aebf045678f7b42, type: 3}
       propertyPath: m_LocalRotation.w
@@ -23251,7 +23251,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2705621360532978427, guid: 783af2bcb30ad784a99491081f2a5fae, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 93.024
+      value: -22.76
       objectReference: {fileID: 0}
     - target: {fileID: 2705621360532978427, guid: 783af2bcb30ad784a99491081f2a5fae, type: 3}
       propertyPath: m_LocalRotation.w

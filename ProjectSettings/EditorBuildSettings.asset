@@ -8,7 +8,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/GABRIEL FOLDER/SCENESKO/Catseen Scene.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
+  - enabled: 0
     path: Assets/final Scenes/NewTitleScreen.unity
     guid: fbabc28a49c464b4788b80afa7dbeb51
   - enabled: 0
@@ -32,6 +32,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/GABRIEL FOLDER/Prefabs/FINAL LEVEL SCENES/level 5.unity
     guid: 72c5f0d0752379240a8bc5133ce3a61a
+  - enabled: 1
+    path: Assets/GABRIEL FOLDER/Prefabs/FINAL LEVEL SCENES/LoginMainMenuupd.unity
+    guid: 0063fdf2c9c3a5842a2b0454ad6d4fd1
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
