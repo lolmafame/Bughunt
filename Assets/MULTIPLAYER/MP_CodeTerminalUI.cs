@@ -98,19 +98,20 @@ public class MP_CodeTerminalUI : MonoBehaviour
 
     public void Submit()
     {
-        Debug.Log("Submit clicked");
-        Debug.Log("Current terminal: " + currentTerminal);
-        Debug.Log("Input text: " + inputField.text);
-        Debug.Log("Correct answer: " + currentTerminal?.correctAnswer);
-        Debug.Log("Is in use: " + currentTerminal?.isInUse.Value);
-        Debug.Log("Submit clicked");
         if (currentTerminal == null)
         {
             Debug.LogError("NO TERMINAL SET!");
             return;
         }
 
-        if (inputField.text == currentTerminal.correctAnswer)
+        string playerAnswer = inputField.text.Trim().ToLower().Replace(" ", "");
+        string correctAnswer = currentTerminal.correctAnswer.Trim().ToLower().Replace(" ", "");
+
+        Debug.Log("Player answer: '" + playerAnswer + "'");
+        Debug.Log("Correct answer: '" + correctAnswer + "'");
+        Debug.Log("Match: " + (playerAnswer == correctAnswer));
+
+        if (playerAnswer == correctAnswer)
         {
             StartCoroutine(PlaySoundDelayed(true, processFlow.transitionDuration));
             processFlow.PlaySuccess(() =>
@@ -128,7 +129,6 @@ public class MP_CodeTerminalUI : MonoBehaviour
                 isActive = true;
                 inputField.gameObject.SetActive(true);
                 inputField.text = "";
-                // ← Use coroutine here too so retype works
                 StartCoroutine(FocusInputField());
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
