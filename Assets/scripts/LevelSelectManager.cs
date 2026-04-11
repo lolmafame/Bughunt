@@ -12,26 +12,50 @@ public class LevelSelectManager : MonoBehaviour
     public LevelUI level4UI;
     public LevelUI level5UI;
 
+    private LevelUI[] levels;
+
     void Start()
     {
-        // Set default states before data loads
-        if (level1UI != null) level1UI.SetState(LevelState.Open);
-        if (level2UI != null) level2UI.SetState(LevelState.Closed);
-        if (level3UI != null) level3UI.SetState(LevelState.Closed);
-        if (level4UI != null) level4UI.SetState(LevelState.Closed);
-        if (level5UI != null) level5UI.SetState(LevelState.Closed);
+        // Put all level UIs into an array for easy looping
+        levels = new LevelUI[] { level1UI, level2UI, level3UI, level4UI, level5UI };
 
-        // Check local PlayerPrefs progress
-        bool level1Complete = PlayerPrefs.GetInt("level1_completed", 0) == 1;
-
-        if (level1Complete)
+        // 1. Set default states: Level 1 Open, the rest Closed
+        if (levels[0] != null) levels[0].SetState(LevelState.Open);
+        for (int i = 1; i < levels.Length; i++)
         {
-            if (level1UI != null) level1UI.SetState(LevelState.Complete);
-            if (level2UI != null) level2UI.SetState(LevelState.Open);
+            if (levels[i] != null) levels[i].SetState(LevelState.Closed);
         }
 
-        // Fetch progress to update the UI
+        // 2. Check local PlayerPrefs progress immediately for quick UI loading
+        UpdateUIFromLocalPrefs();
+
+        // 3. Fetch cloud progress to update the UI with remote data
         FetchLevelProgress();
+    }
+
+    private void UpdateUIFromLocalPrefs()
+    {
+        for (int i = 0; i < levels.Length; i++)
+        {
+            int levelNum = i + 1; // 1-based index for your keys (level1, level2, etc.)
+            bool isCompleted = PlayerPrefs.GetInt($"level{levelNum}_completed", 0) == 1;
+
+            if (isCompleted)
+            {
+                // Mark current level as Complete
+                if (levels[i] != null) levels[i].SetState(LevelState.Complete);
+
+                // Open the next level if it exists and isn't already completed
+                if (i + 1 < levels.Length && levels[i + 1] != null)
+                {
+                    bool isNextCompleted = PlayerPrefs.GetInt($"level{levelNum + 1}_completed", 0) == 1;
+                    if (!isNextCompleted)
+                    {
+                        levels[i + 1].SetState(LevelState.Open);
+                    }
+                }
+            }
+        }
     }
 
     private void FetchLevelProgress()
@@ -54,17 +78,35 @@ public class LevelSelectManager : MonoBehaviour
                 DocumentSnapshot snapshot = task.Result;
                 if (snapshot.Exists)
                 {
-                    // Check if Level 1 is completed
-                    if (snapshot.ContainsField("level1_completed") && snapshot.GetValue<bool>("level1_completed"))
+                    for (int i = 0; i < levels.Length; i++)
                     {
-                        // Level 1 is done, so mark it complete and open Level 2!
-                        if (level1UI != null) level1UI.SetState(LevelState.Complete);
-                        if (level2UI != null) level2UI.SetState(LevelState.Open);
+                        int levelNum = i + 1;
+                        string levelKey = $"level{levelNum}_completed";
 
-                        // Sync with local PlayerPrefs
-                        PlayerPrefs.SetInt("level1_completed", 1);
-                        PlayerPrefs.Save();
+                        // If this level is marked as completed in Firestore
+                        if (snapshot.ContainsField(levelKey) && snapshot.GetValue<bool>(levelKey))
+                        {
+                            // Mark complete in UI
+                            if (levels[i] != null) levels[i].SetState(LevelState.Complete);
+
+                            // Sync local PlayerPrefs as a backup
+                            PlayerPrefs.SetInt(levelKey, 1);
+
+                            // Open the next level if it exists
+                            if (i + 1 < levels.Length && levels[i + 1] != null)
+                            {
+                                string nextLevelKey = $"level{levelNum + 1}_completed";
+                                bool isNextComplete = snapshot.ContainsField(nextLevelKey) && snapshot.GetValue<bool>(nextLevelKey);
+
+                                // Only set to Open if the player hasn't already completed it
+                                if (!isNextComplete)
+                                {
+                                    levels[i + 1].SetState(LevelState.Open);
+                                }
+                            }
+                        }
                     }
+                    PlayerPrefs.Save();
                 }
             });
         }
