@@ -24,10 +24,6 @@ public class CutsceneManager : MonoBehaviour
     [Header("UI")]
     public GameObject playerUI;
 
-    [Header("Completion")]
-    public GameObject completionPanel;
-    public float completionPanelDelay = 0.2f;
-
     [Header("Objects To Disable During Cutscene")]
     public GameObject[] objectsToDisable;
 
@@ -75,21 +71,17 @@ public class CutsceneManager : MonoBehaviour
 
     IEnumerator CutsceneRoutine()
     {
-        // Disable player + UI
         Debug.Log("Coroutine STARTED");
         if (playerController != null) playerController.enabled = false;
         if (playerUI != null) playerUI.SetActive(false);
         Debug.Log("Step 1: Disabled player");
 
-        // Disable other objects
         foreach (GameObject obj in objectsToDisable)
             if (obj != null) obj.SetActive(false);
 
-        // Fade out
         yield return StartCoroutine(Fade(0f, 1f, fadeOutDuration));
         Debug.Log("Step 2: Fade out done");
 
-        // Switch to cutscene camera
         playerVCam.gameObject.SetActive(false);
         cutsceneVCam.gameObject.SetActive(true);
         Debug.Log("Step 3: Camera switched");
@@ -98,17 +90,13 @@ public class CutsceneManager : MonoBehaviour
         cutsceneVCam.transform.position = cameraStartPoint.position;
         cutsceneVCam.transform.rotation = lockedRotation;
 
-
         yield return new WaitForSecondsRealtime(blackScreenDuration);
         Debug.Log("Step 4: Black screen done");
 
-        // Fade in
         yield return StartCoroutine(Fade(1f, 0f, fadeInDuration));
         Debug.Log("Step 5: Fade in done");
 
-        // Move camera
         float elapsed = 0f;
-
         while (elapsed < moveDuration)
         {
             elapsed += Time.unscaledDeltaTime;
@@ -116,13 +104,11 @@ public class CutsceneManager : MonoBehaviour
 
             cutsceneVCam.transform.position =
                 Vector3.Lerp(cameraStartPoint.position, cameraEndPoint.position, t);
-
             cutsceneVCam.transform.rotation = lockedRotation;
 
             yield return null;
         }
 
-        // Switch back to player
         cutsceneVCam.gameObject.SetActive(false);
         playerVCam.gameObject.SetActive(true);
 
@@ -132,41 +118,23 @@ public class CutsceneManager : MonoBehaviour
         foreach (GameObject obj in objectsToDisable)
             if (obj != null) obj.SetActive(true);
 
-        // Fade back in
         yield return StartCoroutine(Fade(1f, 0f, fadeInDuration));
 
-        // 🔥 MAKE SURE FADE IS GONE
         fadeCanvas.alpha = 0f;
         fadeCanvas.gameObject.SetActive(false);
 
-        // Wait before showing panel
-        Debug.Log("Reached completion section");
-
-        // ✅ SHOW COMPLETION PANEL (THIS IS THE IMPORTANT PART)
-        if (GameManager.Instance == null)
-        {
-            Debug.LogError("GameManager.Instance is NULL at runtime!");
-        }
-        else
-        {
-            Debug.Log("Calling Completion()");
-            GameManager.Instance.Completion();
-        }
-
-
+        Debug.Log("Cutscene finished.");
     }
 
     IEnumerator Fade(float from, float to, float duration)
     {
         float elapsed = 0f;
-
         while (elapsed < duration)
         {
             elapsed += Time.unscaledDeltaTime;
             fadeCanvas.alpha = Mathf.Lerp(from, to, elapsed / duration);
             yield return null;
         }
-
         fadeCanvas.alpha = to;
     }
 }

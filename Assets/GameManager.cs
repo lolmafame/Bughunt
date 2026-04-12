@@ -209,12 +209,9 @@ public class GameManager : MonoBehaviour
         FirebaseUser currentUser = FirebaseAuth.DefaultInstance.CurrentUser;
         string userId = currentUser != null ? currentUser.UserId : "guest";
 
-        // --- Keys ---
-        // 1. Cloud Database Keys (Keep these standard so Firestore looks clean)
         string dbLevelKey = $"level{currentLevel}_completed";
         string dbTimeKey = $"level{currentLevel}_best_time";
 
-        // 2. Local Cache Keys (Append UserId to prevent account data bleeding)
         string localLevelKey = $"level{currentLevel}_completed_{userId}";
         string localTimeKey = $"level{currentLevel}_best_time_{userId}";
 
@@ -224,7 +221,7 @@ public class GameManager : MonoBehaviour
         float previousBestTime = PlayerPrefs.GetFloat(localTimeKey, float.MaxValue);
         bool isNewBestTime = newTime < previousBestTime;
 
-        PlayerPrefs.SetInt(localLevelKey, 1); // Mark local complete
+        PlayerPrefs.SetInt(localLevelKey, 1);
 
         if (isNewBestTime)
         {
@@ -233,9 +230,7 @@ public class GameManager : MonoBehaviour
         }
 
         if (currentLevel == 5)
-        {
             PlayerPrefs.SetInt($"all_levels_completed_{userId}", 1);
-        }
 
         PlayerPrefs.Save();
 
@@ -246,18 +241,19 @@ public class GameManager : MonoBehaviour
             DocumentReference userDoc = db.Collection("users").Document(userId);
 
             Dictionary<string, object> progressData = new Dictionary<string, object>
-            {
-                { dbLevelKey, true } // Save using standard db key
-            };
+        {
+            { dbLevelKey, true }
+        };
 
-            // Only push the new time to Firestore if it beats the local best
             if (isNewBestTime)
-                progressData[dbTimeKey] = newTime; // Save using standard db key
+                progressData[dbTimeKey] = newTime;
 
             if (currentLevel == 5)
                 progressData["all_levels_completed"] = true;
 
-            userDoc.UpdateAsync(progressData).ContinueWithOnMainThread(task =>
+            // ✅ SetAsync with merge:true creates the doc if it doesn't exist,
+            //    or updates only the specified fields if it does — safe either way
+            userDoc.SetAsync(progressData, SetOptions.MergeAll).ContinueWithOnMainThread(task =>
             {
                 if (task.IsFaulted || task.IsCanceled)
                     Debug.LogError("Failed to save level progress: " + task.Exception);
