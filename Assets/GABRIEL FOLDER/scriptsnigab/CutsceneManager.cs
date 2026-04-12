@@ -24,6 +24,13 @@ public class CutsceneManager : MonoBehaviour
     [Header("UI")]
     public GameObject playerUI;
 
+    [Header("Completion")]
+    public GameObject completionPanel;
+    public float completionPanelDelay = 2f;
+
+    [Header("Objects To Disable During Cutscene")]
+    public GameObject[] objectsToDisable;
+
     private bool hasPlayed = false;
     private CanvasGroup fadeCanvas;
 
@@ -34,7 +41,6 @@ public class CutsceneManager : MonoBehaviour
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         canvas.sortingOrder = 999;
         canvasObj.AddComponent<UnityEngine.UI.CanvasScaler>();
-        // No GraphicRaycaster — fade panel must never block clicks
 
         GameObject panelObj = new GameObject("FadePanel");
         panelObj.transform.SetParent(canvasObj.transform, false);
@@ -50,6 +56,11 @@ public class CutsceneManager : MonoBehaviour
         fadeCanvas = panelObj.AddComponent<CanvasGroup>();
         fadeCanvas.alpha = 0f;
         fadeCanvas.blocksRaycasts = false;
+
+        if (completionPanel != null)
+            completionPanel.SetActive(false);
+        else
+            Debug.LogWarning("CutsceneManager: CompletionPanel is not assigned!");
     }
 
     public void PlayCutscene()
@@ -65,7 +76,11 @@ public class CutsceneManager : MonoBehaviour
         if (playerController != null) playerController.enabled = false;
         if (playerUI != null) playerUI.SetActive(false);
 
-        // Fade out to black — unscaled so timeScale doesn't matter
+        // Disable NPCs/enemies
+        foreach (GameObject obj in objectsToDisable)
+            if (obj != null) obj.SetActive(false);
+
+        // Fade out to black
         yield return StartCoroutine(Fade(0f, 1f, fadeOutDuration));
 
         // Switch to cutscene camera while black
@@ -104,21 +119,26 @@ public class CutsceneManager : MonoBehaviour
         if (playerController != null) playerController.enabled = true;
         if (playerUI != null) playerUI.SetActive(true);
 
+        // Re-enable NPCs/enemies
+        foreach (GameObject obj in objectsToDisable)
+            if (obj != null) obj.SetActive(true);
+
         yield return new WaitForSecondsRealtime(blackScreenDuration);
 
         // Fade back in
         yield return StartCoroutine(Fade(1f, 0f, fadeInDuration));
 
-        // Cutscene fully done
-        OnCutsceneFinished();
-    }
+        // Wait then show completion panel
+        yield return new WaitForSecondsRealtime(completionPanelDelay);
 
-    private void OnCutsceneFinished()
-    {
-        if (GameManager.Instance != null)
-            GameManager.Instance.Completion();
+        if (completionPanel != null)
+            completionPanel.SetActive(true);
         else
-            Debug.LogWarning("CutsceneManager: GameManager instance is missing!");
+            Debug.LogWarning("CutsceneManager: CompletionPanel is not assigned!");
+
+        // NOTE: OnCutsceneFinished removed — if GameManager.Completion()
+        // loads a new scene it would destroy the panel before you see it
+        // Add it back here ONLY if Completion() does NOT load a new scene
     }
 
     IEnumerator Fade(float from, float to, float duration)
@@ -126,7 +146,7 @@ public class CutsceneManager : MonoBehaviour
         float elapsed = 0f;
         while (elapsed < duration)
         {
-            elapsed += Time.unscaledDeltaTime; // ← unscaled, works regardless of timeScale
+            elapsed += Time.unscaledDeltaTime;
             fadeCanvas.alpha = Mathf.Lerp(from, to, elapsed / duration);
             yield return null;
         }
