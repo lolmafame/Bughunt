@@ -1,18 +1,15 @@
 using UnityEngine;
 using Unity.Netcode;
 
-public class MP_CameraActivator : MonoBehaviour
+public class MP_CameraActivator : NetworkBehaviour
 {
-    private void Start()
+    public override void OnNetworkSpawn()
     {
-        NetworkObject parentNetObj = GetComponentInParent<NetworkObject>();
-        if (parentNetObj == null) return;
-
-        // Disable camera by default
+        // Disable camera by default for everyone
         gameObject.SetActive(false);
 
-        // Only enable if this is the local player
-        if (parentNetObj.IsOwner)
+        // Only enable for the local owner
+        if (IsOwner)
             gameObject.SetActive(true);
     }
 }

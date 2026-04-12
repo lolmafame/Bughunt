@@ -49,11 +49,29 @@ public class MP_LobbyManager : NetworkBehaviour
             // Update LAN broadcast with real count
             if (LAN_Discovery.Instance != null)
                 LAN_Discovery.Instance.UpdatePlayerCount(playerCount.Value);
+
+            // ADD THESE TWO LINES
+            NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
+
         }
 
         // Notify UI of current count immediately
         if (MP_LobbyUI.Instance != null)
             MP_LobbyUI.Instance.UpdatePlayerCount(playerCount.Value);
+    }
+
+
+
+    void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request,
+                   NetworkManager.ConnectionApprovalResponse response)
+    {
+        int index = NetworkManager.Singleton.ConnectedClients.Count;
+        Vector3 spawnPos = GetLobbySpawnPoint(index);
+
+        response.Approved = true;
+        response.CreatePlayerObject = true;
+        response.Position = spawnPos;
+        response.Rotation = Quaternion.identity;
     }
 
     public override void OnNetworkDespawn()

@@ -94,11 +94,14 @@ public class LAN_Discovery : MonoBehaviour
             broadcaster.EnableBroadcast = true;
 
             // Format: "ROOM|roomName|currentPlayers|maxPlayers|hostIP"
-            string hostIP = GetLocalIP();
-            string message = $"ROOM|{roomName}|{currentPlayers}|{maxPlayers}|{hostIP}";
+            string localIP = GetLocalIP();
+            string message = $"ROOM|{roomName}|{currentPlayers}|{maxPlayers}|{localIP}";
             byte[] data = Encoding.UTF8.GetBytes(message);
+            string[] parts = localIP.Split('.');
+            string subnetBroadcast = parts[0] + "." + parts[1] + "." + parts[2] + ".255";
+            IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse(subnetBroadcast), broadcastPort);
 
-            IPEndPoint endpoint = new IPEndPoint(IPAddress.Broadcast, broadcastPort);
+
             broadcaster.Send(data, data.Length, endpoint);
             broadcaster.Close();
             broadcaster = null;

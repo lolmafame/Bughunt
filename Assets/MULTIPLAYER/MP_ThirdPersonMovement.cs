@@ -61,7 +61,12 @@ public class MP_ThirdPersonMovement : NetworkBehaviour
 
         currentStamina = maxStamina;
         animator = GetComponentInChildren<Animator>();
-        cam = GetComponentInChildren<Camera>().transform;
+        // Safe camera find
+        Camera foundCam = GetComponentInChildren<Camera>(true);
+        if (foundCam != null)
+            cam = foundCam.transform;
+        else
+            Debug.LogWarning("[Player] No camera found in children!");
     }
 
     // Called on non-owner clients when animation speed changes
