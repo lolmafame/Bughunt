@@ -185,11 +185,25 @@ public class MayaPaymentController : MonoBehaviour
         bool ownsSkin1 = accountManager.OwnsItem("player_skin1");
         bool ownsPremium = accountManager.IsPremium;
 
+        // --- Skin Button ---
         SetButtonInteractable(skinButton, !ownsSkin1);
         if (skinOwnedBadge != null) skinOwnedBadge.SetActive(ownsSkin1);
 
+        if (ownsSkin1 && skinButton != null)
+        {
+            TMP_Text skinText = skinButton.GetComponentInChildren<TMP_Text>();
+            if (skinText != null) skinText.text = "Owned";
+        }
+
+        // --- Subscription Button ---
         SetButtonInteractable(subscriptionButton, !ownsPremium);
         if (subscriptionOwnedBadge != null) subscriptionOwnedBadge.SetActive(ownsPremium);
+
+        if (ownsPremium && subscriptionButton != null)
+        {
+            TMP_Text subText = subscriptionButton.GetComponentInChildren<TMP_Text>();
+            if (subText != null) subText.text = "Owned";
+        }
     }
 
     private void ClosePopup(GameObject popup, Button confirmBtn)
