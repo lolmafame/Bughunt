@@ -9,6 +9,8 @@ public class AchievementSlot : MonoBehaviour
     public TMP_Text title;
     public TMP_Text description;
 
+    public Image icon;
+
     public void Set(Achievement achievement, bool unlocked, Sprite categorySprite)
     {
         title.text = achievement.title;
@@ -16,7 +18,7 @@ public class AchievementSlot : MonoBehaviour
 
         categoryIcon.sprite = categorySprite;
 
-        lockIcon.enabled = !unlocked;
+        icon.sprite = unlocked ? achievement.unlockedIcon : achievement.lockedIcon;
 
         float alpha = unlocked ? 1f : 0.5f;
 
