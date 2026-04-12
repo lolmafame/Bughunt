@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/MULTIPLAYER/multiplayer 2.unity
+    guid: 5ee31e814b3498c43bf6b72418e5791f
+  - enabled: 1
     path: Assets/MULTIPLAYER/LobbyScene.unity
     guid: 73c294060b98b634d94dc897a4f65938
   - enabled: 1
@@ -28,10 +31,7 @@ EditorBuildSettings:
     guid: 0deb0f57675afdc4db03a32ad7ba9cae
   - enabled: 1
     path: Assets/MULTIPLAYER/multiplayer 1.unity
-    guid: 3b36e5ef8f669be42a5e359967dcc72b
-  - enabled: 1
-    path: Assets/MULTIPLAYER/multiplayer 2.unity
-    guid: 5ee31e814b3498c43bf6b72418e5791f
+    guid: ce671c78d0d4b4743b5a12d9e92f407d
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
