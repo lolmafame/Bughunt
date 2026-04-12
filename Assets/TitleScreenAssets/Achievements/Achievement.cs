@@ -1,13 +1,26 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Achievements/Achievement")]
-public class Achievement : ScriptableObject
+public enum AchievementCategory
+{
+    BugHunter,
+    Upgrade,
+    Speed,
+    Leaderboard,
+    Progression
+}
+
+[System.Serializable]
+public class Achievement
 {
     public string id;
     public string title;
     public string description;
 
-    public AchievementCategory category;
+    public AchievementCategory category; // ⭐ NEW
 
-    public int targetValue = 1;
+    public Sprite lockedIcon;
+    public Sprite unlockedIcon;
+
+    public int targetValue;
+    public bool isUnlocked = false;
 }

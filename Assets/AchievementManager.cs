@@ -12,6 +12,16 @@ public class AchievementManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
+
+        foreach (var a in AchievementDatabase.GetAll())
+        {
+            bool saved = PlayerPrefs.GetInt(a.id, 0) == 1;
+
+            if (saved)
+            {
+                unlocked.Add(a.id);
+            }
+        }
     }
 
     public void AddProgress(string id, int amount)
@@ -28,15 +38,21 @@ public class AchievementManager : MonoBehaviour
     {
         if (unlocked.Contains(id)) return;
 
-        Achievement a = AchievementDatabase.Get(id);
+        Achievement a = AchievementDatabase.GetAll().Find(x => x.id == id);
         if (a == null) return;
+
+        if (!progress.ContainsKey(id)) return;
 
         if (progress[id] >= a.targetValue)
         {
             unlocked.Add(id);
+
+            a.isUnlocked = true; // ⭐ ADD THIS
+
+            PlayerPrefs.SetInt(id, 1); // ⭐ SAVE IT
+
             Debug.Log("Unlocked: " + a.title);
 
-            // TODO: trigger UI update
             AchievementUI.Instance.ShowUnlocked(a);
         }
     }

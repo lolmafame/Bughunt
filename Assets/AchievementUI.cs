@@ -14,6 +14,10 @@ public class AchievementUI : MonoBehaviour
     public Image competitiveIcon;
     public Image progressionIcon;
 
+    void Start()
+    {
+        BuildUI();
+    }
     public Sprite GetCategoryIcon(AchievementCategory category)
     {
         switch (category)
@@ -27,7 +31,7 @@ public class AchievementUI : MonoBehaviour
             case AchievementCategory.Speed:
                 return speedIcon.sprite;
 
-            case AchievementCategory.Competitive:
+            case AchievementCategory.Leaderboard:
                 return competitiveIcon.sprite;
 
             case AchievementCategory.Progression:
@@ -44,6 +48,11 @@ public class AchievementUI : MonoBehaviour
 
     public void BuildUI()
     {
+        foreach (Transform child in container)
+        {
+            Destroy(child.gameObject);
+        }
+
         foreach (var a in AchievementDatabase.GetAll())
         {
             var slot = Instantiate(slotPrefab, container);
