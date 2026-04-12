@@ -15834,7 +15834,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &460468377
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16408,7 +16408,7 @@ GameObject:
   - component: {fileID: 489979329}
   - component: {fileID: 489979328}
   m_Layer: 5
-  m_Name: confirmcosmeticButton
+  m_Name: confirmsuccessButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27346,6 +27346,8 @@ MonoBehaviour:
   displayUsernameText: {fileID: 1864458637}
   displayEmailText: {fileID: 684395710}
   accountPanel: {fileID: 1859979278}
+  freeTierObject: {fileID: 1261480959}
+  premiumTierObject: {fileID: 1261544643}
   loginPanelRoot: {fileID: 460468376}
 --- !u!1 &778139376
 GameObject:
@@ -43891,7 +43893,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1173268565
 RectTransform:
   m_ObjectHideFlags: 0
@@ -69715,7 +69717,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1701374365
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84130,12 +84132,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7749ec5613d5df842a5bfad381978ff7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MayaPaymentController
-  skinButton: {fileID: 0}
-  subscriptionButton: {fileID: 0}
-  confirmationPopup: {fileID: 0}
-  itemNameText: {fileID: 0}
-  confirmPurchaseButton: {fileID: 0}
-  cancelPurchaseButton: {fileID: 0}
+  skinButton: {fileID: 1611884942}
+  subscriptionButton: {fileID: 2037275419}
+  mainStorePanel: {fileID: 1701374364}
+  processSuccessPopup: {fileID: 1173268564}
+  confirmSuccessButton: {fileID: 489979328}
+  processFailedPopup: {fileID: 1593219914}
+  okayButton: {fileID: 822065393}
+  accountManager: {fileID: 776787829}
+  skinOwnedBadge: {fileID: 0}
+  subscriptionOwnedBadge: {fileID: 0}
+  cosmeticPopup: {fileID: 1763841242}
+  cosmeticItemNameText: {fileID: 550449995}
+  cosmeticPriceText: {fileID: 0}
+  cosmeticConfirmButton: {fileID: 1576509752}
+  cosmeticCancelButton: {fileID: 1947069326}
+  subscriptionPopup: {fileID: 315482600}
+  subscriptionPlanNameText: {fileID: 1297587304}
+  subscriptionPriceText: {fileID: 0}
+  subscriptionBenefitsText: {fileID: 0}
+  subscriptionConfirmButton: {fileID: 2146734154}
+  subscriptionCancelButton: {fileID: 1442368349}
 --- !u!1 &2041290546
 GameObject:
   m_ObjectHideFlags: 0

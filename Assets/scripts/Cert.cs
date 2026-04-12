@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 using Firebase.Auth;
 using Firebase.Firestore;
@@ -12,83 +12,129 @@ public class Cert : MonoBehaviour
     [SerializeField] private TMP_Text displayDateText;
 
     [Header("Unlock UI Elements")]
-    [SerializeField] private GameObject certificateButton; // Show if completed
-    [SerializeField] private GameObject incompleteTextObject; // Show if not completed
+    [SerializeField] private GameObject certificateButton;
+    [SerializeField] private GameObject incompleteTextObject;
 
     private FirebaseAuth auth;
     private FirebaseFirestore db;
+
+    // Track which user we last loaded data FOR, so we never show stale data
+    private string lastLoadedUserId = null;
 
     void Start()
     {
         InitializeFirebase();
         SetCurrentDate();
-        CheckCertificateStatus();
     }
 
     private void InitializeFirebase()
     {
         if (auth == null) auth = FirebaseAuth.DefaultInstance;
         if (db == null) db = FirebaseFirestore.DefaultInstance;
+
+        // ✅ KEY FIX: Subscribe to auth state changes.
+        // This fires immediately on Start AND fires again whenever accounts switch.
+        auth.StateChanged += OnAuthStateChanged;
+    }
+
+    // ✅ This is now the SINGLE entry point for loading data.
+    // It fires on login, logout, AND account switches.
+    private void OnAuthStateChanged(object sender, EventArgs e)
+    {
+        FirebaseUser currentUser = auth.CurrentUser;
+
+        // If no user is logged in, OR it's a different user than before → wipe everything
+        if (currentUser == null || currentUser.UserId != lastLoadedUserId)
+        {
+            Debug.Log($">>> CERT: Auth state changed. Resetting UI. New user: {currentUser?.UserId ?? "none"}");
+            ResetUIToSafeDefault();
+        }
+
+        if (currentUser != null)
+        {
+            lastLoadedUserId = currentUser.UserId;
+            SetCurrentDate();
+            CheckCertificateStatus(currentUser);
+        }
+        else
+        {
+            // User logged out, clear the tracked ID
+            lastLoadedUserId = null;
+        }
+    }
+
+    // ✅ Always wipe the UI to the most restrictive state FIRST before any async fetch
+    private void ResetUIToSafeDefault()
+    {
+        if (displayUsernameText != null) displayUsernameText.text = "";
+        if (displayDateText != null) displayDateText.text = "";
+
+        // Lock everything down — never show certificate button until DB confirms it
+        if (certificateButton != null) certificateButton.SetActive(false);
+        if (incompleteTextObject != null) incompleteTextObject.SetActive(true);
     }
 
     private void SetCurrentDate()
     {
-        // Formats the date to "Month Day, Year" (e.g., April 11, 2026)
         if (displayDateText != null)
-        {
             displayDateText.text = DateTime.Now.ToString("MMMM dd, yyyy");
-        }
     }
 
-    private void CheckCertificateStatus()
+    private void CheckCertificateStatus(FirebaseUser user)
     {
-        // SAFETY: Make sure we have a logged-in user
-        if (auth == null || auth.CurrentUser == null)
-        {
-            Debug.LogError(">>> ERROR: Cert script tried to load, but no User is logged in!");
-            return;
-        }
+        string expectedUserId = user.UserId;
 
-        FirebaseUser user = auth.CurrentUser;
-        DocumentReference userDoc = db.Collection("users").Document(user.UserId);
-
-        userDoc.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        // ✅ Reload to get the latest Google account name
+        user.ReloadAsync().ContinueWithOnMainThread(reloadTask =>
         {
-            if (task.IsFaulted)
+            if (reloadTask.IsFaulted)
+                Debug.LogWarning(">>> CERT: Could not reload user profile. Using cached data.");
+
+            FirebaseUser refreshedUser = auth.CurrentUser;
+
+            if (refreshedUser == null || refreshedUser.UserId != expectedUserId)
             {
-                Debug.LogError(">>> CERT: Failed to fetch user data for certificate.");
+                Debug.LogWarning(">>> CERT: User changed during reload. Discarding.");
                 return;
             }
 
-            DocumentSnapshot snapshot = task.Result;
-            if (snapshot.Exists)
+            // ✅ Set name immediately from Google — no Firestore involved
+            if (displayUsernameText != null)
             {
-                // 1. Handle Username
-                if (snapshot.ContainsField("username") && displayUsernameText != null)
+                string finalName = !string.IsNullOrEmpty(refreshedUser.DisplayName)
+                    ? refreshedUser.DisplayName
+                    : "Player_" + refreshedUser.UserId.Substring(0, 4);
+
+                displayUsernameText.text = finalName;
+            }
+
+            // Now separately fetch Firestore ONLY for completion status
+            DocumentReference userDoc = db.Collection("users").Document(expectedUserId);
+
+            userDoc.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+            {
+                if (auth.CurrentUser == null || auth.CurrentUser.UserId != expectedUserId)
                 {
-                    string name = snapshot.GetValue<string>("username");
-                    displayUsernameText.text = name;
-                }
-                else if (displayUsernameText != null)
-                {
-                    displayUsernameText.text = "Player_" + user.UserId.Substring(0, 4);
+                    Debug.LogWarning(">>> CERT: Discarding stale fetch — user changed mid-flight.");
+                    return;
                 }
 
-                // 2. Handle Completion Status & UI Toggle
-                bool allLevelsCompleted = false;
-                if (snapshot.ContainsField("all_levels_completed"))
+                if (task.IsFaulted)
                 {
-                    allLevelsCompleted = snapshot.GetValue<bool>("all_levels_completed");
+                    Debug.LogError(">>> CERT: Failed to fetch completion status.");
+                    ResetUIToSafeDefault();
+                    return;
                 }
+
+                DocumentSnapshot snapshot = task.Result;
+
+                bool allLevelsCompleted = false;
+                if (snapshot.Exists && snapshot.ContainsField("all_levels_completed"))
+                    allLevelsCompleted = snapshot.GetValue<bool>("all_levels_completed");
 
                 UpdateUI(allLevelsCompleted);
-                Debug.Log($">>> CERT: Status loaded. All levels completed: {allLevelsCompleted}");
-            }
-            else
-            {
-                Debug.LogWarning(">>> CERT: User document does not exist in DB!");
-                UpdateUI(false); // Default to false if no DB entry exists
-            }
+                Debug.Log($">>> CERT: Loaded for [{expectedUserId}]. Completed: {allLevelsCompleted}");
+            });
         });
     }
 
@@ -98,4 +144,10 @@ public class Cert : MonoBehaviour
         if (incompleteTextObject != null) incompleteTextObject.SetActive(!isCompleted);
     }
 
+    // ✅ CRITICAL: Always unsubscribe to prevent memory leaks and ghost callbacks
+    void OnDestroy()
+    {
+        if (auth != null)
+            auth.StateChanged -= OnAuthStateChanged;
+    }
 }
