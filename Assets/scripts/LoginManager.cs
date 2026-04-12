@@ -209,9 +209,15 @@ public class LoginManager : MonoBehaviour
             {
                 // EXISTING USER: Just update login time and enter
                 Debug.Log("Existing Google User found. Logging in...");
-                userDoc.UpdateAsync(new Dictionary<string, object> {
+
+                // Set up the data we want to update on login
+                Dictionary<string, object> updates = new Dictionary<string, object> {
                     { "lastLogin", FieldValue.ServerTimestamp }
-                });
+                };
+
+
+                // Push the updates to Firestore
+                userDoc.UpdateAsync(updates);
                 TriggerSuccessAnimation();
             }
             else
