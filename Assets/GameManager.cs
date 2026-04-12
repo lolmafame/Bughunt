@@ -128,8 +128,14 @@ public class GameManager : MonoBehaviour
     }
 
     // ---------------- Completion ----------------
+
+    private bool completionTriggered = false;
+
     public void Completion()
     {
+        if (completionTriggered) return;
+        completionTriggered = true;
+
         Time.timeScale = 0f;
         gameTimer.StopTimer();
         completionPanel.SetActive(true);

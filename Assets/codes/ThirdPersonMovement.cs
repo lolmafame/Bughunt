@@ -57,10 +57,11 @@ public class ThirdPersonMovement : MonoBehaviour
         controller.Move(velocity * Time.deltaTime);
 
         // ===== BLOCK INPUT WHEN TERMINAL IS OPEN =====
-        // (component gets disabled by CodeTerminalUI, so this is a safety fallback)
         if (CodeTerminalUI.Instance != null && CodeTerminalUI.Instance.IsActive())
         {
             animator.SetFloat("Speed", 0f);
+            // Explicitly move with zero horizontal/vertical to flush any residual input
+            controller.Move(Vector3.zero);
             return;
         }
 

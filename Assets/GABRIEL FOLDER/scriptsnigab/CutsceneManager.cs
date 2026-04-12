@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using Unity.Cinemachine;
 
@@ -14,9 +14,9 @@ public class CutsceneManager : MonoBehaviour
     public float moveDuration = 5f;
 
     [Header("Fade")]
-    public float fadeOutDuration = 1f;  // how long player cam fades out
-    public float blackScreenDuration = 1f; // how long black screen holds
-    public float fadeInDuration = 2f;   // how long cutscene cam fades in
+    public float fadeOutDuration = 1f;
+    public float blackScreenDuration = 1f;
+    public float fadeInDuration = 2f;
 
     [Header("Player")]
     public MonoBehaviour playerController;
@@ -34,12 +34,13 @@ public class CutsceneManager : MonoBehaviour
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         canvas.sortingOrder = 999;
         canvasObj.AddComponent<UnityEngine.UI.CanvasScaler>();
-        canvasObj.AddComponent<UnityEngine.UI.GraphicRaycaster>();
+        // No GraphicRaycaster — fade panel must never block clicks
 
         GameObject panelObj = new GameObject("FadePanel");
         panelObj.transform.SetParent(canvasObj.transform, false);
         UnityEngine.UI.Image img = panelObj.AddComponent<UnityEngine.UI.Image>();
         img.color = Color.black;
+        img.raycastTarget = false;
 
         RectTransform rect = panelObj.GetComponent<RectTransform>();
         rect.anchorMin = Vector2.zero;
@@ -48,6 +49,7 @@ public class CutsceneManager : MonoBehaviour
 
         fadeCanvas = panelObj.AddComponent<CanvasGroup>();
         fadeCanvas.alpha = 0f;
+        fadeCanvas.blocksRaycasts = false;
     }
 
     public void PlayCutscene()
@@ -59,51 +61,64 @@ public class CutsceneManager : MonoBehaviour
 
     IEnumerator CutsceneRoutine()
     {
-        // --- Fade player camera to black ---
-        yield return StartCoroutine(Fade(0f, 1f, fadeOutDuration));
-
-        // --- Switch cameras while completely black ---
-        playerVCam.gameObject.SetActive(false);
-        cutsceneVCam.gameObject.SetActive(true);
+        // Disable player control and UI
         if (playerController != null) playerController.enabled = false;
         if (playerUI != null) playerUI.SetActive(false);
 
-        // Lock rotation, snap to start position
+        // Fade out to black — unscaled so timeScale doesn't matter
+        yield return StartCoroutine(Fade(0f, 1f, fadeOutDuration));
+
+        // Switch to cutscene camera while black
+        playerVCam.gameObject.SetActive(false);
+        cutsceneVCam.gameObject.SetActive(true);
+
         Quaternion lockedRotation = cameraStartPoint.rotation;
         cutsceneVCam.transform.position = cameraStartPoint.position;
         cutsceneVCam.transform.rotation = lockedRotation;
 
-        // --- Hold black screen for 1 second ---
-        yield return new WaitForSeconds(blackScreenDuration);
+        yield return new WaitForSecondsRealtime(blackScreenDuration);
 
-        // --- Fade cutscene camera in over 2 seconds ---
+        // Fade cutscene camera in
         yield return StartCoroutine(Fade(1f, 0f, fadeInDuration));
 
-        // --- Move camera with no rotation change ---
+        // Move camera from start to end
         float elapsed = 0f;
         while (elapsed < moveDuration)
         {
-            elapsed += Time.deltaTime;
+            elapsed += Time.unscaledDeltaTime;
             float t = Mathf.SmoothStep(0f, 1f, elapsed / moveDuration);
-            cutsceneVCam.transform.position = Vector3.Lerp(cameraStartPoint.position, cameraEndPoint.position, t);
+            cutsceneVCam.transform.position = Vector3.Lerp(
+                cameraStartPoint.position, cameraEndPoint.position, t);
             cutsceneVCam.transform.rotation = lockedRotation;
             yield return null;
         }
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSecondsRealtime(1f);
 
-        // --- Fade to black again ---
+        // Fade to black
         yield return StartCoroutine(Fade(0f, 1f, fadeOutDuration));
 
-        // --- Switch back to player ---
+        // Switch back to player camera
         cutsceneVCam.gameObject.SetActive(false);
         playerVCam.gameObject.SetActive(true);
         if (playerController != null) playerController.enabled = true;
         if (playerUI != null) playerUI.SetActive(true);
 
-        // --- Hold black then fade back in ---
-        yield return new WaitForSeconds(blackScreenDuration);
+        yield return new WaitForSecondsRealtime(blackScreenDuration);
+
+        // Fade back in
         yield return StartCoroutine(Fade(1f, 0f, fadeInDuration));
+
+        // Cutscene fully done
+        OnCutsceneFinished();
+    }
+
+    private void OnCutsceneFinished()
+    {
+        if (GameManager.Instance != null)
+            GameManager.Instance.Completion();
+        else
+            Debug.LogWarning("CutsceneManager: GameManager instance is missing!");
     }
 
     IEnumerator Fade(float from, float to, float duration)
@@ -111,7 +126,7 @@ public class CutsceneManager : MonoBehaviour
         float elapsed = 0f;
         while (elapsed < duration)
         {
-            elapsed += Time.deltaTime;
+            elapsed += Time.unscaledDeltaTime; // ← unscaled, works regardless of timeScale
             fadeCanvas.alpha = Mathf.Lerp(from, to, elapsed / duration);
             yield return null;
         }
