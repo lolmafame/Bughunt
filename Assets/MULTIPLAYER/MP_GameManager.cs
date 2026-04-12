@@ -60,6 +60,9 @@ public class MP_GameManager : NetworkBehaviour
         if (pausePanel != null) pausePanel.SetActive(false);
         if (gameOverPanel != null) gameOverPanel.SetActive(false);
         if (completionPanel != null) completionPanel.SetActive(false);
+
+        // ADD THIS — stop timer at start, NetworkUI will start it when game begins
+        if (gameTimer != null) gameTimer.StopTimer();
     }
 
     void Update()

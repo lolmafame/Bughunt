@@ -67,7 +67,6 @@ GameObject:
   - component: {fileID: 7105161081519704292}
   - component: {fileID: 6930230648147509102}
   - component: {fileID: 5486926122880366068}
-  - component: {fileID: 6213862792118511343}
   - component: {fileID: 1202116601382807194}
   m_Layer: 0
   m_Name: Spider
@@ -212,18 +211,6 @@ MonoBehaviour:
   maxSearchDuration: 20
   stuckThreshold: 2
   stuckDistanceLimit: 1
---- !u!114 &6213862792118511343
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8097447049675566014}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2d9b9c13413eb54bb889759bbf2cd02, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MP_NetworkUI
 --- !u!114 &1202116601382807194
 MonoBehaviour:
   m_ObjectHideFlags: 0
