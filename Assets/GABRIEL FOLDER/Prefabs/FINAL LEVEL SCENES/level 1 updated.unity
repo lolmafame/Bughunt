@@ -13893,6 +13893,26 @@ PrefabInstance:
       propertyPath: playerVCam
       value: 
       objectReference: {fileID: 671238755}
+    - target: {fileID: 6372525536344555709, guid: c273fd5b335344042b0066f7b257428e, type: 3}
+      propertyPath: completionPanel
+      value: 
+      objectReference: {fileID: 2011859320}
+    - target: {fileID: 6372525536344555709, guid: c273fd5b335344042b0066f7b257428e, type: 3}
+      propertyPath: completionPanelDelay
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6372525536344555709, guid: c273fd5b335344042b0066f7b257428e, type: 3}
+      propertyPath: objectsToDisable.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6372525536344555709, guid: c273fd5b335344042b0066f7b257428e, type: 3}
+      propertyPath: 'objectsToDisable.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1972405665}
+    - target: {fileID: 6372525536344555709, guid: c273fd5b335344042b0066f7b257428e, type: 3}
+      propertyPath: 'objectsToDisable.Array.data[1]'
+      value: 
+      objectReference: {fileID: 1694255163}
     - target: {fileID: 7401112138432894133, guid: c273fd5b335344042b0066f7b257428e, type: 3}
       propertyPath: m_LocalPosition.x
       value: -43.315735
