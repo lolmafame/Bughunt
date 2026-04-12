@@ -78,6 +78,7 @@ public class CertExport : MonoBehaviour
 
             WritePDF(pngBytes, fullPath);
             OpenFolderInExplorer(folder);
+            OpenFile(fullPath);
 
             SetStatus($"Saved!\nDocuments/{outputSubFolder}/{fileName}", false);
             Debug.Log($">>> CERT EXPORT: Saved to {fullPath}");
@@ -222,6 +223,17 @@ public class CertExport : MonoBehaviour
         System.Diagnostics.Process.Start("open", path);
 #elif UNITY_STANDALONE_LINUX
         System.Diagnostics.Process.Start("xdg-open", path);
+#endif
+    }
+
+    private void OpenFile(string filePath)
+    {
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
+        System.Diagnostics.Process.Start(filePath);
+#elif UNITY_STANDALONE_OSX || UNITY_EDITOR_OSX
+    System.Diagnostics.Process.Start("open", filePath);
+#elif UNITY_STANDALONE_LINUX
+    System.Diagnostics.Process.Start("xdg-open", filePath);
 #endif
     }
 
