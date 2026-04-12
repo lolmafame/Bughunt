@@ -2124,13 +2124,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
-  instructions: 'Instructions:
+  instructions: 'FIX!!:
 
-    virus_name = "Subject-27"
+    energy = 75
 
-    Print virus_name
-    on the terminal.'
-  correctAnswer: print(virus_name)
+    print("Energy: " + energy)'
+  correctAnswer: print("Energy:", energy)
 --- !u!65 &234912557
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7346,13 +7345,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
-  instructions: 'Instructions:
+  instructions: 'FIX!!:
 
-    robot_name = "BOB"
+    robot_name = 808
 
-    Print robot_name on the
-    terminal.'
-  correctAnswer: print(robot_name)
+    print("Robot: " + robot_name)'
+  correctAnswer: robot_name = "808"
 --- !u!65 &720478780
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9445,13 +9443,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
-  instructions: 'Instructions:
+  instructions: 'FIX!!:
 
-    creator_name = "Dr. Reyes"
+    is_active = "True"
 
-    Print creator_name
-    on the terminal.'
-  correctAnswer: print(creator_name)
+    if is_active:
+
+    print("Robot
+    is active")'
+  correctAnswer: is_active = True
 --- !u!65 &936213846
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -10911,13 +10911,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
-  instructions: 'Instructions:
+  instructions: 'FIX!!:
 
-    core_status = "Stable"
+    temperature = "30"
 
-    Print core_status
-    on the terminal.'
-  correctAnswer: print(core_status)
+    if temperature > 25:
+
+    print("Warning:
+    Overheat")'
+  correctAnswer: temperature = 30
 --- !u!65 &1109761778
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -18961,13 +18963,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
-  instructions: 'Instructions:
+  instructions: 'FIX!!:
 
-    unit_type = "Helper Robot"
+    battery_level = "50"
 
-    Print unit_type
-    on the terminal.'
-  correctAnswer: print(unit_type)
+    print(battery_level + 10)'
+  correctAnswer: battery_level = 50
 --- !u!65 &1868399552
 BoxCollider:
   m_ObjectHideFlags: 0

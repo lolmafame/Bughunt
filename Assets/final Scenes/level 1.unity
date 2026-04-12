@@ -3428,8 +3428,6 @@ MonoBehaviour:
 
     energy = 75
 
-
-
     print("Energy: " + energy)'
   correctAnswer: print("Energy:", energy)
 --- !u!65 &234912557
@@ -7877,7 +7875,6 @@ MonoBehaviour:
 
     robot_name = 808
 
-
     print("Robot: " + robot_name)'
   correctAnswer: robot_name = "808"
 --- !u!65 &720478780
@@ -8280,6 +8277,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TerminalManager
   totalTerminals: 5
   terminalText: {fileID: 1764882531}
+  doorObject: {fileID: 0}
+  completionMessageText: {fileID: 0}
+  fadeDuration: 1.5
+  displayDuration: 3
 --- !u!4 &743476223
 Transform:
   m_ObjectHideFlags: 0
@@ -9394,8 +9395,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
-  instructions: "FIX!!:\nis_active = \"True\"\r\n\r\nif is_active:\r\n    print(\"Robot
-    is active\")"
+  instructions: 'FIX!!:
+
+    is_active = "True"
+
+    if is_active:
+
+    print("Robot
+    is active")'
   correctAnswer: is_active = True
 --- !u!65 &936213846
 BoxCollider:
@@ -11171,8 +11178,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Terminal
   isCompleted: 0
   interactPrompt: {fileID: 95371018}
-  instructions: "FIX!!:\ntemperature = \"30\"\r\n\r\nif temperature > 25:\r\n   
-    print(\"Warning: Overheat\")"
+  instructions: 'FIX!!:
+
+    temperature = "30"
+
+    if temperature > 25:
+
+    print("Warning:
+    Overheat")'
   correctAnswer: temperature = 30
 --- !u!65 &1109761778
 BoxCollider:
@@ -18336,8 +18349,6 @@ MonoBehaviour:
   instructions: 'FIX!!:
 
     battery_level = "50"
-
-
 
     print(battery_level + 10)'
   correctAnswer: battery_level = 50
