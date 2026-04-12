@@ -8613,6 +8613,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -139.56158
       objectReference: {fileID: 0}
+    - target: {fileID: 2115265707208286144, guid: 1e9e12c2be1b57a41851034399d2e60e, type: 3}
+      propertyPath: m_NavMeshData
+      value: 
+      objectReference: {fileID: 23800000, guid: 4f2804933f6d7ff4c931d3d09b752346, type: 2}
     - target: {fileID: 2890770577485777588, guid: 1e9e12c2be1b57a41851034399d2e60e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 231.94586
