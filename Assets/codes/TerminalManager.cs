@@ -13,7 +13,7 @@ public class TerminalManager : MonoBehaviour
     public GameObject doorObject;
 
     [Header("Completion Message")]
-    public Text completionMessageText;
+    public TMPro.TextMeshProUGUI completionMessageText;
     public float fadeDuration = 1.5f;
     public float displayDuration = 3f;
 
@@ -21,7 +21,6 @@ public class TerminalManager : MonoBehaviour
     {
         Instance = this;
         UpdateUI();
-
         if (completionMessageText != null)
         {
             Color c = completionMessageText.color;
@@ -43,13 +42,11 @@ public class TerminalManager : MonoBehaviour
         {
             Debug.Log("ALL TERMINALS COMPLETED!");
 
-            // Hide the door
             if (doorObject != null)
                 doorObject.SetActive(false);
             else
                 Debug.LogWarning("TerminalManager: Door object is not assigned!");
 
-            // Show fade message
             if (completionMessageText != null)
                 StartCoroutine(FadeMessage());
             else
@@ -57,17 +54,15 @@ public class TerminalManager : MonoBehaviour
 
             if (SoundManager.Instance != null)
                 SoundManager.Instance.PlayAllTerminalsDone();
-
-            // GameManager.Completion() is now called by CutsceneManager after cutscene ends
         }
     }
 
     private IEnumerator FadeMessage()
     {
-        completionMessageText.text = "You feel a door opening...";
-
         float elapsed = 0f;
         Color c = completionMessageText.color;
+
+        // Fade in
         while (elapsed < fadeDuration)
         {
             elapsed += Time.deltaTime;
@@ -77,6 +72,7 @@ public class TerminalManager : MonoBehaviour
 
         yield return new WaitForSeconds(displayDuration);
 
+        // Fade out
         elapsed = 0f;
         while (elapsed < fadeDuration)
         {
