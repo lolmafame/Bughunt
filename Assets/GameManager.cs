@@ -133,6 +133,7 @@ public class GameManager : MonoBehaviour
 
     public void Completion()
     {
+        Debug.Log("Completion() CALLED");
         if (completionTriggered) return;
         completionTriggered = true;
 

@@ -13896,7 +13896,7 @@ PrefabInstance:
     - target: {fileID: 6372525536344555709, guid: c273fd5b335344042b0066f7b257428e, type: 3}
       propertyPath: completionPanel
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 2011859324}
     - target: {fileID: 6998823528935941297, guid: c273fd5b335344042b0066f7b257428e, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -17335,7 +17335,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1653114101}
-  m_Enabled: 0
+  m_Enabled: 1
 --- !u!20 &1653114104
 Camera:
   m_ObjectHideFlags: 0
@@ -21447,7 +21447,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -36, y: -4}
+  m_AnchoredPosition: {x: -36, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2011859322

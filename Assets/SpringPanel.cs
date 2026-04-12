@@ -20,12 +20,14 @@ public class SpringPanel : MonoBehaviour
     {
         finalPos = panel.anchoredPosition;
     }
-
     public void PlayDropBounce()
     {
         if (panel == null) return;
 
+        gameObject.SetActive(true);
+
         panel.gameObject.SetActive(true);
+
         StopAllCoroutines();
         StartCoroutine(DropBounceAnimation());
     }
