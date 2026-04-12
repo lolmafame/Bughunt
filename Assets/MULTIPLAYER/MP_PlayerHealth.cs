@@ -29,41 +29,44 @@ public class MP_PlayerHealth : NetworkBehaviour
         if (healthBar == null)
         {
             GameObject obj = GameObject.Find("HealthBarFill");
-            Debug.Log("HealthBarFill found: " + (obj != null));
-            if (obj != null)
-                healthBar = obj.GetComponent<Image>();
+            if (obj != null) healthBar = obj.GetComponent<Image>();
         }
 
         if (redFlash == null)
         {
             GameObject obj = GameObject.Find("hurt");
-            Debug.Log("hurt found: " + (obj != null));
-            if (obj != null)
-                redFlash = obj.GetComponent<Image>();
+            if (obj != null) redFlash = obj.GetComponent<Image>();
         }
 
         if (greyFlash == null)
         {
             GameObject obj = GameObject.Find("InvincibleFlash");
-            Debug.Log("InvincibleFlash found: " + (obj != null));
-            if (obj != null)
-                greyFlash = obj.GetComponent<Image>();
+            if (obj != null) greyFlash = obj.GetComponent<Image>();
         }
 
-        Debug.Log("healthBar assigned: " + (healthBar != null));
-        Debug.Log("redFlash assigned: " + (redFlash != null));
-        Debug.Log("greyFlash assigned: " + (greyFlash != null));
-
         UpdateHealthUI();
+
         if (redFlash != null) redFlash.enabled = false;
         if (greyFlash != null) greyFlash.enabled = false;
 
         playerMovement = GetComponent<MP_ThirdPersonMovement>();
     }
 
+    // Called by spider on server side
     public void TakeDamage(int damage)
     {
-        if (!IsOwner) return;
+        if (!IsServer) return; // spider runs on server so this is fine
+        if (isInvincible) return;
+
+        // Tell the owner client to apply damage effects
+        TakeDamageClientRpc(damage);
+    }
+
+    [ClientRpc]
+    void TakeDamageClientRpc(int damage)
+    {
+        if (!IsOwner) return; // only local player processes their own damage
+
         if (isInvincible) return;
 
         currentHealth -= damage;

@@ -20054,11 +20054,37 @@ PrefabInstance:
       propertyPath: m_Name
       value: Spider
       objectReference: {fileID: 0}
+    - target: {fileID: 8494805340246760173, guid: 6b74e1e13fece074497d3c3072ea5caf, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 9034539659436747301, guid: 6b74e1e13fece074497d3c3072ea5caf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1300134547691400757}
   m_SourcePrefab: {fileID: 100100000, guid: 6b74e1e13fece074497d3c3072ea5caf, type: 3}
+--- !u!1 &1300134547691400756 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9034539659436747301, guid: 6b74e1e13fece074497d3c3072ea5caf, type: 3}
+  m_PrefabInstance: {fileID: 1300134547691400755}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1300134547691400757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1300134547691400756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99b6a6c492afac74483a06bc4de8fcb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MP_SpiderDamage
+  ShowTopMostFoldoutHeaderGroup: 1
+  damageAmount: 20
 --- !u!1001 &7349665178009351382
 PrefabInstance:
   m_ObjectHideFlags: 0
