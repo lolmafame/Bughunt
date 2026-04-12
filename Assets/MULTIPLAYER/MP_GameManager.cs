@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using Firebase.Auth;
 using Firebase.Firestore;
 using Firebase.Extensions;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 
@@ -68,33 +69,66 @@ public class MP_GameManager : NetworkBehaviour
             if (!isPaused) PauseGame();
             else ResumeGame();
         }
-        // inputLocked removed — was blocking UI buttons
     }
 
+    // ---------------- Pause ----------------
+    // Multiplayer — NO timeScale, NO AudioListener pause
     public void PauseGame()
     {
         isPaused = true;
-        Time.timeScale = 0f;
-        SoundManager.Instance.PlayPauseOpen();
-        AudioListener.pause = true;
         pausePanel.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        if (gameTimer != null) gameTimer.StopTimer();
+        if (SoundManager.Instance != null) SoundManager.Instance.PlayPauseOpen();
     }
 
     public void ResumeGame()
     {
         isPaused = false;
-        Time.timeScale = 1f;
-        AudioListener.pause = false;
-        SoundManager.Instance.PlayPauseClose();
         pausePanel.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        if (gameTimer != null) gameTimer.StartTimer();
+        if (SoundManager.Instance != null) SoundManager.Instance.PlayPauseClose();
     }
 
+    // ---------------- You Died ----------------
+    public void ShowYouDied(float countdownSeconds, System.Action onComplete)
+    {
+        if (gameOverPanel != null)
+        {
+            gameOverPanel.SetActive(true);
+            gameOverPanel.GetComponent<SpringPanel>().PlayDropBounce();
+
+            if (gameOverTimeText != null) gameOverTimeText.gameObject.SetActive(false);
+            if (gameOverTerminalText != null) gameOverTerminalText.gameObject.SetActive(false);
+        }
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        if (SoundManager.Instance != null) SoundManager.Instance.PlayGameOver();
+
+        StartCoroutine(YouDiedCountdown(countdownSeconds, onComplete));
+    }
+
+    IEnumerator YouDiedCountdown(float seconds, System.Action onComplete)
+    {
+        yield return new WaitForSeconds(seconds);
+        onComplete?.Invoke();
+    }
+
+    public void HideYouDied()
+    {
+        if (gameOverPanel != null)
+            gameOverPanel.SetActive(false);
+
+        if (gameOverTimeText != null) gameOverTimeText.gameObject.SetActive(true);
+        if (gameOverTerminalText != null) gameOverTerminalText.gameObject.SetActive(true);
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    // ---------------- Game Over ----------------
     [ServerRpc(RequireOwnership = false)]
     public void TriggerGameOverServerRpc()
     {
@@ -104,28 +138,15 @@ public class MP_GameManager : NetworkBehaviour
     [ClientRpc]
     void TriggerGameOverClientRpc()
     {
-        Time.timeScale = 0f;
-        gameTimer.StopTimer();
         gameOverPanel.SetActive(true);
         gameOverPanel.GetComponent<SpringPanel>().PlayDropBounce();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        float finalTime = gameTimer.GetFinalTime();
-        gameOverTimeText.text = "Time: " + FormatTime(finalTime);
-        gameOverTerminalText.text =
-            MP_TerminalManager.Instance.completedTerminals.Value +
-            " / " + MP_TerminalManager.Instance.totalTerminals;
+        if (gameOverTimeText != null) gameOverTimeText.gameObject.SetActive(false);
+        if (gameOverTerminalText != null) gameOverTerminalText.gameObject.SetActive(false);
     }
 
-    public void RetryGame()
-    {
-        Time.timeScale = 1f;
-        gameTimer.StopTimer();
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
+    // ---------------- Completion ----------------
     [ServerRpc(RequireOwnership = false)]
     public void TriggerCompletionServerRpc()
     {
@@ -135,13 +156,12 @@ public class MP_GameManager : NetworkBehaviour
     [ClientRpc]
     void TriggerCompletionClientRpc()
     {
-        Time.timeScale = 0f;
-        gameTimer.StopTimer();
+        if (gameTimer != null) gameTimer.StopTimer();
         completionPanel.SetActive(true);
         completionPanel.GetComponent<SpringPanel>().PlayDropBounce();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        float finalTime = gameTimer.GetFinalTime();
+        float finalTime = gameTimer != null ? gameTimer.GetFinalTime() : 0f;
         completionTimeText.text = "Time: " + FormatTime(finalTime);
         completionTerminalText.text =
             MP_TerminalManager.Instance.completedTerminals.Value +
@@ -151,7 +171,6 @@ public class MP_GameManager : NetworkBehaviour
 
     public void CompletionContinue()
     {
-        Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         SceneManager.LoadScene(level2SceneName);
@@ -159,7 +178,6 @@ public class MP_GameManager : NetworkBehaviour
 
     public void QuitToMainMenu()
     {
-        Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         PlayerPrefs.SetInt("OpenCampaign", 1);

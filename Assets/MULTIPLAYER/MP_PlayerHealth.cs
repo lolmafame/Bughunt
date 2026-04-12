@@ -52,21 +52,16 @@ public class MP_PlayerHealth : NetworkBehaviour
         playerMovement = GetComponent<MP_ThirdPersonMovement>();
     }
 
-    // Called by spider on server side
     public void TakeDamage(int damage)
     {
-        if (!IsServer) return; // spider runs on server so this is fine
-        if (isInvincible) return;
-
-        // Tell the owner client to apply damage effects
+        if (!IsServer) return;
         TakeDamageClientRpc(damage);
     }
 
     [ClientRpc]
     void TakeDamageClientRpc(int damage)
     {
-        if (!IsOwner) return; // only local player processes their own damage
-
+        if (!IsOwner) return;
         if (isInvincible) return;
 
         currentHealth -= damage;
@@ -75,11 +70,11 @@ public class MP_PlayerHealth : NetworkBehaviour
         {
             currentHealth = 0;
             UpdateHealthUI();
-            MP_GameManager.Instance.TriggerGameOverServerRpc();
+            DieServerRpc();
             return;
         }
 
-        SoundManager.Instance.PlayHurt();
+        if (SoundManager.Instance != null) SoundManager.Instance.PlayHurt();
         UpdateHealthUI();
 
         if (playerMovement != null)
@@ -89,6 +84,71 @@ public class MP_PlayerHealth : NetworkBehaviour
             StartCoroutine(RedFlashCoroutine());
 
         StartCoroutine(InvincibilityCoroutine());
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void DieServerRpc()
+    {
+        DieClientRpc();
+    }
+
+    [ClientRpc]
+    void DieClientRpc()
+    {
+        if (!IsOwner) return;
+
+        HidePlayer();
+
+        MP_GameManager.Instance.ShowYouDied(3f, () =>
+        {
+            StartCoroutine(RespawnCoroutine());
+        });
+    }
+
+    void HidePlayer()
+    {
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        foreach (Renderer r in renderers)
+            r.enabled = false;
+
+        if (playerMovement != null)
+            playerMovement.enabled = false;
+
+        CharacterController cc = GetComponent<CharacterController>();
+        if (cc != null) cc.enabled = false;
+    }
+
+    void ShowPlayer()
+    {
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        foreach (Renderer r in renderers)
+            r.enabled = true;
+
+        if (playerMovement != null)
+            playerMovement.enabled = true;
+
+        CharacterController cc = GetComponent<CharacterController>();
+        if (cc != null) cc.enabled = true;
+    }
+
+    IEnumerator RespawnCoroutine()
+    {
+        if (SpawnManager.Instance != null)
+        {
+            Vector3 spawnPos = SpawnManager.Instance.GetRandomSpawnPoint();
+            transform.position = spawnPos;
+        }
+
+        currentHealth = maxHealth;
+        UpdateHealthUI();
+        isInvincible = false;
+
+        ShowPlayer();
+
+        MP_GameManager.Instance.HideYouDied();
+
+        StartCoroutine(InvincibilityCoroutine());
+        yield return null; // ADD THIS
     }
 
     IEnumerator RedFlashCoroutine()
@@ -125,5 +185,10 @@ public class MP_PlayerHealth : NetworkBehaviour
     {
         if (healthBar != null)
             healthBar.fillAmount = (float)currentHealth / maxHealth;
+    }
+
+    public void ResetHealthUI()
+    {
+        UpdateHealthUI();
     }
 }
