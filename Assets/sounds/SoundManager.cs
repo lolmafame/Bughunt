@@ -3,6 +3,12 @@
 public class SoundManager : MonoBehaviour
 {
     public static SoundManager Instance;
+    [Header("GLOBAL VOLUME (1–10)")]
+    [Range(1, 10)] public float musicVolume = 10;
+    [Range(1, 10)] public float sfxVolume = 10;
+
+    float musicMultiplier => musicVolume / 10f;
+    float sfxMultiplier => sfxVolume / 10f;
 
     [Header("Audio Sources")]
     public AudioSource musicSource;
@@ -76,8 +82,7 @@ public class SoundManager : MonoBehaviour
     void Start()
     {
 
-
-
+        LoadVolumes();
 
         // Find player and spider automatically
         GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -93,7 +98,7 @@ public class SoundManager : MonoBehaviour
         {
             musicSource.clip = bgMusicClip;
             musicSource.loop = true;
-            musicSource.volume = bgMusicVolume;
+            musicSource.volume = bgMusicVolume * musicMultiplier;
             musicSource.Play();
         }
 
@@ -102,7 +107,7 @@ public class SoundManager : MonoBehaviour
         {
             dangerMusicSource.clip = dangerMusicClip;
             dangerMusicSource.loop = true;
-            dangerMusicSource.volume = 0f;
+            dangerMusicSource.volume = 0f; // stays 0 initially, multiplier applied in fade
             dangerMusicSource.Play();
         }
 
@@ -138,20 +143,14 @@ public class SoundManager : MonoBehaviour
     // ------------------------------------------------
     void HandleMusicFade()
     {
-        if (isDanger)
-        {
-            musicSource.volume = Mathf.MoveTowards(
-                musicSource.volume, 0f, fadeSpeed * Time.deltaTime);
-            dangerMusicSource.volume = Mathf.MoveTowards(
-                dangerMusicSource.volume, dangerMusicVolume, fadeSpeed * Time.deltaTime);
-        }
-        else
-        {
-            musicSource.volume = Mathf.MoveTowards(
-                musicSource.volume, bgMusicVolume, fadeSpeed * Time.deltaTime);
-            dangerMusicSource.volume = Mathf.MoveTowards(
-                dangerMusicSource.volume, 0f, fadeSpeed * Time.deltaTime);
-        }
+        float targetMusic = isDanger ? 0f : bgMusicVolume * musicMultiplier;
+        float targetDanger = isDanger ? dangerMusicVolume * musicMultiplier : 0f;
+
+        musicSource.volume = Mathf.MoveTowards(
+            musicSource.volume, targetMusic, fadeSpeed * Time.deltaTime);
+
+        dangerMusicSource.volume = Mathf.MoveTowards(
+            dangerMusicSource.volume, targetDanger, fadeSpeed * Time.deltaTime);
     }
 
     public void SetDangerMode(bool danger)
@@ -218,7 +217,7 @@ public class SoundManager : MonoBehaviour
         if (sprintLoopClip != null)
         {
             // Smoothly fade sprint breath in and out
-            float targetVolume = isSprinting ? sprintBreathVolume : 0f;
+            float targetVolume = isSprinting ? sprintBreathVolume * sfxMultiplier : 0f;
             playerVoiceSource.volume = Mathf.MoveTowards(
                 playerVoiceSource.volume, targetVolume, Time.deltaTime * 3f);
         }
@@ -255,7 +254,7 @@ public class SoundManager : MonoBehaviour
     {
         if (spiderFootsteps == null || spiderFootsteps.Length == 0) return;
         AudioClip clip = spiderFootsteps[Random.Range(0, spiderFootsteps.Length)];
-        spiderFootstepSource.PlayOneShot(clip, 0.5f);
+        spiderFootstepSource.PlayOneShot(clip, 0.5f * sfxMultiplier);
     }
 
     // ------------------------------------------------
@@ -277,7 +276,7 @@ public class SoundManager : MonoBehaviour
     {
         if (hurtClips == null || hurtClips.Length == 0) return;
         AudioClip clip = hurtClips[Random.Range(0, hurtClips.Length)];
-        playerVoiceSource.PlayOneShot(clip, 0.8f);
+        playerVoiceSource.PlayOneShot(clip, 0.8f * sfxMultiplier);
     }
 
     public void PlayTerminalOpen() => PlaySFX(terminalOpenClip);
@@ -296,6 +295,27 @@ public class SoundManager : MonoBehaviour
     void PlaySFX(AudioClip clip)
     {
         if (clip == null || sfxSource == null) return;
-        sfxSource.PlayOneShot(clip);
+        sfxSource.PlayOneShot(clip, sfxMultiplier);
+    }
+
+    // --------------------
+    // VOLUME CONTROL
+    // --------------------
+    public void SetMusicVolume(float value) // 1–10
+    {
+        musicVolume = value;
+        PlayerPrefs.SetFloat("MusicVolume", value);
+    }
+
+    public void SetSFXVolume(float value) // 1–10
+    {
+        sfxVolume = value;
+        PlayerPrefs.SetFloat("SFXVolume", value);
+    }
+
+    void LoadVolumes()
+    {
+        musicVolume = PlayerPrefs.GetFloat("MusicVolume", 10);
+        sfxVolume = PlayerPrefs.GetFloat("SFXVolume", 10);
     }
 }
