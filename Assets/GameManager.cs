@@ -6,6 +6,16 @@ using Firebase.Firestore;
 using Firebase.Extensions;
 using System.Collections.Generic;
 
+// ── Language options shown in the Inspector dropdown ──────────────────────────
+public enum LevelLanguage
+{
+    Python,
+    Javascript,
+    CSharp,
+    Java,
+    CPlusPlus
+}
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
@@ -38,11 +48,18 @@ public class GameManager : MonoBehaviour
     [Tooltip("Set this to 1-5 in the Inspector for each level scene.")]
     public int currentLevel = 1;
 
+    [Tooltip("Select the programming language taught in this level. Used as a prefix for all save keys.")]
+    public LevelLanguage levelLanguage = LevelLanguage.Python;
+
     [Header("Spawn Point")]
     public Transform spawnPoint;
 
     private bool isPaused = false;
     private bool inputLocked = false;
+
+    // ── Converts the enum to a lowercase string safe for use in save keys ─────
+    // CSharp → "csharp" | CPlusPlus → "cplusplus" | others → lowercase name
+    private string LanguageKey => levelLanguage.ToString().ToLower();
 
     void Awake()
     {
@@ -56,23 +73,24 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (!isPaused)
-                PauseGame();
-            else
-                ResumeGame();
+            if (!isPaused) PauseGame();
+            else ResumeGame();
             return;
         }
 
         if (inputLocked) return;
     }
 
-    // ---------------- Pause ----------------
+    // ─────────────────────────────────────────────
+    // PAUSE
+    // ─────────────────────────────────────────────
+
     public void PauseGame()
     {
         isPaused = true;
         Time.timeScale = 0f;
-        SoundManager.Instance.PlayPauseOpen(); // ← play BEFORE pausing audio
-        AudioListener.pause = true; // ← then pause audio
+        SoundManager.Instance.PlayPauseOpen();
+        AudioListener.pause = true;
         pausePanel.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -88,7 +106,7 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         if (gameTimer != null) gameTimer.StartTimer();
-        SoundManager.Instance.PlayPauseClose(); // ← add here
+        SoundManager.Instance.PlayPauseClose();
     }
 
     public void OpenSettings()
@@ -96,7 +114,10 @@ public class GameManager : MonoBehaviour
         Debug.Log("Settings opened");
     }
 
-    // ---------------- Game Over ----------------
+    // ─────────────────────────────────────────────
+    // GAME OVER
+    // ─────────────────────────────────────────────
+
     public void GameOver()
     {
         Time.timeScale = 0f;
@@ -127,7 +148,9 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    // ---------------- Completion ----------------
+    // ─────────────────────────────────────────────
+    // COMPLETION
+    // ─────────────────────────────────────────────
 
     private bool completionTriggered = false;
 
@@ -161,35 +184,28 @@ public class GameManager : MonoBehaviour
 
         if (currentLevel < 5)
         {
-            int nextIndex = currentLevel; // 1-based level → 0-based array index of NEXT level
+            int nextIndex = currentLevel; // 1-based level → 0-based array index of next level
 
-            // Validate: array slot exists and is not empty
             if (nextIndex < levelSceneNames.Length && !string.IsNullOrEmpty(levelSceneNames[nextIndex]))
             {
                 string nextScene = levelSceneNames[nextIndex];
 
-                // Validate: scene actually exists in Build Settings before loading
                 if (Application.CanStreamedLevelBeLoaded(nextScene))
-                {
                     SceneManager.LoadScene(nextScene);
-                }
                 else
                 {
-                    // Scene name is set but not found in Build Settings — safe fallback
                     Debug.LogWarning($"Scene '{nextScene}' not found in Build Settings. Returning to Main Menu.");
                     SceneManager.LoadScene(mainMenuSceneName);
                 }
             }
             else
             {
-                // Array slot is empty or out of range — safe fallback
-                Debug.LogWarning($"No scene name set for Level {currentLevel + 1} in levelSceneNames. Returning to Main Menu.");
+                Debug.LogWarning($"No scene name set for Level {currentLevel + 1}. Returning to Main Menu.");
                 SceneManager.LoadScene(mainMenuSceneName);
             }
         }
         else
         {
-            // Level 5 completed — all levels done, return to main menu
             PlayerPrefs.SetInt("OpenCampaign", 1);
             SceneManager.LoadScene(mainMenuSceneName);
         }
@@ -204,66 +220,81 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(mainMenuSceneName);
     }
 
+    // ─────────────────────────────────────────────
+    // SAVE LEVEL PROGRESS
+    // ─────────────────────────────────────────────
+    // Key format examples (language = Python, level = 1):
+    //   Firestore field : "python_level1_completed"
+    //   Firestore field : "python_level1_best_time"
+    //   PlayerPrefs key : "python_level1_completed_{userId}"
+    //   PlayerPrefs key : "python_level1_best_time_{userId}"
+
     private void SaveLevelProgress()
     {
         FirebaseUser currentUser = FirebaseAuth.DefaultInstance.CurrentUser;
         string userId = currentUser != null ? currentUser.UserId : "guest";
 
-        string dbLevelKey = $"level{currentLevel}_completed";
-        string dbTimeKey = $"level{currentLevel}_best_time";
+        // ── Build language-prefixed keys ──────────────────────────────────────
+        string lang = LanguageKey;                                   // e.g. "python"
+        string completedKey = $"{lang}_level{currentLevel}_completed";       // e.g. "python_level1_completed"
+        string bestTimeKey = $"{lang}_level{currentLevel}_best_time";       // e.g. "python_level1_best_time"
+        string allDoneKey = $"{lang}_all_levels_completed";                // e.g. "python_all_levels_completed"
 
-        string localLevelKey = $"level{currentLevel}_completed_{userId}";
-        string localTimeKey = $"level{currentLevel}_best_time_{userId}";
+        string localCompletedKey = $"{completedKey}_{userId}";
+        string localBestTimeKey = $"{bestTimeKey}_{userId}";
+        string localAllDoneKey = $"{allDoneKey}_{userId}";
 
         float newTime = gameTimer != null ? gameTimer.GetFinalTime() : 0f;
 
-        // --- Local PlayerPrefs Saving ---
-        float previousBestTime = PlayerPrefs.GetFloat(localTimeKey, float.MaxValue);
+        // ── Local save (PlayerPrefs) ──────────────────────────────────────────
+        float previousBestTime = PlayerPrefs.GetFloat(localBestTimeKey, float.MaxValue);
         bool isNewBestTime = newTime < previousBestTime;
 
-        PlayerPrefs.SetInt(localLevelKey, 1);
+        PlayerPrefs.SetInt(localCompletedKey, 1);
 
         if (isNewBestTime)
         {
-            PlayerPrefs.SetFloat(localTimeKey, newTime);
-            Debug.Log($"Level {currentLevel}: New best time! {FormatTime(newTime)}");
+            PlayerPrefs.SetFloat(localBestTimeKey, newTime);
+            Debug.Log($"[{lang}] Level {currentLevel}: New best time! {FormatTime(newTime)}");
         }
 
         if (currentLevel == 5)
-            PlayerPrefs.SetInt($"all_levels_completed_{userId}", 1);
+            PlayerPrefs.SetInt(localAllDoneKey, 1);
 
         PlayerPrefs.Save();
 
-        // --- Firestore Saving ---
+        // ── Firestore save ────────────────────────────────────────────────────
         if (currentUser != null)
         {
             FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
             DocumentReference userDoc = db.Collection("users").Document(userId);
 
             Dictionary<string, object> progressData = new Dictionary<string, object>
-        {
-            { dbLevelKey, true }
-        };
+            {
+                { completedKey, true }
+            };
 
             if (isNewBestTime)
-                progressData[dbTimeKey] = newTime;
+                progressData[bestTimeKey] = newTime;
 
             if (currentLevel == 5)
-                progressData["all_levels_completed"] = true;
+                progressData[allDoneKey] = true;
 
-            // ✅ SetAsync with merge:true creates the doc if it doesn't exist,
-            //    or updates only the specified fields if it does — safe either way
-            userDoc.SetAsync(progressData, SetOptions.MergeAll).ContinueWithOnMainThread(task =>
-            {
-                if (task.IsFaulted || task.IsCanceled)
-                    Debug.LogError("Failed to save level progress: " + task.Exception);
-                else
-                    Debug.Log($"Saved Level {currentLevel} completion to cloud.");
-            });
+            userDoc.SetAsync(progressData, SetOptions.MergeAll)
+                   .ContinueWithOnMainThread(task =>
+                   {
+                       if (task.IsFaulted || task.IsCanceled)
+                           Debug.LogError($"Failed to save [{lang}] level {currentLevel} progress: " + task.Exception);
+                       else
+                           Debug.Log($"Saved [{lang}] Level {currentLevel} completion to cloud.");
+                   });
         }
     }
 
-    // ---------------- Utilities ----------------
+    // ─────────────────────────────────────────────
+    // UTILITIES
+    // ─────────────────────────────────────────────
+
     string FormatTime(float time)
     {
         int minutes = Mathf.FloorToInt(time / 60f);

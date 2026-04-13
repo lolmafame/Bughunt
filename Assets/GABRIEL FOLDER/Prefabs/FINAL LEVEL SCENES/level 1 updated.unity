@@ -20250,6 +20250,7 @@ MonoBehaviour:
   - level 4
   - level 5
   currentLevel: 1
+  levelLanguage: 0
   spawnPoint: {fileID: 1455875621}
 --- !u!4 &1785852811
 Transform:
