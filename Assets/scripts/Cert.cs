@@ -5,21 +5,41 @@ using Firebase.Firestore;
 using Firebase.Extensions;
 using System;
 
+// ── One entry per language in the Inspector ───────────────────────────────────
+[Serializable]
+public class LanguageCertEntry
+{
+    public LevelLanguage language;
+
+    [Tooltip("The certificate button/panel to show when this language is fully completed.")]
+    public GameObject certificateButton;
+
+    [Tooltip("TMP_Text that displays e.g. 'PYTHON - FUNDAMENTALS'. Leave null to skip.")]
+    public TMP_Text languageTitleText;
+}
+
 public class Cert : MonoBehaviour
 {
     [Header("Certificate Info")]
     [SerializeField] private TMP_Text displayUsernameText;
     [SerializeField] private TMP_Text displayDateText;
 
-    [Header("Unlock UI Elements")]
-    [SerializeField] private GameObject certificateButton;
+    [Header("Per-Language Certificate Buttons")]
+    [Tooltip("Add one entry per language. Assign the matching certificate button and title text for each.")]
+    [SerializeField] private LanguageCertEntry[] languageCerts;
+
+    [Header("Fallback UI")]
+    [Tooltip("Shown when NO language has been fully completed yet.")]
     [SerializeField] private GameObject incompleteTextObject;
 
     private FirebaseAuth auth;
     private FirebaseFirestore db;
 
-    // Track which user we last loaded data FOR, so we never show stale data
     private string lastLoadedUserId = null;
+
+    // ─────────────────────────────────────────────
+    // LIFECYCLE
+    // ─────────────────────────────────────────────
 
     void Start()
     {
@@ -27,26 +47,31 @@ public class Cert : MonoBehaviour
         SetCurrentDate();
     }
 
+    void OnDestroy()
+    {
+        if (auth != null)
+            auth.StateChanged -= OnAuthStateChanged;
+    }
+
     private void InitializeFirebase()
     {
         if (auth == null) auth = FirebaseAuth.DefaultInstance;
         if (db == null) db = FirebaseFirestore.DefaultInstance;
 
-        // ✅ KEY FIX: Subscribe to auth state changes.
-        // This fires immediately on Start AND fires again whenever accounts switch.
         auth.StateChanged += OnAuthStateChanged;
     }
 
-    // ✅ This is now the SINGLE entry point for loading data.
-    // It fires on login, logout, AND account switches.
+    // ─────────────────────────────────────────────
+    // AUTH STATE
+    // ─────────────────────────────────────────────
+
     private void OnAuthStateChanged(object sender, EventArgs e)
     {
         FirebaseUser currentUser = auth.CurrentUser;
 
-        // If no user is logged in, OR it's a different user than before → wipe everything
         if (currentUser == null || currentUser.UserId != lastLoadedUserId)
         {
-            Debug.Log($">>> CERT: Auth state changed. Resetting UI. New user: {currentUser?.UserId ?? "none"}");
+            Debug.Log($">>> CERT: Auth changed. Resetting UI. New user: {currentUser?.UserId ?? "none"}");
             ResetUIToSafeDefault();
         }
 
@@ -58,19 +83,31 @@ public class Cert : MonoBehaviour
         }
         else
         {
-            // User logged out, clear the tracked ID
             lastLoadedUserId = null;
         }
     }
 
-    // ✅ Always wipe the UI to the most restrictive state FIRST before any async fetch
+    // ─────────────────────────────────────────────
+    // UI HELPERS
+    // ─────────────────────────────────────────────
+
     private void ResetUIToSafeDefault()
     {
         if (displayUsernameText != null) displayUsernameText.text = "";
         if (displayDateText != null) displayDateText.text = "";
 
-        // Lock everything down — never show certificate button until DB confirms it
-        if (certificateButton != null) certificateButton.SetActive(false);
+        if (languageCerts != null)
+        {
+            foreach (var entry in languageCerts)
+            {
+                if (entry.certificateButton != null)
+                    entry.certificateButton.SetActive(false);
+
+                if (entry.languageTitleText != null)
+                    entry.languageTitleText.text = "";
+            }
+        }
+
         if (incompleteTextObject != null) incompleteTextObject.SetActive(true);
     }
 
@@ -80,11 +117,41 @@ public class Cert : MonoBehaviour
             displayDateText.text = DateTime.Now.ToString("MMMM dd, yyyy");
     }
 
+    // ─────────────────────────────────────────────
+    // LANGUAGE TITLE HELPER
+    // ─────────────────────────────────────────────
+
+    /// <summary>
+    /// Returns the all-caps certificate title for a language.
+    /// e.g. Python      → "PYTHON - FUNDAMENTALS"
+    ///      CSharp      → "C# - FUNDAMENTALS"
+    ///      CPlusPlus   → "C++ - FUNDAMENTALS"
+    ///      Javascript  → "JAVASCRIPT - FUNDAMENTALS"
+    ///      Java        → "JAVA - FUNDAMENTALS"
+    /// </summary>
+    private string GetLanguageTitle(LevelLanguage language)
+    {
+        string displayName = language switch
+        {
+            LevelLanguage.Python => "PYTHON",
+            LevelLanguage.Javascript => "JAVASCRIPT",
+            LevelLanguage.CSharp => "C#",
+            LevelLanguage.Java => "JAVA",
+            LevelLanguage.CPlusPlus => "C++",
+            _ => language.ToString().ToUpper()
+        };
+
+        return $"{displayName} - FUNDAMENTALS";
+    }
+
+    // ─────────────────────────────────────────────
+    // FIREBASE FETCH
+    // ─────────────────────────────────────────────
+
     private void CheckCertificateStatus(FirebaseUser user)
     {
         string expectedUserId = user.UserId;
 
-        // ✅ Reload to get the latest Google account name
         user.ReloadAsync().ContinueWithOnMainThread(reloadTask =>
         {
             if (reloadTask.IsFaulted)
@@ -98,56 +165,77 @@ public class Cert : MonoBehaviour
                 return;
             }
 
-            // ✅ Set name immediately from Google — no Firestore involved
+            // Set display name from Google profile — no Firestore needed for this
             if (displayUsernameText != null)
             {
-                string finalName = !string.IsNullOrEmpty(refreshedUser.DisplayName)
+                displayUsernameText.text = !string.IsNullOrEmpty(refreshedUser.DisplayName)
                     ? refreshedUser.DisplayName
                     : "Player_" + refreshedUser.UserId.Substring(0, 4);
-
-                displayUsernameText.text = finalName;
             }
 
-            // Now separately fetch Firestore ONLY for completion status
-            DocumentReference userDoc = db.Collection("users").Document(expectedUserId);
+            // Fetch Firestore for per-language completion status
+            db.Collection("users").Document(expectedUserId)
+              .GetSnapshotAsync()
+              .ContinueWithOnMainThread(task =>
+              {
+                  if (auth.CurrentUser == null || auth.CurrentUser.UserId != expectedUserId)
+                  {
+                      Debug.LogWarning(">>> CERT: Discarding stale fetch — user changed mid-flight.");
+                      return;
+                  }
 
-            userDoc.GetSnapshotAsync().ContinueWithOnMainThread(task =>
-            {
-                if (auth.CurrentUser == null || auth.CurrentUser.UserId != expectedUserId)
-                {
-                    Debug.LogWarning(">>> CERT: Discarding stale fetch — user changed mid-flight.");
-                    return;
-                }
+                  if (task.IsFaulted)
+                  {
+                      Debug.LogError(">>> CERT: Failed to fetch completion status.");
+                      ResetUIToSafeDefault();
+                      return;
+                  }
 
-                if (task.IsFaulted)
-                {
-                    Debug.LogError(">>> CERT: Failed to fetch completion status.");
-                    ResetUIToSafeDefault();
-                    return;
-                }
-
-                DocumentSnapshot snapshot = task.Result;
-
-                bool allLevelsCompleted = false;
-                if (snapshot.Exists && snapshot.ContainsField("all_levels_completed"))
-                    allLevelsCompleted = snapshot.GetValue<bool>("all_levels_completed");
-
-                UpdateUI(allLevelsCompleted);
-                Debug.Log($">>> CERT: Loaded for [{expectedUserId}]. Completed: {allLevelsCompleted}");
-            });
+                  ApplyCertificateUI(task.Result, expectedUserId);
+              });
         });
     }
 
-    private void UpdateUI(bool isCompleted)
-    {
-        if (certificateButton != null) certificateButton.SetActive(isCompleted);
-        if (incompleteTextObject != null) incompleteTextObject.SetActive(!isCompleted);
-    }
+    // ─────────────────────────────────────────────
+    // APPLY UI PER LANGUAGE
+    // ─────────────────────────────────────────────
 
-    // ✅ CRITICAL: Always unsubscribe to prevent memory leaks and ghost callbacks
-    void OnDestroy()
+    private void ApplyCertificateUI(DocumentSnapshot snapshot, string userId)
     {
-        if (auth != null)
-            auth.StateChanged -= OnAuthStateChanged;
+        if (languageCerts == null || languageCerts.Length == 0)
+        {
+            Debug.LogWarning(">>> CERT: No LanguageCertEntry entries assigned in Inspector.");
+            return;
+        }
+
+        int completedCount = 0;
+
+        foreach (var entry in languageCerts)
+        {
+            string langKey = entry.language.ToString().ToLower();  // e.g. "python"
+            string firestoreKey = $"{langKey}_all_levels_completed";    // e.g. "python_all_levels_completed"
+
+            bool isComplete = snapshot.Exists
+                              && snapshot.ContainsField(firestoreKey)
+                              && snapshot.GetValue<bool>(firestoreKey);
+
+            // ── Certificate button ────────────────────────────────────────────
+            if (entry.certificateButton != null)
+                entry.certificateButton.SetActive(isComplete);
+
+            // ── Language title text ───────────────────────────────────────────
+            if (entry.languageTitleText != null)
+                entry.languageTitleText.text = isComplete ? GetLanguageTitle(entry.language) : "";
+
+            if (isComplete) completedCount++;
+
+            Debug.Log($">>> CERT: [{langKey}] complete={isComplete} | title='{GetLanguageTitle(entry.language)}'");
+        }
+
+        // incompleteTextObject only shows if zero languages are done
+        if (incompleteTextObject != null)
+            incompleteTextObject.SetActive(completedCount == 0);
+
+        Debug.Log($">>> CERT: {completedCount}/{languageCerts.Length} language(s) completed for [{userId}].");
     }
 }

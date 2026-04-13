@@ -77572,6 +77572,7 @@ MonoBehaviour:
   level3UI: {fileID: 1894189106}
   level4UI: {fileID: 348993120}
   level5UI: {fileID: 1595652749}
+  levelLanguage: 0
 --- !u!1 &1894189101
 GameObject:
   m_ObjectHideFlags: 0
@@ -85545,7 +85546,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Cert
   displayUsernameText: {fileID: 680684065}
   displayDateText: {fileID: 301233863}
-  certificateButton: {fileID: 1396577979}
+  languageCerts:
+  - language: 0
+    certificateButton: {fileID: 1396577979}
+    languageTitleText: {fileID: 936124514}
+  - language: 1
+    certificateButton: {fileID: 1204144286}
+    languageTitleText: {fileID: 1975050365}
+  - language: 2
+    certificateButton: {fileID: 85462640}
+    languageTitleText: {fileID: 1819327066}
+  - language: 3
+    certificateButton: {fileID: 1204144286}
+    languageTitleText: {fileID: 1684902248}
+  - language: 4
+    certificateButton: {fileID: 854878328}
+    languageTitleText: {fileID: 1684902248}
   incompleteTextObject: {fileID: 2084289240}
 --- !u!114 &2069408255
 MonoBehaviour:
