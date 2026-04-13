@@ -21,6 +21,7 @@ public class TerminalManager : MonoBehaviour
     {
         Instance = this;
         UpdateUI();
+
         if (completionMessageText != null)
         {
             Color c = completionMessageText.color;

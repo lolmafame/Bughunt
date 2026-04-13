@@ -11,17 +11,11 @@ public class Terminal : MonoBehaviour
     [TextArea]
     public string correctAnswer;
 
-    [Header("Door Settings")]
-    public GameObject doorObject;           // Drag your 3D door object here
-    public float disappearDelay = 0f;      // Optional delay before door disappears
-
     private void OnTriggerEnter(Collider other)
     {
         if (isCompleted) return;
         if (other.CompareTag("Player"))
-        {
             interactPrompt.SetActive(true);
-        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -48,27 +42,9 @@ public class Terminal : MonoBehaviour
     public void CompleteTerminal()
     {
         isCompleted = true;
-        TerminalManager.Instance.TerminalCompleted();
-        Debug.Log("Terminal completed!");
         GetComponent<Renderer>().material.color = Color.green;
-
-        // Remove the door
-        if (doorObject != null)
-        {
-            if (disappearDelay > 0f)
-                Invoke(nameof(RemoveDoor), disappearDelay);
-            else
-                RemoveDoor();
-        }
-    }
-
-    private void RemoveDoor()
-    {
-        if (doorObject != null)
-        {
-            doorObject.SetActive(false);   // Hides the door (keep if you need to re-enable later)
-            // Destroy(doorObject);        // Permanently removes it — uncomment if preferred
-        }
+        TerminalManager.Instance.TerminalCompleted(); // Hands off to TerminalManager
+        Debug.Log("Terminal completed!");
     }
 
     public void OnClose()

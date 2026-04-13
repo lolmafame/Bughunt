@@ -1616,8 +1616,6 @@ MonoBehaviour:
     print("Robot
     is active")'
   correctAnswer: is_active = True
-  doorObject: {fileID: 0}
-  disappearDelay: 0
 --- !u!65 &92532320
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3273,7 +3271,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1442577808718064489, guid: 80ae7471e06e1144288f9684172a7624, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1518703358187198129, guid: 80ae7471e06e1144288f9684172a7624, type: 3}
       propertyPath: m_IsActive
@@ -3737,7 +3735,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8680651027663319065, guid: 80ae7471e06e1144288f9684172a7624, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 2.3
+      value: -7.6
       objectReference: {fileID: 0}
     - target: {fileID: 8797944556667577628, guid: 80ae7471e06e1144288f9684172a7624, type: 3}
       propertyPath: m_Text
@@ -6468,8 +6466,6 @@ MonoBehaviour:
     print("Warning:
     Overheat")'
   correctAnswer: temperature = 30
-  doorObject: {fileID: 0}
-  disappearDelay: 0
 --- !u!65 &474393969
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -16959,8 +16955,6 @@ MonoBehaviour:
 
     print("Robot: " + robot_name)'
   correctAnswer: robot_name = "808"
-  doorObject: {fileID: 0}
-  disappearDelay: 0
 --- !u!65 &1433607668
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -20545,8 +20539,6 @@ MonoBehaviour:
 
     print("Energy: " + energy)'
   correctAnswer: print("Energy:", energy)
-  doorObject: {fileID: 0}
-  disappearDelay: 0
 --- !u!65 &1654670572
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -25878,8 +25870,6 @@ MonoBehaviour:
 
     print(battery_level + 10)'
   correctAnswer: battery_level = 50
-  doorObject: {fileID: 0}
-  disappearDelay: 0
 --- !u!65 &2088231621
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -26331,7 +26321,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3484652266543125338, guid: 36cdd10d7c24be6418f215fd864fd8ed, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 316.0809
+      value: 42.280922
       objectReference: {fileID: 0}
     - target: {fileID: 3484652266543125338, guid: 36cdd10d7c24be6418f215fd864fd8ed, type: 3}
       propertyPath: m_LocalRotation.w
@@ -26403,7 +26393,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1720002759758408411, guid: c1e7aa59e1e955540aebf045678f7b42, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 316.0809
+      value: 42.280922
       objectReference: {fileID: 0}
     - target: {fileID: 1720002759758408411, guid: c1e7aa59e1e955540aebf045678f7b42, type: 3}
       propertyPath: m_LocalRotation.w
@@ -26489,7 +26479,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2705621360532978427, guid: 783af2bcb30ad784a99491081f2a5fae, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 318.9
+      value: 45.1
       objectReference: {fileID: 0}
     - target: {fileID: 2705621360532978427, guid: 783af2bcb30ad784a99491081f2a5fae, type: 3}
       propertyPath: m_LocalRotation.w
