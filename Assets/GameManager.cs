@@ -69,6 +69,15 @@ public class GameManager : MonoBehaviour
         completionPanel.SetActive(false);
     }
 
+    void Start()
+    {
+        // Run migration once as soon as we have a logged-in user.
+        // Safe to call every scene load — it is guarded by a one-time PlayerPrefs flag.
+        FirebaseUser user = FirebaseAuth.DefaultInstance.CurrentUser;
+        if (user != null)
+            MigrateLegacyProgress(user);
+    }
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -221,6 +230,158 @@ public class GameManager : MonoBehaviour
     }
 
     // ─────────────────────────────────────────────
+    // LEGACY MIGRATION  (runs once per user)
+    // ─────────────────────────────────────────────
+    // Old keys (no language prefix):  level1_completed, level1_best_time …
+    // New keys (python prefix)     :  python_level1_completed, python_level1_best_time …
+    //
+    // A one-time guard flag is stored in PlayerPrefs so this never runs twice:
+    //   "legacy_migrated_{userId}" = 1
+
+    private void MigrateLegacyProgress(FirebaseUser user)
+    {
+        string userId = user.UserId;
+        string guardKey = $"legacy_migrated_{userId}";
+
+        // Already migrated — skip.
+        if (PlayerPrefs.GetInt(guardKey, 0) == 1) return;
+
+        Debug.Log($"[Migration] Starting legacy → python key migration for user {userId}");
+
+        // ── 1. PlayerPrefs (local) migration ─────────────────────────────────
+        bool anyLocalData = false;
+
+        for (int lvl = 1; lvl <= 5; lvl++)
+        {
+            // Legacy keys (no language prefix)
+            string legacyCompleted = $"level{lvl}_completed_{userId}";
+            string legacyBestTime = $"level{lvl}_best_time_{userId}";
+
+            // New keys
+            string newCompleted = $"python_level{lvl}_completed_{userId}";
+            string newBestTime = $"python_level{lvl}_best_time_{userId}";
+
+            if (PlayerPrefs.HasKey(legacyCompleted))
+            {
+                anyLocalData = true;
+
+                // Copy completed flag — keep the better value if new key already exists
+                PlayerPrefs.SetInt(newCompleted, 1);
+                PlayerPrefs.DeleteKey(legacyCompleted);
+
+                Debug.Log($"[Migration] PlayerPrefs: level{lvl}_completed → python_level{lvl}_completed");
+            }
+
+            if (PlayerPrefs.HasKey(legacyBestTime))
+            {
+                anyLocalData = true;
+
+                float legacyTime = PlayerPrefs.GetFloat(legacyBestTime);
+                float currentNew = PlayerPrefs.GetFloat(newBestTime, float.MaxValue);
+
+                // Keep the shorter (better) time between legacy and any existing new value
+                if (legacyTime < currentNew)
+                    PlayerPrefs.SetFloat(newBestTime, legacyTime);
+
+                PlayerPrefs.DeleteKey(legacyBestTime);
+
+                Debug.Log($"[Migration] PlayerPrefs: level{lvl}_best_time → python_level{lvl}_best_time ({legacyTime:F2}s)");
+            }
+        }
+
+        // Legacy "all done" flag
+        string legacyAllDone = $"all_levels_completed_{userId}";
+        if (PlayerPrefs.HasKey(legacyAllDone))
+        {
+            anyLocalData = true;
+            PlayerPrefs.SetInt($"python_all_levels_completed_{userId}", 1);
+            PlayerPrefs.DeleteKey(legacyAllDone);
+            Debug.Log("[Migration] PlayerPrefs: all_levels_completed → python_all_levels_completed");
+        }
+
+        if (anyLocalData) PlayerPrefs.Save();
+
+        // Mark migration done locally so we never repeat it
+        PlayerPrefs.SetInt(guardKey, 1);
+        PlayerPrefs.Save();
+
+        // ── 2. Firestore (cloud) migration ────────────────────────────────────
+        FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
+        DocumentReference userDoc = db.Collection("users").Document(userId);
+
+        userDoc.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsFaulted || task.IsCanceled)
+            {
+                Debug.LogError("[Migration] Could not read Firestore doc: " + task.Exception);
+                return;
+            }
+
+            DocumentSnapshot snap = task.Result;
+            if (!snap.Exists) return;
+
+            Dictionary<string, object> writeData = new Dictionary<string, object>();
+            List<string> deleteFields = new List<string>();
+
+            for (int lvl = 1; lvl <= 5; lvl++)
+            {
+                string legacyCompleted = $"level{lvl}_completed";
+                string legacyBestTime = $"level{lvl}_best_time";
+                string newCompleted = $"python_level{lvl}_completed";
+                string newBestTime = $"python_level{lvl}_best_time";
+
+                if (snap.TryGetValue(legacyCompleted, out bool completed))
+                {
+                    // Only write if new field not already set
+                    if (!snap.ContainsField(newCompleted))
+                        writeData[newCompleted] = completed;
+
+                    deleteFields.Add(legacyCompleted);
+                }
+
+                if (snap.TryGetValue(legacyBestTime, out double bestTime))
+                {
+                    if (!snap.ContainsField(newBestTime) ||
+                        (snap.TryGetValue(newBestTime, out double existingNew) && bestTime < existingNew))
+                    {
+                        writeData[newBestTime] = bestTime;
+                    }
+
+                    deleteFields.Add(legacyBestTime);
+                }
+            }
+
+            // Legacy "all done" cloud field
+            if (snap.TryGetValue("all_levels_completed", out bool allDone))
+            {
+                if (!snap.ContainsField("python_all_levels_completed"))
+                    writeData["python_all_levels_completed"] = allDone;
+
+                deleteFields.Add("all_levels_completed");
+            }
+
+            if (writeData.Count == 0 && deleteFields.Count == 0)
+            {
+                Debug.Log("[Migration] Firestore: no legacy fields found, nothing to migrate.");
+                return;
+            }
+
+            // Add FieldValue.Delete entries for each legacy field
+            foreach (string field in deleteFields)
+                writeData[field] = FieldValue.Delete;
+
+            userDoc.SetAsync(writeData, SetOptions.MergeAll)
+                   .ContinueWithOnMainThread(writeTask =>
+                   {
+                       if (writeTask.IsFaulted || writeTask.IsCanceled)
+                           Debug.LogError("[Migration] Firestore write failed: " + writeTask.Exception);
+                       else
+                           Debug.Log($"[Migration] Firestore: migrated {deleteFields.Count} legacy field(s) to python_ prefix.");
+                   });
+        });
+    }
+
+    // ─────────────────────────────────────────────
     // SAVE LEVEL PROGRESS
     // ─────────────────────────────────────────────
     // Key format examples (language = Python, level = 1):
@@ -235,10 +396,10 @@ public class GameManager : MonoBehaviour
         string userId = currentUser != null ? currentUser.UserId : "guest";
 
         // ── Build language-prefixed keys ──────────────────────────────────────
-        string lang = LanguageKey;                                   // e.g. "python"
-        string completedKey = $"{lang}_level{currentLevel}_completed";       // e.g. "python_level1_completed"
-        string bestTimeKey = $"{lang}_level{currentLevel}_best_time";       // e.g. "python_level1_best_time"
-        string allDoneKey = $"{lang}_all_levels_completed";                // e.g. "python_all_levels_completed"
+        string lang = LanguageKey;                                // e.g. "python"
+        string completedKey = $"{lang}_level{currentLevel}_completed";   // e.g. "python_level1_completed"
+        string bestTimeKey = $"{lang}_level{currentLevel}_best_time";   // e.g. "python_level1_best_time"
+        string allDoneKey = $"{lang}_all_levels_completed";            // e.g. "python_all_levels_completed"
 
         string localCompletedKey = $"{completedKey}_{userId}";
         string localBestTimeKey = $"{bestTimeKey}_{userId}";
