@@ -1786,6 +1786,8 @@ MonoBehaviour:
   interactPrompt: {fileID: 95371018}
   instructions: "FIX!!:\nfor i in range(3):\r\n    print(\"Testing module\")"
   correctAnswer: 'for i in range(6):'
+  doorObject: {fileID: 0}
+  disappearDelay: 0
 --- !u!65 &234912557
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4974,6 +4976,8 @@ MonoBehaviour:
   interactPrompt: {fileID: 95371018}
   instructions: "FIX!!:\nfor i in range(5)\r\n    print(\"Scanning...\")"
   correctAnswer: 'for i in range(5):'
+  doorObject: {fileID: 0}
+  disappearDelay: 0
 --- !u!65 &720478780
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6533,6 +6537,8 @@ MonoBehaviour:
   instructions: "FIX!!:\ncount = 0\r\n\r\nwhile count > 3:\r\n    print(\"Running
     diagnostics\")\r\n    count += 1"
   correctAnswer: 'while count < 3:'
+  doorObject: {fileID: 0}
+  disappearDelay: 0
 --- !u!65 &936213846
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8663,6 +8669,8 @@ MonoBehaviour:
   instructions: "FIX!!:\ncount = 1\r\n\r\nwhile count < 5:\r\n    print(\"Cycle:\",
     count)"
   correctAnswer: count += 1
+  doorObject: {fileID: 0}
+  disappearDelay: 0
 --- !u!65 &1109761778
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -13943,6 +13951,8 @@ MonoBehaviour:
   interactPrompt: {fileID: 95371018}
   instructions: "FIX!!:\nfor i in range(5):\r\n    print(\"Scanning cycle:\", i)"
   correctAnswer: 'for i in range(1, 6):'
+  doorObject: {fileID: 0}
+  disappearDelay: 0
 --- !u!65 &1868399552
 BoxCollider:
   m_ObjectHideFlags: 0
