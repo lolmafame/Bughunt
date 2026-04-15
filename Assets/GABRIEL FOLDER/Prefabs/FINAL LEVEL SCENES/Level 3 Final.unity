@@ -14399,6 +14399,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 675926022237040255, guid: e605ec37280df884f83f930a46b59293, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 675926022237040255, guid: e605ec37280df884f83f930a46b59293, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -55.12
+      objectReference: {fileID: 0}
     - target: {fileID: 1285457241863717306, guid: e605ec37280df884f83f930a46b59293, type: 3}
       propertyPath: playerVCam
       value: 
@@ -14406,6 +14414,18 @@ PrefabInstance:
     - target: {fileID: 2749151705269980461, guid: e605ec37280df884f83f930a46b59293, type: 3}
       propertyPath: m_Name
       value: CatSeen
+      objectReference: {fileID: 0}
+    - target: {fileID: 3464240543106442816, guid: e605ec37280df884f83f930a46b59293, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3464240543106442816, guid: e605ec37280df884f83f930a46b59293, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -286
+      objectReference: {fileID: 0}
+    - target: {fileID: 3678652489299809656, guid: e605ec37280df884f83f930a46b59293, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -121.7
       objectReference: {fileID: 0}
     - target: {fileID: 3984659325380165060, guid: e605ec37280df884f83f930a46b59293, type: 3}
       propertyPath: m_LocalPosition.x

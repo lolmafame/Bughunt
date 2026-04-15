@@ -13612,6 +13612,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: TerminalManager
       objectReference: {fileID: 0}
+    - target: {fileID: 443676152366732517, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 166.77
+      objectReference: {fileID: 0}
+    - target: {fileID: 443676152366732517, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 38.66
+      objectReference: {fileID: 0}
+    - target: {fileID: 443676152366732517, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -120.47
+      objectReference: {fileID: 0}
+    - target: {fileID: 833251068326521989, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 191.29001
+      objectReference: {fileID: 0}
+    - target: {fileID: 833251068326521989, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 38.66
+      objectReference: {fileID: 0}
+    - target: {fileID: 833251068326521989, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -120.47
+      objectReference: {fileID: 0}
     - target: {fileID: 1540562092181727714, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
       propertyPath: interactPrompt
       value: 
@@ -13620,6 +13644,18 @@ PrefabInstance:
       propertyPath: interactPrompt
       value: 
       objectReference: {fileID: 1870320376}
+    - target: {fileID: 3364030035443881837, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 199.35478
+      objectReference: {fileID: 0}
+    - target: {fileID: 3364030035443881837, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 38.9039
+      objectReference: {fileID: 0}
+    - target: {fileID: 3364030035443881837, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -120.48853
+      objectReference: {fileID: 0}
     - target: {fileID: 4551180089208619516, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
       propertyPath: interactPrompt
       value: 
@@ -13640,6 +13676,18 @@ PrefabInstance:
       propertyPath: terminalText
       value: 
       objectReference: {fileID: 52303522}
+    - target: {fileID: 7376622478286364909, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 183.35478
+      objectReference: {fileID: 0}
+    - target: {fileID: 7376622478286364909, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 38.66
+      objectReference: {fileID: 0}
+    - target: {fileID: 7376622478286364909, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -120.47
+      objectReference: {fileID: 0}
     - target: {fileID: 7467014611619012583, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
       propertyPath: codePanel
       value: 
@@ -13660,6 +13708,18 @@ PrefabInstance:
       propertyPath: instructionText
       value: 
       objectReference: {fileID: 1327008580}
+    - target: {fileID: 7559050599561777335, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 174.86
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559050599561777335, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 38.66
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559050599561777335, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -120.47
+      objectReference: {fileID: 0}
     - target: {fileID: 8287299648307319401, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
       propertyPath: m_LocalPosition.x
       value: -44.64183
