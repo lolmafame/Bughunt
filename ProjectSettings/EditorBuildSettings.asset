@@ -17,24 +17,42 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/final Scenes/level 2.unity
     guid: eea8071b7733c844da2779f634bfb5e9
-  - enabled: 1
+  - enabled: 0
     path: Assets/GABRIEL FOLDER/Prefabs/FINAL LEVEL SCENES/level 1 updated.unity
     guid: f4eb5b94dd736ab43a233f37d8d638ef
-  - enabled: 1
+  - enabled: 0
     path: Assets/GABRIEL FOLDER/Prefabs/FINAL LEVEL SCENES/level 2.unity
     guid: 0deb0f57675afdc4db03a32ad7ba9cae
-  - enabled: 1
+  - enabled: 0
     path: Assets/GABRIEL FOLDER/Prefabs/FINAL LEVEL SCENES/level 3.unity
     guid: 2209f3fa2a0f4a048bf5c9e637434e74
-  - enabled: 1
+  - enabled: 0
     path: Assets/GABRIEL FOLDER/Prefabs/FINAL LEVEL SCENES/level 4.unity
     guid: 21e41f4752d071442af90ccb1f69d686
-  - enabled: 1
+  - enabled: 0
     path: Assets/GABRIEL FOLDER/Prefabs/FINAL LEVEL SCENES/level 5.unity
     guid: 72c5f0d0752379240a8bc5133ce3a61a
   - enabled: 1
     path: Assets/GABRIEL FOLDER/Prefabs/FINAL LEVEL SCENES/LoginMainMenuupd.unity
     guid: 0063fdf2c9c3a5842a2b0454ad6d4fd1
+  - enabled: 1
+    path: Assets/GABRIEL FOLDER/Prefabs/FINAL LEVEL SCENES/Tutorial.unity
+    guid: a05d852e2eeeb364384a11a7246ac41e
+  - enabled: 1
+    path: Assets/GABRIEL FOLDER/Prefabs/FINAL LEVEL SCENES/Level 4 Final.unity
+    guid: b54aebfdd16e9a646ac8c5d7215ccd7c
+  - enabled: 1
+    path: Assets/GABRIEL FOLDER/Prefabs/FINAL LEVEL SCENES/Level 5 Final Final.unity
+    guid: 4f9288acdd276f24d874794c8fe94223
+  - enabled: 1
+    path: Assets/GABRIEL FOLDER/Prefabs/FINAL LEVEL SCENES/Level 3 Final.unity
+    guid: 3798eae6b53de874ba2fdb8a7d681acc
+  - enabled: 1
+    path: Assets/GABRIEL FOLDER/Prefabs/FINAL LEVEL SCENES/Level 2 Final.unity
+    guid: d95bf8a5326dd364493991008315ac6d
+  - enabled: 1
+    path: Assets/GABRIEL FOLDER/Prefabs/FINAL LEVEL SCENES/Level 1 Final.unity
+    guid: acf832063fae3dc4194e6771b4c37c45
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
