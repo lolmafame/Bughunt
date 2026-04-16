@@ -20475,23 +20475,19 @@ MonoBehaviour:
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
-    focusObjects:
-    - {fileID: 336446002}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: "\"Whatever this place was \u2014 it's been abandoned for a long time.\""
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
-    focusObjects:
-    - {fileID: 1466111523}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: '"No signs of anything else in there. You should be al--"'
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
-    focusObjects:
-    - {fileID: 1324636928}
-    - {fileID: 0}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: "\u2014<color=#888888>kzzzt</color>\u2014"
     typingSpeed: 0.05
@@ -24745,7 +24741,7 @@ PrefabInstance:
     - target: {fileID: 6350178601489307700, guid: 357b3f18184544a4aba70638f9e3aa76, type: 3}
       propertyPath: pausePanel
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 2020591354}
     - target: {fileID: 6350178601489307700, guid: 357b3f18184544a4aba70638f9e3aa76, type: 3}
       propertyPath: spawnPoint
       value: 

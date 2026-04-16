@@ -11715,30 +11715,25 @@ MonoBehaviour:
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
-    focusObjects:
-    - {fileID: 336446002}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: "\u2014<color=#FF4444>silence</color>\u2014"
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
-    focusObjects:
-    - {fileID: 1466111523}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: '"<i><color=#FF4444>He tried to warn you, you know.</color></i>"'
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
-    focusObjects:
-    - {fileID: 1324636928}
-    - {fileID: 0}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: '"<i>Back at the beginning. Before the signal cut.</i>"'
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
-    focusObjects:
-    - {fileID: 70857255}
+    focusObjects: []
     delayBeforeTyping: 0.3
   - text: "\"<i><color=#FF4444>Don't trust the\u2014</color></i>\""
     typingSpeed: 0.05

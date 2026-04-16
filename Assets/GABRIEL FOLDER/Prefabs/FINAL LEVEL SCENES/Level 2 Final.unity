@@ -12261,7 +12261,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1798677770
 Transform:
   m_ObjectHideFlags: 0
@@ -13998,31 +13998,55 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 443676152366732517, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 136.4
+      value: 120.64183
       objectReference: {fileID: 0}
     - target: {fileID: 443676152366732517, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -48.7
+      value: -50.308533
       objectReference: {fileID: 0}
     - target: {fileID: 833251068326521989, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 160.92
+      value: 174.64183
       objectReference: {fileID: 0}
     - target: {fileID: 833251068326521989, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -48.7
+      value: -39.308533
+      objectReference: {fileID: 0}
+    - target: {fileID: 1540562092181727714, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
+      propertyPath: instructions
+      value: 'FIX!!:
+
+        if temperature > 30:
+
+        print("Overheat")
+
+        else
+        temperature < 30:
+
+        print("Normal")'
       objectReference: {fileID: 0}
     - target: {fileID: 1540562092181727714, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
       propertyPath: correctAnswer
-      value: 1
+      value: 'elif temperature < 30:'
       objectReference: {fileID: 0}
     - target: {fileID: 1540562092181727714, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
       propertyPath: interactPrompt
       value: 
       objectReference: {fileID: 1870320376}
     - target: {fileID: 1576192879648737128, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
+      propertyPath: instructions
+      value: 'FIX!!:
+
+        signal = True
+
+        if signal = True:
+
+        print("Signal
+        received")'
+      objectReference: {fileID: 0}
+    - target: {fileID: 1576192879648737128, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
       propertyPath: correctAnswer
-      value: 1
+      value: 'if signal == True:'
       objectReference: {fileID: 0}
     - target: {fileID: 1576192879648737128, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
       propertyPath: interactPrompt
@@ -14030,31 +14054,68 @@ PrefabInstance:
       objectReference: {fileID: 1870320376}
     - target: {fileID: 3364030035443881837, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 168.98477
+      value: 241.64183
       objectReference: {fileID: 0}
     - target: {fileID: 3364030035443881837, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -48.718533
+      value: -31.80853
+      objectReference: {fileID: 0}
+    - target: {fileID: 4551180089208619516, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
+      propertyPath: instructions
+      value: 'FIX!!:
+
+        temperature = 35
+
+        if temperature > 30
+
+        print("Overheat")
+
+        print("Robot
+        is active")'
       objectReference: {fileID: 0}
     - target: {fileID: 4551180089208619516, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
       propertyPath: correctAnswer
-      value: 1
+      value: 'if temperature > 30:'
       objectReference: {fileID: 0}
     - target: {fileID: 4551180089208619516, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
       propertyPath: interactPrompt
       value: 
       objectReference: {fileID: 1870320376}
     - target: {fileID: 4807427432079979297, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
+      propertyPath: instructions
+      value: 'FIX!!:
+
+        battery = 20
+
+        if battery = 20:
+
+        print("Battery
+        is low")'
+      objectReference: {fileID: 0}
+    - target: {fileID: 4807427432079979297, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
       propertyPath: correctAnswer
-      value: 1
+      value: 'if battery == 20:'
       objectReference: {fileID: 0}
     - target: {fileID: 4807427432079979297, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
       propertyPath: interactPrompt
       value: 
       objectReference: {fileID: 1870320376}
     - target: {fileID: 6248697841883379039, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
+      propertyPath: instructions
+      value: 'FIX!!:
+
+        access = 1
+
+        if access > 0
+
+        print("Access
+        granted")
+
+        print("Warning: Overheat")'
+      objectReference: {fileID: 0}
+    - target: {fileID: 6248697841883379039, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
       propertyPath: correctAnswer
-      value: 1
+      value: 'if access > 0:'
       objectReference: {fileID: 0}
     - target: {fileID: 6248697841883379039, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
       propertyPath: interactPrompt
@@ -14070,11 +14131,11 @@ PrefabInstance:
       objectReference: {fileID: 52303522}
     - target: {fileID: 7376622478286364909, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 152.98477
+      value: 125.64183
       objectReference: {fileID: 0}
     - target: {fileID: 7376622478286364909, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -48.7
+      value: 166.19147
       objectReference: {fileID: 0}
     - target: {fileID: 7467014611619012583, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
       propertyPath: codePanel
@@ -14102,7 +14163,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7559050599561777335, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -48.7
+      value: -19.30853
       objectReference: {fileID: 0}
     - target: {fileID: 8287299648307319401, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
       propertyPath: m_LocalPosition.x
