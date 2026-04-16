@@ -24262,6 +24262,14 @@ PrefabInstance:
       propertyPath: totalTerminals
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6452907740544665609, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
+      propertyPath: doorObjects.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6452907740544665609, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
+      propertyPath: 'doorObjects.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1109851007}
     - target: {fileID: 7467014611619012583, guid: c236d56d9f1091c4da3fb438ef18b7f1, type: 3}
       propertyPath: codePanel
       value: 
