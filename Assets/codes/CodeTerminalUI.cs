@@ -11,6 +11,7 @@ public class CodeTerminalUI : MonoBehaviour
     public TransitionFlow transitionFlow;
     public ProcessTransition processFlow;
     private Terminal currentTerminal;
+    private DoorTerminal currentDoorTerminal;
     private bool isActive = false;
     private bool blockTypingSound = false;
     public TMP_Text instructionText;
@@ -35,8 +36,8 @@ public class CodeTerminalUI : MonoBehaviour
     public void Open(Terminal terminal)
     {
         currentTerminal = terminal;
+        currentDoorTerminal = null;
 
-        // Reset transition panels so nothing blocks the submit button
         processFlow.ResetPanels();
 
         codePanel.SetActive(true);
@@ -69,12 +70,44 @@ public class CodeTerminalUI : MonoBehaviour
             SoundManager.Instance.PlayTerminalOpen();
     }
 
+    public void OpenDoor(DoorTerminal terminal)
+    {
+        currentDoorTerminal = terminal;
+        currentTerminal = null;
+
+        processFlow.ResetPanels();
+
+        codePanel.SetActive(true);
+        transitionFlow.PlayTransition();
+        inputField.text = "";
+        isActive = true;
+
+        if (instructionText != null)
+            instructionText.text = terminal.instructions;
+
+        SetCursorFree();
+        inputField.Select();
+        inputField.ActivateInputField();
+
+        blockTypingSound = true;
+        Invoke(nameof(UnblockTypingSound), 0.1f);
+
+        if (GameManager.Instance != null)
+            GameManager.Instance.SetInputLocked(true);
+
+        CachePlayerMovement();
+        if (cachedPlayerMove != null)
+            cachedPlayerMove.enabled = false;
+
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlayTerminalOpen();
+    }
+
     void UnblockTypingSound()
     {
         blockTypingSound = false;
     }
 
-    // Extracted helper — ensures cursor is ALWAYS free while terminal is open
     void SetCursorFree()
     {
         Cursor.lockState = CursorLockMode.None;
@@ -83,6 +116,13 @@ public class CodeTerminalUI : MonoBehaviour
 
     public void Close()
     {
+        if (currentDoorTerminal != null)
+        {
+            currentDoorTerminal.OnClose();
+            currentDoorTerminal = null;
+        }
+        currentTerminal = null;
+
         codePanel.SetActive(false);
         isActive = false;
 
@@ -106,39 +146,39 @@ public class CodeTerminalUI : MonoBehaviour
 
     public void Submit()
     {
-        if (currentTerminal == null) return;
+        bool isDoor = currentDoorTerminal != null;
+        bool isTerminal = currentTerminal != null;
 
-        // Prevent double-submits while transition is playing
+        if (!isDoor && !isTerminal) return;
         if (!isActive) return;
 
         string trimmedInput = inputField.text.Trim();
-        string trimmedAnswer = currentTerminal.correctAnswer.Trim();
+        string trimmedAnswer = isDoor
+            ? currentDoorTerminal.correctAnswer.Trim()
+            : currentTerminal.correctAnswer.Trim();
 
         if (trimmedInput == trimmedAnswer)
         {
-            isActive = false; // prevent re-submits during success transition
+            isActive = false;
             StartCoroutine(PlaySoundDelayed(true, processFlow.transitionDuration));
             processFlow.PlaySuccess(() =>
             {
-                currentTerminal.CompleteTerminal();
+                if (isDoor) currentDoorTerminal.CompleteTerminal();
+                else currentTerminal.CompleteTerminal();
                 Close();
             });
         }
         else
         {
-            isActive = false; // prevent re-submits during fail transition
+            isActive = false;
             StartCoroutine(PlaySoundDelayed(false, processFlow.transitionDuration));
             processFlow.PlayFail(() =>
             {
-                // Re-enable everything cleanly after fail
                 codePanel.SetActive(true);
                 isActive = true;
                 inputField.gameObject.SetActive(true);
                 inputField.text = "";
-
-                // Force cursor free AFTER the transition restores the panel
                 SetCursorFree();
-
                 inputField.Select();
                 inputField.ActivateInputField();
             });
@@ -157,10 +197,8 @@ public class CodeTerminalUI : MonoBehaviour
 
     void Update()
     {
-        
         if (!isActive) return;
 
-        // Keep cursor free every frame while terminal is open (guards against anything locking it)
         SetCursorFree();
 
         if (Input.anyKeyDown && !Input.GetKeyDown(KeyCode.Tab) &&

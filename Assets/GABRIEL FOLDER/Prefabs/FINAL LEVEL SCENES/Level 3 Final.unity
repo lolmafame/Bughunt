@@ -11675,58 +11675,58 @@ MonoBehaviour:
     - {fileID: 1324636928}
     - {fileID: 0}
     delayBeforeTyping: 0.3
-  - text: '"Approach them and press <color=#E4F6B1>E</color> to interact. Repair
-      the corrupted code inside to restore system integrity."'
+  - text: '"..."
+
+'
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
     focusObjects:
     - {fileID: 70857255}
     delayBeforeTyping: 0.3
-  - text: '"Once enough terminals are fixed, the lockdown should weaken. After that,
-      meet me at the lower sec--"'
+  - text: '"<i>It followed you.</i>"'
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
     focusObjects: []
     delayBeforeTyping: 0.3
-  - text: "\u2014kzzzt\u2014"
+  - text: "\u2014<color=#888888>kzzzt</color>\u2014"
     typingSpeed: 0.05
     glitchTyping: 1
     glitchClip: {fileID: 8300000, guid: 49ceba1c8b9fd68499b3880248b64821, type: 3}
     focusObjects: []
     delayBeforeTyping: 0.3
-  - text: "\"\u2014the lower sector thr\u2014\""
+  - text: '"The corruption in this sector is different. Denser. <i>More structured.</i>"'
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
     focusObjects: []
     delayBeforeTyping: 0.3
-  - text: ---SIGNAL BUFFERING---
+  - text: '"<i>Almost like something has been... tending to it.</i>"'
+    typingSpeed: 0.05
+    glitchTyping: 0
+    glitchClip: {fileID: 0}
+    focusObjects: []
+    delayBeforeTyping: 0.3
+  - text: " \u2014<color=#888888>BZZZZT</color>\u2014"
     typingSpeed: 0.05
     glitchTyping: 1
     glitchClip: {fileID: 8300000, guid: 49ceba1c8b9fd68499b3880248b64821, type: 3}
     focusObjects: []
     delayBeforeTyping: 0.3
-  - text: "\"I\u2019ll be waiting at the\u2014\""
+  - text: '"...<i>I''ll look into it from my end.</i>"'
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
     focusObjects: []
     delayBeforeTyping: 0.3
-  - text: "\u2014BZZZZT\u2014"
-    typingSpeed: 0.05
-    glitchTyping: 1
-    glitchClip: {fileID: 8300000, guid: 49ceba1c8b9fd68499b3880248b64821, type: 3}
-    focusObjects: []
-    delayBeforeTyping: 0.3
-  - text: "\"Don\u2019t trust the\u2014\""
+  - text: '"<b>Just get through. Fast.</b>"'
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
     focusObjects: []
     delayBeforeTyping: 0.3
-  - text: ---CONNECTION LOST---
+  - text: <color=#888888>---SIGNAL INTERRUPTED---</color>
     typingSpeed: 0.05
     glitchTyping: 1
     glitchClip: {fileID: 8300000, guid: d9c01f9b61818d2438258dd25a148977, type: 3}

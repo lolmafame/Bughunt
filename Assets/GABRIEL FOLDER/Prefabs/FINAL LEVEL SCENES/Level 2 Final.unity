@@ -11711,13 +11711,14 @@ MonoBehaviour:
   dialogueAnimator: {fileID: 1898803778}
   blinkSpeed: 0.5
   lines:
-  - text: "\"H-Hello? Can you receive this? Good\u2026 your systems are online.\""
+  - text: '"Back online. Something keeps cutting the frequency."'
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}
     focusObjects: []
     delayBeforeTyping: 0.3
-  - text: '"Listen carefully. The signal is weak."'
+  - text: "\"Another maze. Same as before \u2014 <color=#E4F6B1>terminals</color>,
+      gate, move on.\""
     typingSpeed: 0.05
     glitchTyping: 0
     glitchClip: {fileID: 0}

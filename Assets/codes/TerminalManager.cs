@@ -5,12 +5,14 @@ using System.Collections;
 public class TerminalManager : MonoBehaviour
 {
     public static TerminalManager Instance;
+
+    [Header("Terminal Count")]
     public int totalTerminals = 5;
     private int completedTerminals = 0;
     public Text terminalText;
 
-    [Header("Door")]
-    public GameObject doorObject;
+    [Header("Final Door (opens when ALL terminals done)")]
+    public GameObject[] doorObjects;
 
     [Header("Completion Message")]
     public TMPro.TextMeshProUGUI completionMessageText;
@@ -22,8 +24,10 @@ public class TerminalManager : MonoBehaviour
         Instance = this;
         UpdateUI();
 
+        // Hide message at start
         if (completionMessageText != null)
         {
+            completionMessageText.transform.parent.gameObject.SetActive(true);
             Color c = completionMessageText.color;
             completionMessageText.color = new Color(c.r, c.g, c.b, 0f);
         }
@@ -34,24 +38,26 @@ public class TerminalManager : MonoBehaviour
         completedTerminals++;
         UpdateUI();
 
+        Debug.Log("Terminals completed: " + completedTerminals + " / " + totalTerminals);
+
         if (SoundManager.Instance != null)
             SoundManager.Instance.PlayTerminalComplete();
-        else
-            Debug.LogWarning("TerminalManager: SoundManager instance is missing!");
 
+        // 🔥 ALL TERMINALS FINISHED
         if (completedTerminals >= totalTerminals)
         {
-            Debug.Log("ALL TERMINALS COMPLETED!");
+            Debug.Log("ALL TERMINALS DONE!");
 
-            if (doorObject != null)
-                doorObject.SetActive(false);
-            else
-                Debug.LogWarning("TerminalManager: Door object is not assigned!");
+            // Remove doors
+            foreach (GameObject door in doorObjects)
+            {
+                if (door != null)
+                    door.SetActive(false);
+            }
 
+            // Show completion message
             if (completionMessageText != null)
                 StartCoroutine(FadeMessage());
-            else
-                Debug.LogWarning("TerminalManager: Completion message Text is not assigned!");
 
             if (SoundManager.Instance != null)
                 SoundManager.Instance.PlayAllTerminalsDone();
@@ -67,7 +73,8 @@ public class TerminalManager : MonoBehaviour
         while (elapsed < fadeDuration)
         {
             elapsed += Time.deltaTime;
-            completionMessageText.color = new Color(c.r, c.g, c.b, Mathf.Clamp01(elapsed / fadeDuration));
+            completionMessageText.color =
+                new Color(c.r, c.g, c.b, Mathf.Clamp01(elapsed / fadeDuration));
             yield return null;
         }
 
@@ -78,19 +85,23 @@ public class TerminalManager : MonoBehaviour
         while (elapsed < fadeDuration)
         {
             elapsed += Time.deltaTime;
-            completionMessageText.color = new Color(c.r, c.g, c.b, Mathf.Clamp01(1f - (elapsed / fadeDuration)));
+            completionMessageText.color =
+                new Color(c.r, c.g, c.b, Mathf.Clamp01(1f - elapsed / fadeDuration));
             yield return null;
         }
 
         completionMessageText.color = new Color(c.r, c.g, c.b, 0f);
     }
 
-    public int GetCompleted() => completedTerminals;
-    public int GetCompletedTerminals() => completedTerminals;
-
     void UpdateUI()
     {
         if (terminalText != null)
             terminalText.text = completedTerminals + " / " + totalTerminals + " Terminals";
+    }
+
+    // ⚠️ OTHER SCRIPTS NEED THIS
+    public int GetCompletedTerminals()
+    {
+        return completedTerminals;
     }
 }
