@@ -6,6 +6,7 @@ using Firebase.Extensions;
 public class LevelSelectManager : MonoBehaviour
 {
     [Header("Level UI References")]
+    public LevelUI tutorialUI;   // Index 0 — always open
     public LevelUI level1UI;
     public LevelUI level2UI;
     public LevelUI level3UI;
@@ -27,9 +28,19 @@ public class LevelSelectManager : MonoBehaviour
         return user != null ? user.UserId : "guest";
     }
 
+    // Returns the Firestore field key for a given levels[] index.
+    // Index 0 → "python_tutorial_completed"
+    // Index 1 → "python_level1_completed", etc.
+    private string GetDbKey(string lang, int index)
+    {
+        return index == 0
+            ? $"{lang}_tutorial_completed"
+            : $"{lang}_level{index}_completed";
+    }
+
     void Start()
     {
-        levels = new LevelUI[] { level1UI, level2UI, level3UI, level4UI, level5UI };
+        levels = new LevelUI[] { tutorialUI, level1UI, level2UI, level3UI, level4UI, level5UI };
 
         // Lock everything down while we wait for Firebase
         for (int i = 0; i < levels.Length; i++)
@@ -48,7 +59,7 @@ public class LevelSelectManager : MonoBehaviour
 
         if (currentUser == null)
         {
-            Debug.LogWarning(">>> LEVEL SELECT: No user logged in. Showing default level 1 open.");
+            Debug.LogWarning(">>> LEVEL SELECT: No user logged in. Showing default tutorial open.");
             if (levels[0] != null) levels[0].SetState(LevelState.Open);
             return;
         }
@@ -70,18 +81,17 @@ public class LevelSelectManager : MonoBehaviour
 
             DocumentSnapshot snapshot = task.Result;
 
-            // Level 1 is always open
+            // Tutorial is always open
             if (levels[0] != null) levels[0].SetState(LevelState.Open);
 
             if (snapshot.Exists)
             {
                 for (int i = 0; i < levels.Length; i++)
                 {
-                    int levelNum = i + 1;
-
                     // ── Language-prefixed keys (must match GameManager) ────────
-                    // e.g. "python_level1_completed", "javascript_level2_completed"
-                    string dbLevelKey = $"{lang}_level{levelNum}_completed";
+                    // i==0 → "python_tutorial_completed"
+                    // i>=1 → "python_level{i}_completed"
+                    string dbLevelKey = GetDbKey(lang, i);
                     string localLevelKey = $"{dbLevelKey}_{userId}";
 
                     bool isComplete = snapshot.ContainsField(dbLevelKey)
@@ -94,12 +104,12 @@ public class LevelSelectManager : MonoBehaviour
                         // Keep local cache in sync with cloud
                         PlayerPrefs.SetInt(localLevelKey, 1);
 
-                        // Unlock next level if it isn't already complete
+                        // Unlock the next level if it isn't already complete
                         if (i + 1 < levels.Length && levels[i + 1] != null)
                         {
-                            string nextDbKey = $"{lang}_level{levelNum + 1}_completed";
+                            string nextDbKey = GetDbKey(lang, i + 1);
                             bool nextComplete = snapshot.ContainsField(nextDbKey)
-                                                 && snapshot.GetValue<bool>(nextDbKey);
+                                                && snapshot.GetValue<bool>(nextDbKey);
 
                             if (!nextComplete)
                                 levels[i + 1].SetState(LevelState.Open);
@@ -131,12 +141,12 @@ public class LevelSelectManager : MonoBehaviour
     {
         string lang = LanguageKey;
 
+        // Tutorial is always open
         if (levels[0] != null) levels[0].SetState(LevelState.Open);
 
         for (int i = 0; i < levels.Length; i++)
         {
-            int levelNum = i + 1;
-            string localLevelKey = $"{lang}_level{levelNum}_completed_{userId}";
+            string localLevelKey = $"{GetDbKey(lang, i)}_{userId}";
             bool isCompleted = PlayerPrefs.GetInt(localLevelKey, 0) == 1;
 
             if (isCompleted)
@@ -145,7 +155,7 @@ public class LevelSelectManager : MonoBehaviour
 
                 if (i + 1 < levels.Length && levels[i + 1] != null)
                 {
-                    string nextLocalKey = $"{lang}_level{levelNum + 1}_completed_{userId}";
+                    string nextLocalKey = $"{GetDbKey(lang, i + 1)}_{userId}";
                     bool nextCompleted = PlayerPrefs.GetInt(nextLocalKey, 0) == 1;
 
                     if (!nextCompleted)

@@ -75701,6 +75701,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aab5be86e3ee15548be43b092672b43e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LevelSelectManager
+  tutorialUI: {fileID: 131453310}
   level1UI: {fileID: 491878230}
   level2UI: {fileID: 1991140491}
   level3UI: {fileID: 1894189106}

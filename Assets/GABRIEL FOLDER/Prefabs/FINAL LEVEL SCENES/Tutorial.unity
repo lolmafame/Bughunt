@@ -24705,6 +24705,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1455875621}
     - target: {fileID: 6350178601489307700, guid: 357b3f18184544a4aba70638f9e3aa76, type: 3}
+      propertyPath: currentLevel
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6350178601489307700, guid: 357b3f18184544a4aba70638f9e3aa76, type: 3}
       propertyPath: gameOverPanel
       value: 
       objectReference: {fileID: 1424520091}

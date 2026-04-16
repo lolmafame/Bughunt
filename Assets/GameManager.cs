@@ -41,11 +41,11 @@ public class GameManager : MonoBehaviour
     [Tooltip("Exact scene names in order: [0]=Level1, [1]=Level2, ... [4]=Level5")]
     public string[] levelSceneNames = new string[5]
     {
-        "level 1 updated", "level 2", "level 3", "level 4", "level 5"
+        "Level 1 Final", "Level 2 Final", "Level 3 Final", "Level 4 Final", "Level 5 Final Final"
     };
 
     [Header("Level Settings")]
-    [Tooltip("Set this to 1-5 in the Inspector for each level scene.")]
+    [Tooltip("Set to 0 for the Tutorial, or 1-5 for regular levels. Used to build save keys.")]
     public int currentLevel = 1;
 
     [Tooltip("Select the programming language taught in this level. Used as a prefix for all save keys.")]
@@ -191,9 +191,12 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
+        // currentLevel == 0 → Tutorial → loads levelSceneNames[0] (Level 1)
+        // currentLevel == 1 → Level 1  → loads levelSceneNames[1] (Level 2)
+        // etc.
         if (currentLevel < 5)
         {
-            int nextIndex = currentLevel; // 1-based level → 0-based array index of next level
+            int nextIndex = currentLevel; // 0-based array index of the next scene
 
             if (nextIndex < levelSceneNames.Length && !string.IsNullOrEmpty(levelSceneNames[nextIndex]))
             {
@@ -209,7 +212,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning($"No scene name set for Level {currentLevel + 1}. Returning to Main Menu.");
+                Debug.LogWarning($"No scene name set for the level after {currentLevel}. Returning to Main Menu.");
                 SceneManager.LoadScene(mainMenuSceneName);
             }
         }
@@ -389,34 +392,53 @@ public class GameManager : MonoBehaviour
     //   Firestore field : "python_level1_best_time"
     //   PlayerPrefs key : "python_level1_completed_{userId}"
     //   PlayerPrefs key : "python_level1_best_time_{userId}"
+    //
+    // Tutorial (currentLevel = 0) uses a special key with no best time:
+    //   Firestore field : "python_tutorial_completed"
+    //   PlayerPrefs key : "python_tutorial_completed_{userId}"
 
     private void SaveLevelProgress()
     {
         FirebaseUser currentUser = FirebaseAuth.DefaultInstance.CurrentUser;
         string userId = currentUser != null ? currentUser.UserId : "guest";
 
+        string lang = LanguageKey; // e.g. "python"
+
         // ── Build language-prefixed keys ──────────────────────────────────────
-        string lang = LanguageKey;                                // e.g. "python"
-        string completedKey = $"{lang}_level{currentLevel}_completed";   // e.g. "python_level1_completed"
-        string bestTimeKey = $"{lang}_level{currentLevel}_best_time";   // e.g. "python_level1_best_time"
-        string allDoneKey = $"{lang}_all_levels_completed";            // e.g. "python_all_levels_completed"
+        // Tutorial (currentLevel == 0) uses "tutorial" instead of "level0"
+        bool isTutorial = (currentLevel == 0);
+
+        string completedKey = isTutorial
+            ? $"{lang}_tutorial_completed"                        // e.g. "python_tutorial_completed"
+            : $"{lang}_level{currentLevel}_completed";            // e.g. "python_level1_completed"
+
+        string bestTimeKey = isTutorial
+            ? null                                                // Tutorial has no best time
+            : $"{lang}_level{currentLevel}_best_time";           // e.g. "python_level1_best_time"
+
+        string allDoneKey = $"{lang}_all_levels_completed";      // e.g. "python_all_levels_completed"
 
         string localCompletedKey = $"{completedKey}_{userId}";
-        string localBestTimeKey = $"{bestTimeKey}_{userId}";
+        string localBestTimeKey = bestTimeKey != null ? $"{bestTimeKey}_{userId}" : null;
         string localAllDoneKey = $"{allDoneKey}_{userId}";
 
-        float newTime = gameTimer != null ? gameTimer.GetFinalTime() : 0f;
-
         // ── Local save (PlayerPrefs) ──────────────────────────────────────────
-        float previousBestTime = PlayerPrefs.GetFloat(localBestTimeKey, float.MaxValue);
-        bool isNewBestTime = newTime < previousBestTime;
-
         PlayerPrefs.SetInt(localCompletedKey, 1);
 
-        if (isNewBestTime)
+        bool isNewBestTime = false;
+
+        if (!isTutorial)
         {
-            PlayerPrefs.SetFloat(localBestTimeKey, newTime);
-            Debug.Log($"[{lang}] Level {currentLevel}: New best time! {FormatTime(newTime)}");
+            // Only regular levels track best time
+            float newTime = gameTimer != null ? gameTimer.GetFinalTime() : 0f;
+            float previousBestTime = PlayerPrefs.GetFloat(localBestTimeKey, float.MaxValue);
+            isNewBestTime = newTime < previousBestTime;
+
+            if (isNewBestTime)
+            {
+                PlayerPrefs.SetFloat(localBestTimeKey, newTime);
+                Debug.Log($"[{lang}] Level {currentLevel}: New best time! {FormatTime(newTime)}");
+            }
         }
 
         if (currentLevel == 5)
@@ -433,21 +455,27 @@ public class GameManager : MonoBehaviour
             Dictionary<string, object> progressData = new Dictionary<string, object>
             {
                 { completedKey, true }
+                // No best time entry for tutorial
             };
 
-            if (isNewBestTime)
+            if (!isTutorial && isNewBestTime)
+            {
+                float newTime = gameTimer != null ? gameTimer.GetFinalTime() : 0f;
                 progressData[bestTimeKey] = newTime;
+            }
 
             if (currentLevel == 5)
                 progressData[allDoneKey] = true;
+
+            string levelLabel = isTutorial ? "Tutorial" : $"Level {currentLevel}";
 
             userDoc.SetAsync(progressData, SetOptions.MergeAll)
                    .ContinueWithOnMainThread(task =>
                    {
                        if (task.IsFaulted || task.IsCanceled)
-                           Debug.LogError($"Failed to save [{lang}] level {currentLevel} progress: " + task.Exception);
+                           Debug.LogError($"Failed to save [{lang}] {levelLabel} progress: " + task.Exception);
                        else
-                           Debug.Log($"Saved [{lang}] Level {currentLevel} completion to cloud.");
+                           Debug.Log($"Saved [{lang}] {levelLabel} completion to cloud.");
                    });
         }
     }
